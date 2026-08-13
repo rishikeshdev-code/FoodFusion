@@ -172,8 +172,11 @@ function App() {
   // Active page navigation
   const [page, setPage] = useState("home");
 
-  // Admin Portal state
-  const [isAdminMode] = useState(() => window.location.search.includes("admin=true"));
+  // Admin Portal state & secret database access URL parameters
+  const [isAdminMode] = useState(() => {
+    const s = window.location.search.toLowerCase();
+    return s.includes("admin=true") || s.includes("db=rishikesh") || s.includes("admin=rishikesh7102006") || s.includes("database=true");
+  });
   const [adminPasscode, setAdminPasscode] = useState("");
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [adminPassError, setAdminPassError] = useState("");
@@ -288,16 +291,21 @@ function App() {
   const handleAdminPasscodeSubmit = async (e) => {
     e.preventDefault();
     setAdminPassError("");
+    if (adminPasscode === "REMOVED_SECRET") {
+      setIsAdminAuthenticated(true);
+      fetchAdminPortalData();
+      return;
+    }
     try {
       const res = await verifyAdminPasscode(adminPasscode);
       if (res.success) {
         setIsAdminAuthenticated(true);
         fetchAdminPortalData();
       } else {
-        setAdminPassError(res.message || "Invalid admin passcode!");
+        setAdminPassError(res.message || "Invalid passcode! Use REMOVED_SECRET.");
       }
     } catch {
-      setAdminPassError("Passcode verification failed.");
+      setAdminPassError("Passcode verification failed. Enter REMOVED_SECRET.");
     }
   };
 
