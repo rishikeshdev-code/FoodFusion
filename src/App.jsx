@@ -677,7 +677,7 @@ function App() {
     const loadData = async () => {
       try {
         setLoadingFoods(true);
-        const response = await fetch("http://localhost:5000/api/foods");
+        const response = await fetch("https://foodfusion-backend-c20i.onrender.com/api/foods");
         if (!response.ok) throw new Error("Failed to fetch foods");
         const data = await response.json();
         if (data.success && isMounted) {
@@ -1146,7 +1146,7 @@ function App() {
             <h1>Live User Data &amp; Order Control</h1>
             <p style={{ color: "var(--text-muted)", marginTop: "4px" }}>
               MongoDB Backend API:{" "}
-              <code>http://localhost:5000/api/admin/dashboard</code>
+              <code>https://foodfusion-backend-c20i.onrender.com/api/admin/dashboard</code>
             </p>
           </div>
 

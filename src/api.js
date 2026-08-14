@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://foodfusion-backend-c20i.onrender.com/api";
 
 const safeFetch = async (url, options = {}) => {
   try {
@@ -10,7 +10,7 @@ const safeFetch = async (url, options = {}) => {
     return {
       ok: false,
       status: 0,
-      error: "Backend server is offline or unreachable at http://localhost:5000. Please ensure the backend server is running.",
+      error: "Backend server is offline or unreachable at https://foodfusion-backend-c20i.onrender.com. Please ensure the backend server is running.",
     };
   }
 };
@@ -150,6 +150,6 @@ export const deleteUser = async (userId) => {
 
 // health check
 export const checkBackend = async () => {
-  const result = await safeFetch("http://localhost:5000/");
+  const result = await safeFetch("https://foodfusion-backend-c20i.onrender.com/");
   return result.ok ? result.data : { success: false, message: result.error };
 };
