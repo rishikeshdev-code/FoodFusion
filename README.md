@@ -3,26 +3,24 @@
 FoodFusion is a modern web application for ordering food, featuring live order checkout, real-time OTP verification, and a secret Admin Database Portal for managing registered users and orders.
 
 ---
-
 ## 🌟 Features
 
 - **Gourmet Food Catalog**: Search, filter by category, sort by price/rating.
 - **Direct Buy & Cart Flow**: Smooth 3D card payment simulation with live order creation.
-- **Secret Admin Database Portal**: Accessible via `?admin=true` or `?db=rishikesh` with passcode lock `REMOVED_SECRET`.
-- **Database Management**: Full view and delete capabilities (`🗑️ Delete`) for registered users and order history.
+- **Admin Database Portal**: Protected administrative portal for authorized database management.
+- **Database Management**: View and manage authorized user and order records.
 - **Free Multi-Platform Hosting**: Built-in support for Vercel, Netlify, and GitHub Pages.
 
 ---
 
 ## 🔐 Admin Database Portal Access & Security
 
-- **Passcode**: `REMOVED_SECRET`
+- **Authentication**: Admin access is verified server-side using a private environment variable.
 - **Private Access URLs**:
   - `http://localhost:5173/?admin=true`
-  - `https://rishikeshdev-code.github.io/FoodFusion/?admin=true`
-  - `https://your-domain.vercel.app/?db=rishikesh`
+  - Production URL will be added after deployment.
 
-*Only users entering the correct passcode `REMOVED_SECRET` can view passwords, user list, or delete records.*
+*The admin portal requires successful server-side authentication before administrative operations are available. Sensitive credentials must never be stored in the frontend, source code, or README.*
 
 ---
 

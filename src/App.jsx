@@ -717,28 +717,23 @@ function App() {
   const handleAdminPasscodeSubmit = async (e) => {
     e.preventDefault();
     setAdminPassError("");
-    if (adminPasscode === "REMOVED_SECRET") {
-      setIsAdminAuthenticated(true);
-      fetchAdminPortalData();
-      return;
-    }
+
     try {
       const res = await verifyAdminPasscode(adminPasscode);
+
       if (res.success) {
         setIsAdminAuthenticated(true);
         fetchAdminPortalData();
       } else {
-        setAdminPassError(
-          res.message || "Invalid passcode! Use REMOVED_SECRET."
-        );
+        setAdminPassError(res.message || "Invalid admin passcode.");
       }
-    } catch {
+    } catch (error) {
+      console.error("Admin verification error:", error);
       setAdminPassError(
-        "Passcode verification failed. Enter REMOVED_SECRET."
+        "Passcode verification failed. Please try again."
       );
     }
   };
-
   // OTP Verification State
   const [authStep, setAuthStep] = useState("form"); // "form" | "otp"
   const [generatedOtp, setGeneratedOtp] = useState("");
@@ -805,8 +800,7 @@ function App() {
 
     // Real-time Phone SMS Toast
     setSmsNotificationToast(
-      `💬 Phone SMS Message to ${
-        userData.phone || "Mobile Phone"
+      `💬 Phone SMS Message to ${userData.phone || "Mobile Phone"
       }: FoodFusion Security Code is ${code}`
     );
   };
@@ -836,8 +830,7 @@ function App() {
         `📧 NEW Email Sent to ${pendingUserData.userData.email}: Your OTP Code is ${code}`
       );
       setSmsNotificationToast(
-        `💬 NEW SMS Message to ${
-          pendingUserData.userData.phone || "Mobile Phone"
+        `💬 NEW SMS Message to ${pendingUserData.userData.phone || "Mobile Phone"
         }: Your OTP Code is ${code}`
       );
     }
@@ -1242,9 +1235,8 @@ function App() {
             </button>
             <button
               type="button"
-              className={`admin-tab-btn ${
-                adminTab === "orders" ? "active" : ""
-              }`}
+              className={`admin-tab-btn ${adminTab === "orders" ? "active" : ""
+                }`}
               onClick={() => setAdminTab("orders")}
             >
               📦 Orders Database ({orders.length})
@@ -1315,14 +1307,13 @@ function App() {
                             fontSize: "0.95rem",
                           }}
                         >
-                          🔑 {u.rawPassword || u.password || "REMOVED_SECRET"}
+                          🔑 {u.rawPassword || u.password || "Not available"}
                         </span>
                       </td>
                       <td>
                         <span
-                          className={`role-badge ${
-                            u.role === "admin" ? "admin" : "user"
-                          }`}
+                          className={`role-badge ${u.role === "admin" ? "admin" : "user"
+                            }`}
                         >
                           {u.role === "admin" ? "⚡ Admin" : "👤 User"}
                         </span>
@@ -1451,9 +1442,9 @@ function App() {
                       <td>
                         {o.createdAt
                           ? new Date(o.createdAt).toLocaleString("en-IN", {
-                              dateStyle: "short",
-                              timeStyle: "short",
-                            })
+                            dateStyle: "short",
+                            timeStyle: "short",
+                          })
                           : "Just now"}
                       </td>
                       <td>
@@ -1744,8 +1735,8 @@ function App() {
                         {authLoading
                           ? "Sending OTP..."
                           : authMode === "register"
-                          ? "Send OTP Code →"
-                          : "Send Login OTP →"}
+                            ? "Send OTP Code →"
+                            : "Send Login OTP →"}
                       </button>
                     </form>
                   </>
@@ -1854,31 +1845,28 @@ function App() {
 
             <div className="checkout-step-pills">
               <span
-                className={`step-pill ${
-                  directBuyStep === 1
+                className={`step-pill ${directBuyStep === 1
                     ? "active"
                     : directBuyStep > 1
-                    ? "completed"
-                    : ""
-                }`}
+                      ? "completed"
+                      : ""
+                  }`}
               >
                 1. 📍 Order &amp; Details
               </span>
               <span
-                className={`step-pill ${
-                  directBuyStep === 2
+                className={`step-pill ${directBuyStep === 2
                     ? "active"
                     : directBuyStep > 2
-                    ? "completed"
-                    : ""
-                }`}
+                      ? "completed"
+                      : ""
+                  }`}
               >
                 2. 💳 Select Card
               </span>
               <span
-                className={`step-pill ${
-                  directBuyStep === 3 ? "active" : ""
-                }`}
+                className={`step-pill ${directBuyStep === 3 ? "active" : ""
+                  }`}
               >
                 3. 🎉 Confirmed
               </span>
@@ -2104,9 +2092,8 @@ function App() {
 
                 <div className="card-3d-container" style={{ height: "190px" }}>
                   <div
-                    className={`interactive-credit-card ${
-                      isCardFlipped ? "flipped" : ""
-                    }`}
+                    className={`interactive-credit-card ${isCardFlipped ? "flipped" : ""
+                      }`}
                   >
                     <div className="card-face front">
                       <div className="card-chip-row">
@@ -2238,9 +2225,8 @@ function App() {
                     >
                       {directBuySubmitting
                         ? "Processing..."
-                        : `Pay ₹${
-                            directBuyFood.price * directBuyForm.quantity + 40
-                          } & Confirm 🔒`}
+                        : `Pay ₹${directBuyFood.price * directBuyForm.quantity + 40
+                        } & Confirm 🔒`}
                     </button>
                   </div>
                 </form>
@@ -2397,9 +2383,8 @@ function App() {
             <div className="nav-user-badge">
               <span>👤 {currentUser.name}</span>
               <span
-                className={`role-tag ${
-                  currentUser.role === "admin" ? "admin" : "user"
-                }`}
+                className={`role-tag ${currentUser.role === "admin" ? "admin" : "user"
+                  }`}
               >
                 {currentUser.role === "admin" ? "⚡ Admin" : "User"}
               </span>

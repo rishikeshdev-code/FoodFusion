@@ -36,8 +36,7 @@ router.get("/dashboard", async (req, res) => {
 // verify admin passcode
 router.post("/verify-passcode", (req, res) => {
   const { passcode } = req.body;
-  const ADMIN_PASSCODE = process.env.ADMIN_PASSCODE || "REMOVED_SECRET";
-
+  const ADMIN_PASSCODE = process.env.ADMIN_PASSCODE;
   if (passcode === ADMIN_PASSCODE) {
     return res.status(200).json({
       success: true,
