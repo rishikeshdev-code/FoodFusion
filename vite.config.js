@@ -4,5 +4,5 @@ import react from '@vitejs/plugin-react'
 // vite configuration
 export default defineConfig({
   plugins: [react()],
-  base: './',
+  base: '/',
 })
