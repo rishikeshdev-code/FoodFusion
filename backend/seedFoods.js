@@ -5,10 +5,6 @@ require("dotenv").config({ path: path.join(__dirname, ".env") });
 const Food = require("./models/food");
 
 const foods = [
-  /* =====================================================
-     VEGETARIAN
-  ===================================================== */
-
   {
     name: "Veg Cheese Pizza",
     category: "Pizza",
@@ -50,22 +46,16 @@ const foods = [
   },
 
   {
-    name: "Peri Peri Fries",
+    name: "French Fries",
     category: "Burgers",
     price: 119,
     rating: 4.6,
     emoji: "🍟",
     description:
-      "Crispy golden fries coated with spicy peri peri seasoning.",
+      "Crispy golden French fries seasoned with salt and herbs.",
     details:
-      "Golden and crispy potato fries tossed with flavorful peri peri seasoning for a spicy and crunchy snack.",
-    ingredients: [
-      "Potato",
-      "Peri Peri Seasoning",
-      "Salt",
-      "Paprika",
-      "Oil",
-    ],
+      "Golden and crispy potato fries prepared fresh and lightly seasoned for the perfect crunchy snack.",
+    ingredients: ["Potato", "Salt", "Black Pepper", "Herbs", "Oil"],
   },
 
   {
@@ -97,7 +87,7 @@ const foods = [
     description:
       "Soft wrap filled with fresh vegetables, paneer and creamy sauce.",
     details:
-      "A soft tortilla wrap packed with seasoned vegetables, grilled paneer, lettuce and a flavorful creamy sauce.",
+      "A soft tortilla wrap packed with seasoned vegetables, grilled paneer, lettuce and flavorful creamy sauce.",
     ingredients: [
       "Tortilla",
       "Paneer",
@@ -177,7 +167,7 @@ const foods = [
     description:
       "Soft paneer cooked in a rich and flavorful Indian curry.",
     details:
-      "Tender paneer cubes cooked in a creamy tomato and onion gravy with aromatic Indian spices and fresh coriander.",
+      "Tender paneer cubes cooked in creamy tomato and onion gravy with aromatic Indian spices and fresh coriander.",
     ingredients: [
       "Paneer",
       "Tomato",
@@ -209,42 +199,182 @@ const foods = [
   },
 
   {
-    name: "Veg Manchurian Soup",
-    category: "Chinese",
-    price: 139,
-    rating: 4.7,
-    emoji: "🍲",
+    name: "Pav Bhaji",
+    category: "Indian",
+    price: 159,
+    rating: 4.8,
+    emoji: "🥘",
     description:
-      "Warm and flavorful Indo-Chinese soup with vegetable dumplings.",
+      "Spicy mashed vegetable curry served with buttery toasted pav.",
     details:
-      "A comforting hot soup filled with vegetable Manchurian balls, fresh vegetables, garlic and flavorful Indo-Chinese spices.",
+      "A popular Mumbai-style dish made with mashed vegetables, aromatic spices and buttery toasted pav.",
     ingredients: [
-      "Vegetable Manchurian",
-      "Cabbage",
-      "Carrot",
-      "Garlic",
-      "Soy Sauce",
-      "Spring Onion",
+      "Potato",
+      "Peas",
+      "Cauliflower",
+      "Tomato",
+      "Pav Bhaji Masala",
+      "Butter",
     ],
   },
 
   {
-    name: "Grilled Veg Sandwich",
-    category: "Burgers",
-    price: 129,
+    name: "Samosa",
+    category: "Indian",
+    price: 59,
     rating: 4.6,
-    emoji: "🥪",
+    emoji: "🔺",
     description:
-      "Crispy grilled sandwich filled with fresh vegetables and cheese.",
+      "Crispy golden pastry filled with spicy potato and peas.",
     details:
-      "Golden grilled bread packed with crunchy vegetables, melted cheese, herbs and a flavorful sandwich spread.",
+      "A classic Indian snack with a crispy golden shell filled with seasoned potatoes, peas and aromatic spices.",
     ingredients: [
-      "Bread",
-      "Cheese",
-      "Capsicum",
+      "Flour",
+      "Potato",
+      "Peas",
+      "Green Chili",
+      "Cumin",
+      "Indian Spices",
+    ],
+  },
+
+  {
+    name: "Masala Dosa",
+    category: "Indian",
+    price: 129,
+    rating: 4.8,
+    emoji: "🥞",
+    description:
+      "Crispy South Indian dosa filled with flavorful masala potatoes.",
+    details:
+      "A thin and crispy dosa served with spiced potato filling, coconut chutney and traditional sambar.",
+    ingredients: [
+      "Rice",
+      "Urad Dal",
+      "Potato",
+      "Onion",
+      "Mustard Seeds",
+      "Spices",
+    ],
+  },
+
+  {
+    name: "Idli Sambar",
+    category: "Indian",
+    price: 109,
+    rating: 4.7,
+    emoji: "🍘",
+    description:
+      "Soft steamed idlis served with hot flavorful sambar.",
+    details:
+      "Soft and fluffy steamed rice cakes served with aromatic vegetable sambar and fresh coconut chutney.",
+    ingredients: [
+      "Rice",
+      "Urad Dal",
+      "Lentils",
+      "Vegetables",
+      "Tamarind",
+      "Spices",
+    ],
+  },
+
+  {
+    name: "Chole Bhature",
+    category: "Indian",
+    price: 179,
+    rating: 4.8,
+    emoji: "🫓",
+    description:
+      "Spicy chickpea curry served with fluffy fried bhature.",
+    details:
+      "A delicious North Indian combination of spicy chickpea curry served with soft, fluffy and golden bhature.",
+    ingredients: [
+      "Chickpeas",
+      "Flour",
       "Tomato",
       "Onion",
-      "Sandwich Spread",
+      "Chole Masala",
+      "Yogurt",
+    ],
+  },
+
+  {
+    name: "Veg Momos",
+    category: "Chinese",
+    price: 139,
+    rating: 4.7,
+    emoji: "🥟",
+    description:
+      "Steamed dumplings filled with seasoned fresh vegetables.",
+    details:
+      "Soft steamed dumplings filled with finely chopped vegetables and served with spicy red chutney.",
+    ingredients: [
+      "Flour",
+      "Cabbage",
+      "Carrot",
+      "Capsicum",
+      "Garlic",
+      "Chili Sauce",
+    ],
+  },
+
+  {
+    name: "Spring Rolls",
+    category: "Chinese",
+    price: 129,
+    rating: 4.6,
+    emoji: "🥠",
+    description:
+      "Crispy rolls stuffed with seasoned vegetables.",
+    details:
+      "Golden crispy spring rolls packed with crunchy cabbage, carrots, capsicum and flavorful Chinese seasoning.",
+    ingredients: [
+      "Spring Roll Sheets",
+      "Cabbage",
+      "Carrot",
+      "Capsicum",
+      "Soy Sauce",
+      "Pepper",
+    ],
+  },
+
+  {
+    name: "Garlic Bread",
+    category: "Pizza",
+    price: 129,
+    rating: 4.7,
+    emoji: "🥖",
+    description:
+      "Crispy garlic bread topped with butter, herbs and cheese.",
+    details:
+      "Freshly baked bread brushed with garlic butter, Italian herbs and melted cheese.",
+    ingredients: [
+      "Bread",
+      "Garlic",
+      "Butter",
+      "Cheese",
+      "Oregano",
+      "Parsley",
+    ],
+  },
+
+  {
+    name: "Cheese Nachos",
+    category: "Burgers",
+    price: 149,
+    rating: 4.7,
+    emoji: "🧀",
+    description:
+      "Crunchy nachos loaded with melted cheese and flavorful toppings.",
+    details:
+      "Crispy tortilla chips covered with melted cheese, jalapeños, tomato salsa and a creamy dip.",
+    ingredients: [
+      "Tortilla Chips",
+      "Cheese",
+      "Jalapeño",
+      "Tomato",
+      "Salsa",
+      "Cream",
     ],
   },
 
@@ -269,344 +399,92 @@ const foods = [
   },
 
   {
-    name: "Vanilla Ice Cream",
-    category: "Desserts",
+    name: "Hot Coffee",
+    category: "Drinks",
     price: 89,
-    rating: 4.7,
-    emoji: "🍦",
+    rating: 4.6,
+    emoji: "☕",
     description:
-      "Smooth and creamy vanilla ice cream served chilled.",
+      "Freshly brewed hot coffee with a rich and aromatic flavor.",
     details:
-      "Classic creamy vanilla ice cream made with rich milk and natural vanilla flavour for a refreshing sweet treat.",
+      "A comforting cup of freshly brewed coffee made with premium coffee beans and served hot.",
+    ingredients: ["Coffee", "Milk", "Sugar", "Water"],
+  },
+
+  {
+    name: "Cold Coffee",
+    category: "Drinks",
+    price: 119,
+    rating: 4.7,
+    emoji: "🥤",
+    description:
+      "Creamy chilled coffee blended with milk and ice.",
+    details:
+      "A refreshing cold coffee made with rich coffee, chilled milk, sugar and ice, blended until smooth and creamy.",
+    ingredients: ["Coffee", "Milk", "Sugar", "Ice", "Cream"],
+  },
+
+  {
+    name: "Milkshake",
+    category: "Drinks",
+    price: 139,
+    rating: 4.8,
+    emoji: "🧋",
+    description:
+      "Thick and creamy milkshake blended with rich flavors.",
+    details:
+      "A smooth and creamy milkshake prepared with chilled milk, ice cream and delicious flavoring.",
     ingredients: [
       "Milk",
-      "Cream",
+      "Ice Cream",
       "Sugar",
-      "Vanilla",
+      "Flavor Syrup",
+      "Ice",
     ],
   },
 
   {
-    name: "Masala Dosa",
-    category: "Indian",
-    price: 149,
-    rating: 4.8,
-    emoji: "🥞",
+    name: "Green Tea",
+    category: "Drinks",
+    price: 79,
+    rating: 4.5,
+    emoji: "🍵",
     description:
-      "Crispy golden dosa filled with flavorful potato masala.",
+      "Light and refreshing green tea with a delicate herbal flavor.",
     details:
-      "A thin and crispy South Indian dosa filled with spiced potato masala and served with coconut chutney and sambar.",
-    ingredients: [
-      "Rice Batter",
-      "Potato",
-      "Onion",
-      "Mustard Seeds",
-      "Curry Leaves",
-      "Spices",
-    ],
-  },
-
-  /* =====================================================
-     NON-VEG
-  ===================================================== */
-
-  {
-    name: "Chicken Biryani",
-    category: "Non-Veg",
-    price: 249,
-    rating: 4.9,
-    emoji: "🍗",
-    description:
-      "Aromatic basmati rice cooked with tender chicken and rich spices.",
-    details:
-      "Fragrant basmati rice layered with tender chicken, caramelized onions, saffron and aromatic biryani spices.",
-    ingredients: [
-      "Basmati Rice",
-      "Chicken",
-      "Onion",
-      "Saffron",
-      "Biryani Spices",
-      "Coriander",
-    ],
+      "A soothing cup of freshly brewed green tea prepared with premium green tea leaves.",
+    ingredients: ["Green Tea Leaves", "Water", "Honey", "Lemon"],
   },
 
   {
-    name: "Chicken Tikka",
-    category: "Non-Veg",
-    price: 229,
-    rating: 4.8,
-    emoji: "🍢",
-    description:
-      "Juicy grilled chicken pieces marinated with aromatic spices.",
-    details:
-      "Tender chicken pieces marinated in yogurt and Indian spices, grilled until smoky and lightly charred.",
-    ingredients: [
-      "Chicken",
-      "Yogurt",
-      "Ginger",
-      "Garlic",
-      "Tikka Spices",
-      "Lemon",
-    ],
-  },
-
-  {
-    name: "Chicken Burger",
-    category: "Non-Veg",
-    price: 199,
-    rating: 4.8,
-    emoji: "🍔",
-    description:
-      "Crispy chicken patty burger with fresh vegetables and sauce.",
-    details:
-      "A toasted burger bun filled with a crispy chicken patty, fresh lettuce, tomato, cheese and creamy sauce.",
-    ingredients: [
-      "Burger Bun",
-      "Chicken Patty",
-      "Lettuce",
-      "Tomato",
-      "Cheese",
-      "Special Sauce",
-    ],
-  },
-
-  {
-    name: "Chicken Wings",
-    category: "Non-Veg",
-    price: 219,
+    name: "Mango Juice",
+    category: "Drinks",
+    price: 109,
     rating: 4.7,
-    emoji: "🍗",
+    emoji: "🧃",
     description:
-      "Crispy chicken wings tossed in a flavorful spicy sauce.",
+      "Sweet and refreshing mango juice made from ripe mangoes.",
     details:
-      "Juicy chicken wings fried until crispy and coated with a delicious spicy and tangy sauce.",
-    ingredients: [
-      "Chicken Wings",
-      "Chilli Sauce",
-      "Garlic",
-      "Pepper",
-      "Spices",
-      "Oil",
-    ],
+      "A naturally sweet and refreshing mango drink prepared from ripe, juicy mangoes.",
+    ingredients: ["Mango", "Water", "Sugar", "Ice"],
   },
 
   {
-    name: "Butter Chicken",
-    category: "Non-Veg",
-    price: 269,
-    rating: 4.9,
-    emoji: "🍛",
+    name: "Masala Chai",
+    category: "Drinks",
+    price: 69,
+    rating: 4.6,
+    emoji: "🫖",
     description:
-      "Tender chicken cooked in a creamy tomato and butter gravy.",
+      "Classic Indian tea brewed with milk and aromatic spices.",
     details:
-      "Succulent chicken pieces simmered in a rich tomato-based gravy with butter, cream and aromatic Indian spices.",
+      "A comforting Indian masala chai prepared with black tea, milk, ginger and aromatic spices.",
     ingredients: [
-      "Chicken",
-      "Tomato",
-      "Butter",
-      "Cream",
-      "Garam Masala",
-      "Coriander",
-    ],
-  },
-
-  {
-    name: "Chicken Tandoori",
-    category: "Non-Veg",
-    price: 279,
-    rating: 4.9,
-    emoji: "🍗",
-    description:
-      "Juicy chicken marinated in spices and roasted in a tandoor.",
-    details:
-      "Classic tandoori chicken marinated with yogurt, herbs and spices, then roasted until smoky and beautifully charred.",
-    ingredients: [
-      "Chicken",
-      "Yogurt",
+      "Black Tea",
+      "Milk",
       "Ginger",
-      "Garlic",
-      "Tandoori Spices",
-      "Lemon",
-    ],
-  },
-
-  {
-    name: "Chicken Kebab",
-    category: "Non-Veg",
-    price: 239,
-    rating: 4.8,
-    emoji: "🍢",
-    description:
-      "Juicy spiced chicken kebabs grilled until tender and smoky.",
-    details:
-      "Tender minced chicken blended with herbs and spices, shaped into kebabs and grilled for a delicious smoky flavour.",
-    ingredients: [
-      "Chicken",
-      "Onion",
-      "Coriander",
-      "Ginger",
-      "Garlic",
-      "Spices",
-    ],
-  },
-
-  {
-    name: "Chicken Noodles",
-    category: "Non-Veg",
-    price: 189,
-    rating: 4.7,
-    emoji: "🍜",
-    description:
-      "Stir-fried noodles tossed with chicken and fresh vegetables.",
-    details:
-      "Hakka-style noodles stir-fried with tender chicken, cabbage, carrot, capsicum and flavorful Chinese sauces.",
-    ingredients: [
-      "Noodles",
-      "Chicken",
-      "Cabbage",
-      "Carrot",
-      "Capsicum",
-      "Soy Sauce",
-    ],
-  },
-
-  {
-    name: "Chicken Fried Rice",
-    category: "Non-Veg",
-    price: 199,
-    rating: 4.7,
-    emoji: "🍚",
-    description:
-      "Flavorful fried rice cooked with tender chicken and vegetables.",
-    details:
-      "Fragrant rice stir-fried with tender chicken pieces, vegetables, spring onions and savory Chinese sauces.",
-    ingredients: [
-      "Rice",
-      "Chicken",
-      "Carrot",
-      "Capsicum",
-      "Spring Onion",
-      "Soy Sauce",
-    ],
-  },
-
-  {
-    name: "Fish Fry",
-    category: "Non-Veg",
-    price: 229,
-    rating: 4.8,
-    emoji: "🐟",
-    description:
-      "Crispy fried fish coated with aromatic spices.",
-    details:
-      "Fresh fish fillets marinated with Indian spices and lemon, then fried until crispy and golden.",
-    ingredients: [
-      "Fish",
-      "Red Chilli",
-      "Turmeric",
-      "Lemon",
-      "Ginger Garlic",
-      "Spices",
-    ],
-  },
-
-  {
-    name: "Fish Curry",
-    category: "Non-Veg",
-    price: 249,
-    rating: 4.8,
-    emoji: "🐟",
-    description:
-      "Tender fish cooked in a flavorful traditional curry.",
-    details:
-      "Fresh fish pieces gently cooked in a rich and aromatic curry prepared with tomatoes, spices and fresh herbs.",
-    ingredients: [
-      "Fish",
-      "Tomato",
-      "Onion",
-      "Coconut",
-      "Turmeric",
-      "Spices",
-    ],
-  },
-
-  {
-    name: "Chicken Wrap",
-    category: "Non-Veg",
-    price: 179,
-    rating: 4.7,
-    emoji: "🌯",
-    description:
-      "Soft wrap filled with grilled chicken and fresh vegetables.",
-    details:
-      "A soft tortilla packed with juicy grilled chicken, lettuce, tomato, onion and creamy garlic sauce.",
-    ingredients: [
-      "Tortilla",
-      "Chicken",
-      "Lettuce",
-      "Tomato",
-      "Onion",
-      "Garlic Sauce",
-    ],
-  },
-
-  {
-    name: "Chicken Pizza",
-    category: "Non-Veg",
-    price: 299,
-    rating: 4.8,
-    emoji: "🍕",
-    description:
-      "Cheesy pizza topped with seasoned chicken and fresh vegetables.",
-    details:
-      "A crispy pizza base loaded with mozzarella cheese, seasoned chicken, onion, capsicum and aromatic herbs.",
-    ingredients: [
-      "Pizza Dough",
-      "Chicken",
-      "Mozzarella",
-      "Onion",
-      "Capsicum",
-      "Oregano",
-    ],
-  },
-
-  {
-    name: "Egg Masala",
-    category: "Non-Veg",
-    price: 159,
-    rating: 4.7,
-    emoji: "🥚",
-    description:
-      "Boiled eggs cooked in a spicy and flavorful Indian masala.",
-    details:
-      "Boiled eggs simmered in a rich onion and tomato gravy seasoned with aromatic Indian spices.",
-    ingredients: [
-      "Egg",
-      "Tomato",
-      "Onion",
-      "Ginger",
-      "Garlic",
-      "Indian Spices",
-    ],
-  },
-
-  {
-    name: "Chicken Curry",
-    category: "Non-Veg",
-    price: 239,
-    rating: 4.8,
-    emoji: "🍲",
-    description:
-      "Tender chicken simmered in a rich traditional Indian curry.",
-    details:
-      "Tender chicken pieces slowly cooked with onion, tomato, ginger, garlic and aromatic Indian spices.",
-    ingredients: [
-      "Chicken",
-      "Onion",
-      "Tomato",
-      "Ginger",
-      "Garlic",
-      "Garam Masala",
+      "Cardamom",
+      "Cinnamon",
     ],
   },
 ];

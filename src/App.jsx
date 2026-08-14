@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import "./App.css";
 import {
   loginUser,
@@ -21,10 +21,9 @@ const categories = [
   "Pasta",
   "Desserts",
   "Drinks",
-  "Non-Veg",
 ];
 
-// Fallback food catalog
+// Fallback food catalog (26 Vegetarian items & Drinks)
 const foodItems = [
   {
     id: 40,
@@ -34,9 +33,18 @@ const foodItems = [
     rating: 4.8,
     emoji: "🍕",
     description: "Cheesy pizza topped with fresh vegetables and Italian herbs.",
-    details: "A delicious crispy pizza topped with melted mozzarella, tomato, capsicum, onion and aromatic Italian herbs.",
-    ingredients: ["Pizza Dough", "Mozzarella Cheese", "Tomato", "Capsicum", "Onion", "Oregano"],
+    details:
+      "A delicious crispy pizza topped with melted mozzarella, tomato, capsicum, onion and aromatic Italian herbs.",
+    ingredients: [
+      "Pizza Dough",
+      "Mozzarella Cheese",
+      "Tomato",
+      "Capsicum",
+      "Onion",
+      "Oregano",
+    ],
   },
+
   {
     id: 41,
     name: "Veg Burger",
@@ -44,21 +52,33 @@ const foodItems = [
     price: 169,
     rating: 4.7,
     emoji: "🍔",
-    description: "Crispy vegetable patty burger with fresh vegetables and special sauce.",
-    details: "A soft toasted burger bun filled with a crispy vegetable patty, fresh lettuce, tomato, onion and creamy special sauce.",
-    ingredients: ["Burger Bun", "Veg Patty", "Lettuce", "Tomato", "Onion", "Special Sauce"],
+    description:
+      "Crispy vegetable patty burger with fresh vegetables and special sauce.",
+    details:
+      "A soft toasted burger bun filled with a crispy vegetable patty, fresh lettuce, tomato, onion and creamy special sauce.",
+    ingredients: [
+      "Burger Bun",
+      "Veg Patty",
+      "Lettuce",
+      "Tomato",
+      "Onion",
+      "Special Sauce",
+    ],
   },
+
   {
     id: 42,
-    name: "Peri Peri Fries",
+    name: "French Fries",
     category: "Burgers",
     price: 119,
     rating: 4.6,
     emoji: "🍟",
-    description: "Crispy golden fries coated with spicy peri peri seasoning.",
-    details: "Golden and crispy potato fries tossed with flavorful peri peri seasoning for a spicy and crunchy snack.",
-    ingredients: ["Potato", "Peri Peri Seasoning", "Salt", "Paprika", "Oil"],
+    description: "Crispy golden French fries seasoned with salt and herbs.",
+    details:
+      "Golden and crispy potato fries prepared fresh and lightly seasoned for the perfect crunchy snack.",
+    ingredients: ["Potato", "Salt", "Black Pepper", "Herbs", "Oil"],
   },
+
   {
     id: 43,
     name: "Veg Tacos",
@@ -66,10 +86,20 @@ const foodItems = [
     price: 179,
     rating: 4.7,
     emoji: "🌮",
-    description: "Crispy taco shells filled with seasoned vegetables and cheese.",
-    details: "Crunchy taco shells filled with flavorful vegetables, lettuce, tomato, cheese and a creamy Mexican-style sauce.",
-    ingredients: ["Taco Shell", "Capsicum", "Lettuce", "Tomato", "Cheese", "Mexican Sauce"],
+    description:
+      "Crispy taco shells filled with seasoned vegetables and cheese.",
+    details:
+      "Crunchy taco shells filled with flavorful vegetables, lettuce, tomato, cheese and a creamy Mexican-style sauce.",
+    ingredients: [
+      "Taco Shell",
+      "Capsicum",
+      "Lettuce",
+      "Tomato",
+      "Cheese",
+      "Mexican Sauce",
+    ],
   },
+
   {
     id: 44,
     name: "Veg Wrap",
@@ -77,10 +107,20 @@ const foodItems = [
     price: 149,
     rating: 4.7,
     emoji: "🌯",
-    description: "Soft wrap filled with fresh vegetables, paneer and creamy sauce.",
-    details: "A soft tortilla wrap packed with seasoned vegetables, grilled paneer, lettuce and a flavorful creamy sauce.",
-    ingredients: ["Tortilla", "Paneer", "Capsicum", "Lettuce", "Onion", "Creamy Sauce"],
+    description:
+      "Soft wrap filled with fresh vegetables, paneer and creamy sauce.",
+    details:
+      "A soft tortilla wrap packed with seasoned vegetables, grilled paneer, lettuce and flavorful creamy sauce.",
+    ingredients: [
+      "Tortilla",
+      "Paneer",
+      "Capsicum",
+      "Lettuce",
+      "Onion",
+      "Creamy Sauce",
+    ],
   },
+
   {
     id: 45,
     name: "White Sauce Pasta",
@@ -88,10 +128,20 @@ const foodItems = [
     price: 189,
     rating: 4.8,
     emoji: "🍝",
-    description: "Creamy pasta cooked with vegetables, herbs and melted cheese.",
-    details: "Soft pasta tossed in a rich and creamy white sauce with fresh vegetables, Italian herbs and melted cheese.",
-    ingredients: ["Pasta", "Milk", "Cheese", "Capsicum", "Corn", "Italian Herbs"],
+    description:
+      "Creamy pasta cooked with vegetables, herbs and melted cheese.",
+    details:
+      "Soft pasta tossed in a rich and creamy white sauce with fresh vegetables, Italian herbs and melted cheese.",
+    ingredients: [
+      "Pasta",
+      "Milk",
+      "Cheese",
+      "Capsicum",
+      "Corn",
+      "Italian Herbs",
+    ],
   },
+
   {
     id: 46,
     name: "Veg Hakka Noodles",
@@ -99,10 +149,20 @@ const foodItems = [
     price: 159,
     rating: 4.7,
     emoji: "🍜",
-    description: "Stir-fried noodles loaded with fresh vegetables and Chinese sauces.",
-    details: "Delicious noodles stir-fried with cabbage, carrot, capsicum, spring onion and flavorful Indo-Chinese sauces.",
-    ingredients: ["Noodles", "Cabbage", "Carrot", "Capsicum", "Soy Sauce", "Spring Onion"],
+    description:
+      "Stir-fried noodles loaded with fresh vegetables and Chinese sauces.",
+    details:
+      "Delicious noodles stir-fried with cabbage, carrot, capsicum, spring onion and flavorful Indo-Chinese sauces.",
+    ingredients: [
+      "Noodles",
+      "Cabbage",
+      "Carrot",
+      "Capsicum",
+      "Soy Sauce",
+      "Spring Onion",
+    ],
   },
+
   {
     id: 47,
     name: "Veg Fried Rice",
@@ -110,10 +170,20 @@ const foodItems = [
     price: 149,
     rating: 4.7,
     emoji: "🍚",
-    description: "Fragrant fried rice tossed with colorful fresh vegetables.",
-    details: "Fluffy rice stir-fried with carrots, peas, capsicum, spring onions and flavorful Chinese sauces.",
-    ingredients: ["Rice", "Carrot", "Peas", "Capsicum", "Spring Onion", "Soy Sauce"],
+    description:
+      "Fragrant fried rice tossed with colorful fresh vegetables.",
+    details:
+      "Fluffy rice stir-fried with carrots, peas, capsicum, spring onions and flavorful Chinese sauces.",
+    ingredients: [
+      "Rice",
+      "Carrot",
+      "Peas",
+      "Capsicum",
+      "Spring Onion",
+      "Soy Sauce",
+    ],
   },
+
   {
     id: 48,
     name: "Paneer Curry",
@@ -121,10 +191,20 @@ const foodItems = [
     price: 229,
     rating: 4.9,
     emoji: "🍛",
-    description: "Soft paneer cooked in a rich and flavorful Indian curry.",
-    details: "Tender paneer cubes cooked in a creamy tomato and onion gravy with aromatic Indian spices and fresh coriander.",
-    ingredients: ["Paneer", "Tomato", "Onion", "Cream", "Indian Spices", "Coriander"],
+    description:
+      "Soft paneer cooked in a rich and flavorful Indian curry.",
+    details:
+      "Tender paneer cubes cooked in creamy tomato and onion gravy with aromatic Indian spices and fresh coriander.",
+    ingredients: [
+      "Paneer",
+      "Tomato",
+      "Onion",
+      "Cream",
+      "Indian Spices",
+      "Coriander",
+    ],
   },
+
   {
     id: 49,
     name: "Fresh Veg Salad",
@@ -132,31 +212,328 @@ const foodItems = [
     price: 99,
     rating: 4.6,
     emoji: "🥗",
-    description: "Fresh and crunchy vegetables tossed with lemon and herbs.",
-    details: "A refreshing combination of crisp lettuce, cucumber, tomato, carrot and onion finished with lemon juice and herbs.",
-    ingredients: ["Lettuce", "Cucumber", "Tomato", "Carrot", "Onion", "Lemon"],
+    description:
+      "Fresh and crunchy vegetables tossed with lemon and herbs.",
+    details:
+      "A refreshing combination of crisp lettuce, cucumber, tomato, carrot and onion finished with lemon juice and herbs.",
+    ingredients: [
+      "Lettuce",
+      "Cucumber",
+      "Tomato",
+      "Carrot",
+      "Onion",
+      "Lemon",
+    ],
   },
+
+  {
+    id: 50,
+    name: "Pav Bhaji",
+    category: "Indian",
+    price: 159,
+    rating: 4.8,
+    emoji: "🥘",
+    description:
+      "Spicy mashed vegetable curry served with buttery toasted pav.",
+    details:
+      "A popular Mumbai-style dish made with mashed vegetables, aromatic spices and buttery toasted pav.",
+    ingredients: [
+      "Potato",
+      "Peas",
+      "Cauliflower",
+      "Tomato",
+      "Pav Bhaji Masala",
+      "Butter",
+    ],
+  },
+
+  {
+    id: 51,
+    name: "Samosa",
+    category: "Indian",
+    price: 59,
+    rating: 4.6,
+    emoji: "🔺",
+    description:
+      "Crispy golden pastry filled with spicy potato and peas.",
+    details:
+      "A classic Indian snack with a crispy golden shell filled with seasoned potatoes, peas and aromatic spices.",
+    ingredients: [
+      "Flour",
+      "Potato",
+      "Peas",
+      "Green Chili",
+      "Cumin",
+      "Indian Spices",
+    ],
+  },
+
   {
     id: 52,
+    name: "Masala Dosa",
+    category: "Indian",
+    price: 129,
+    rating: 4.8,
+    emoji: "🥞",
+    description:
+      "Crispy South Indian dosa filled with flavorful masala potatoes.",
+    details:
+      "A thin and crispy dosa served with spiced potato filling, coconut chutney and traditional sambar.",
+    ingredients: [
+      "Rice",
+      "Urad Dal",
+      "Potato",
+      "Onion",
+      "Mustard Seeds",
+      "Spices",
+    ],
+  },
+
+  {
+    id: 53,
+    name: "Idli Sambar",
+    category: "Indian",
+    price: 109,
+    rating: 4.7,
+    emoji: "🍘",
+    description:
+      "Soft steamed idlis served with hot flavorful sambar.",
+    details:
+      "Soft and fluffy steamed rice cakes served with aromatic vegetable sambar and fresh coconut chutney.",
+    ingredients: [
+      "Rice",
+      "Urad Dal",
+      "Lentils",
+      "Vegetables",
+      "Tamarind",
+      "Spices",
+    ],
+  },
+
+  {
+    id: 54,
+    name: "Chole Bhature",
+    category: "Indian",
+    price: 179,
+    rating: 4.8,
+    emoji: "🫓",
+    description:
+      "Spicy chickpea curry served with fluffy fried bhature.",
+    details:
+      "A delicious North Indian combination of spicy chickpea curry served with soft, fluffy and golden bhature.",
+    ingredients: [
+      "Chickpeas",
+      "Flour",
+      "Tomato",
+      "Onion",
+      "Chole Masala",
+      "Yogurt",
+    ],
+  },
+
+  {
+    id: 55,
+    name: "Veg Momos",
+    category: "Chinese",
+    price: 139,
+    rating: 4.7,
+    emoji: "🥟",
+    description:
+      "Steamed dumplings filled with seasoned fresh vegetables.",
+    details:
+      "Soft steamed dumplings filled with finely chopped vegetables and served with spicy red chutney.",
+    ingredients: [
+      "Flour",
+      "Cabbage",
+      "Carrot",
+      "Capsicum",
+      "Garlic",
+      "Chili Sauce",
+    ],
+  },
+
+  {
+    id: 56,
+    name: "Spring Rolls",
+    category: "Chinese",
+    price: 129,
+    rating: 4.6,
+    emoji: "🥠",
+    description:
+      "Crispy rolls stuffed with seasoned vegetables.",
+    details:
+      "Golden crispy spring rolls packed with crunchy cabbage, carrots, capsicum and flavorful Chinese seasoning.",
+    ingredients: [
+      "Spring Roll Sheets",
+      "Cabbage",
+      "Carrot",
+      "Capsicum",
+      "Soy Sauce",
+      "Pepper",
+    ],
+  },
+
+  {
+    id: 57,
+    name: "Garlic Bread",
+    category: "Pizza",
+    price: 129,
+    rating: 4.7,
+    emoji: "🥖",
+    description:
+      "Crispy garlic bread topped with butter, herbs and cheese.",
+    details:
+      "Freshly baked bread brushed with garlic butter, Italian herbs and melted cheese.",
+    ingredients: [
+      "Bread",
+      "Garlic",
+      "Butter",
+      "Cheese",
+      "Oregano",
+      "Parsley",
+    ],
+  },
+
+  {
+    id: 58,
+    name: "Cheese Nachos",
+    category: "Burgers",
+    price: 149,
+    rating: 4.7,
+    emoji: "🧀",
+    description:
+      "Crunchy nachos loaded with melted cheese and flavorful toppings.",
+    details:
+      "Crispy tortilla chips covered with melted cheese, jalapeños, tomato salsa and a creamy dip.",
+    ingredients: [
+      "Tortilla Chips",
+      "Cheese",
+      "Jalapeño",
+      "Tomato",
+      "Salsa",
+      "Cream",
+    ],
+  },
+
+  {
+    id: 59,
     name: "Chocolate Cake",
     category: "Desserts",
     price: 129,
     rating: 4.8,
     emoji: "🍰",
-    description: "Soft and rich chocolate cake with creamy chocolate frosting.",
-    details: "A moist chocolate cake layered with smooth chocolate cream and finished with rich chocolate frosting.",
-    ingredients: ["Flour", "Cocoa", "Chocolate", "Sugar", "Milk", "Cream"],
+    description:
+      "Soft and rich chocolate cake with creamy chocolate frosting.",
+    details:
+      "A moist chocolate cake layered with smooth chocolate cream and finished with rich chocolate frosting.",
+    ingredients: [
+      "Flour",
+      "Cocoa",
+      "Chocolate",
+      "Sugar",
+      "Milk",
+      "Cream",
+    ],
   },
+
+  // =========================
+  // DRINKS
+  // =========================
+
   {
-    id: 20,
+    id: 60,
+    name: "Hot Coffee",
+    category: "Drinks",
+    price: 89,
+    rating: 4.6,
+    emoji: "☕",
+    description:
+      "Freshly brewed hot coffee with a rich and aromatic flavor.",
+    details:
+      "A comforting cup of freshly brewed coffee made with premium coffee beans and served hot.",
+    ingredients: ["Coffee", "Milk", "Sugar", "Water"],
+  },
+
+  {
+    id: 61,
     name: "Cold Coffee",
     category: "Drinks",
     price: 119,
     rating: 4.7,
-    emoji: "🧋",
-    description: "Creamy chilled coffee blended with milk and ice.",
-    details: "A refreshing cold coffee made with rich coffee, chilled milk, sugar and ice, blended until smooth and creamy.",
+    emoji: "🥤",
+    description:
+      "Creamy chilled coffee blended with milk and ice.",
+    details:
+      "A refreshing cold coffee made with rich coffee, chilled milk, sugar and ice, blended until smooth and creamy.",
     ingredients: ["Coffee", "Milk", "Sugar", "Ice", "Cream"],
+  },
+
+  {
+    id: 62,
+    name: "Milkshake",
+    category: "Drinks",
+    price: 139,
+    rating: 4.8,
+    emoji: "🧋",
+    description:
+      "Thick and creamy milkshake blended with rich flavors.",
+    details:
+      "A smooth and creamy milkshake prepared with chilled milk, ice cream and delicious flavoring.",
+    ingredients: [
+      "Milk",
+      "Ice Cream",
+      "Sugar",
+      "Flavor Syrup",
+      "Ice",
+    ],
+  },
+
+  {
+    id: 63,
+    name: "Green Tea",
+    category: "Drinks",
+    price: 79,
+    rating: 4.5,
+    emoji: "🍵",
+    description:
+      "Light and refreshing green tea with a delicate herbal flavor.",
+    details:
+      "A soothing cup of freshly brewed green tea prepared with premium green tea leaves.",
+    ingredients: ["Green Tea Leaves", "Water", "Honey", "Lemon"],
+  },
+
+  {
+    id: 64,
+    name: "Mango Juice",
+    category: "Drinks",
+    price: 109,
+    rating: 4.7,
+    emoji: "🧃",
+    description:
+      "Sweet and refreshing mango juice made from ripe mangoes.",
+    details:
+      "A naturally sweet and refreshing mango drink prepared from ripe, juicy mangoes.",
+    ingredients: ["Mango", "Water", "Sugar", "Ice"],
+  },
+
+  {
+    id: 65,
+    name: "Masala Chai",
+    category: "Drinks",
+    price: 69,
+    rating: 4.6,
+    emoji: "🫖",
+    description:
+      "Classic Indian tea brewed with milk and aromatic spices.",
+    details:
+      "A comforting Indian masala chai prepared with black tea, milk, ginger and aromatic spices.",
+    ingredients: [
+      "Black Tea",
+      "Milk",
+      "Ginger",
+      "Cardamom",
+      "Cinnamon",
+    ],
   },
 ];
 
@@ -164,10 +541,50 @@ function App() {
   const [apiFoods, setApiFoods] = useState([]);
   const [loadingFoods, setLoadingFoods] = useState(false);
 
-  const activeFoodItems = (apiFoods.length > 0 ? apiFoods : foodItems).map((food) => ({
-    ...food,
-    id: food.id || food._id,
-  }));
+  const activeFoodItems = useMemo(() => {
+    const source = apiFoods.length > 0 ? apiFoods : foodItems;
+
+    const nonVegWords = [
+      "chicken",
+      "mutton",
+      "fish",
+      "prawn",
+      "prawns",
+      "shrimp",
+      "seafood",
+      "egg",
+      "eggs",
+      "meat",
+      "beef",
+      "pork",
+      "lamb",
+      "bacon",
+      "ham",
+      "turkey",
+      "non-veg",
+      "non veg",
+      "nonveg",
+    ];
+
+    return source
+      .filter((food) => {
+        const name = String(food.name || "").toLowerCase();
+        const category = String(food.category || "").toLowerCase();
+        const description = String(food.description || "").toLowerCase();
+
+        const ingredients = Array.isArray(food.ingredients)
+          ? food.ingredients.join(" ").toLowerCase()
+          : "";
+
+        const text = `${name} ${category} ${description} ${ingredients}`;
+
+        return !nonVegWords.some((word) => text.includes(word));
+      })
+      .map((food) => ({
+        ...food,
+        id: food.id || food._id,
+      }));
+  }, [apiFoods]);
 
   // Active page navigation
   const [page, setPage] = useState("home");
@@ -175,13 +592,22 @@ function App() {
   // Admin Portal state & secret database access URL parameters
   const [isAdminMode] = useState(() => {
     const s = window.location.search.toLowerCase();
-    return s.includes("admin=true") || s.includes("db=rishikesh") || s.includes("admin=rishikesh7102006") || s.includes("database=true");
+    return (
+      s.includes("admin=true") ||
+      s.includes("db=rishikesh") ||
+      s.includes("admin=rishikesh7102006") ||
+      s.includes("database=true")
+    );
   });
   const [adminPasscode, setAdminPasscode] = useState("");
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [adminPassError, setAdminPassError] = useState("");
   const [adminTab, setAdminTab] = useState("users");
-  const [adminPortalData, setAdminPortalData] = useState({ stats: {}, users: [], orders: [] });
+  const [adminPortalData, setAdminPortalData] = useState({
+    stats: {},
+    users: [],
+    orders: [],
+  });
   const [adminLoading, setAdminLoading] = useState(false);
   const [adminSearch, setAdminSearch] = useState("");
 
@@ -302,10 +728,14 @@ function App() {
         setIsAdminAuthenticated(true);
         fetchAdminPortalData();
       } else {
-        setAdminPassError(res.message || "Invalid passcode! Use REMOVED_SECRET.");
+        setAdminPassError(
+          res.message || "Invalid passcode! Use REMOVED_SECRET."
+        );
       }
     } catch {
-      setAdminPassError("Passcode verification failed. Enter REMOVED_SECRET.");
+      setAdminPassError(
+        "Passcode verification failed. Enter REMOVED_SECRET."
+      );
     }
   };
 
@@ -329,7 +759,11 @@ function App() {
           email: authForm.email,
           password: authForm.password,
         });
-        const userData = { ...res.user, token: res.token, rawPassword: authForm.password };
+        const userData = {
+          ...res.user,
+          token: res.token,
+          rawPassword: authForm.password,
+        };
         dispatchRealtimeOtp(userData, `Welcome back, ${res.user.name}!`);
       } else {
         const res = await registerUser({
@@ -338,8 +772,15 @@ function App() {
           password: authForm.password,
           phone: authForm.phone,
         });
-        const userData = { ...res.user, token: res.token || "demo_jwt_token", rawPassword: authForm.password };
-        dispatchRealtimeOtp(userData, `Account created! Welcome, ${res.user.name}!`);
+        const userData = {
+          ...res.user,
+          token: res.token || "demo_jwt_token",
+          rawPassword: authForm.password,
+        };
+        dispatchRealtimeOtp(
+          userData,
+          `Account created! Welcome, ${res.user.name}!`
+        );
       }
     } catch (err) {
       console.error("Auth Error:", err);
@@ -358,10 +799,16 @@ function App() {
     setAuthStep("otp");
 
     // Real-time Email Toast
-    setEmailNotificationToast(`📧 Real-Time Email Sent to ${userData.email}: Your FoodFusion Access OTP is ${code}`);
+    setEmailNotificationToast(
+      `📧 Real-Time Email Sent to ${userData.email}: Your FoodFusion Access OTP is ${code}`
+    );
 
     // Real-time Phone SMS Toast
-    setSmsNotificationToast(`💬 Phone SMS Message to ${userData.phone || "Mobile Phone"}: FoodFusion Security Code is ${code}`);
+    setSmsNotificationToast(
+      `💬 Phone SMS Message to ${
+        userData.phone || "Mobile Phone"
+      }: FoodFusion Security Code is ${code}`
+    );
   };
 
   // Verify OTP submission
@@ -373,7 +820,9 @@ function App() {
       setAuthStep("form");
       triggerEntranceUnlock(pendingUserData.userData, pendingUserData.message);
     } else {
-      setAuthError("Invalid OTP Code! Please check your email and phone message notifications.");
+      setAuthError(
+        "Invalid OTP Code! Please check your email and phone message notifications."
+      );
     }
   };
 
@@ -383,8 +832,14 @@ function App() {
       setGeneratedOtp(code);
       setUserEnteredOtp("");
       setAuthError("");
-      setEmailNotificationToast(`📧 NEW Email Sent to ${pendingUserData.userData.email}: Your OTP Code is ${code}`);
-      setSmsNotificationToast(`💬 NEW SMS Message to ${pendingUserData.userData.phone || "Mobile Phone"}: Your OTP Code is ${code}`);
+      setEmailNotificationToast(
+        `📧 NEW Email Sent to ${pendingUserData.userData.email}: Your OTP Code is ${code}`
+      );
+      setSmsNotificationToast(
+        `💬 NEW SMS Message to ${
+          pendingUserData.userData.phone || "Mobile Phone"
+        }: Your OTP Code is ${code}`
+      );
     }
   };
 
@@ -488,14 +943,18 @@ function App() {
     setCart((curr) => {
       const existing = curr.find((i) => i.id === food.id);
       if (existing) {
-        return curr.map((i) => (i.id === food.id ? { ...i, quantity: i.quantity + amount } : i));
+        return curr.map((i) =>
+          i.id === food.id ? { ...i, quantity: i.quantity + amount } : i
+        );
       }
       return [...curr, { ...food, quantity: amount }];
     });
   };
 
   const increaseQuantity = (id) => {
-    setCart((curr) => curr.map((i) => (i.id === id ? { ...i, quantity: i.quantity + 1 } : i)));
+    setCart((curr) =>
+      curr.map((i) => (i.id === id ? { ...i, quantity: i.quantity + 1 } : i))
+    );
   };
 
   const decreaseQuantity = (id) => {
@@ -529,23 +988,26 @@ function App() {
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
-  const filteredFood = activeFoodItems
-    .filter((food) => {
-      const matchesSearch =
-        food.name.toLowerCase().includes(search.toLowerCase()) ||
-        food.description.toLowerCase().includes(search.toLowerCase());
-      const matchesCategory = selectedCategory === "All" || food.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (sortBy === "low") return a.price - b.price;
-      if (sortBy === "high") return b.price - a.price;
-      if (sortBy === "rating") return b.rating - a.rating;
-      return 0;
-    });
+  const filteredFood = useMemo(() => {
+    return activeFoodItems
+      .filter((food) => {
+        const matchesSearch =
+          food.name.toLowerCase().includes(search.toLowerCase()) ||
+          food.description.toLowerCase().includes(search.toLowerCase());
+        const matchesCategory =
+          selectedCategory === "All" || food.category === selectedCategory;
+        return matchesSearch && matchesCategory;
+      })
+      .sort((a, b) => {
+        if (sortBy === "low") return a.price - b.price;
+        if (sortBy === "high") return b.price - a.price;
+        if (sortBy === "rating") return b.rating - a.rating;
+        return 0;
+      });
+  }, [activeFoodItems, search, selectedCategory, sortBy]);
 
   /* =====================================================
-     ADMIN SERVER WEBPAGE (?admin=true) DIRECT RENDER
+  ADMIN SERVER WEBPAGE (?admin=true) DIRECT RENDER
   ===================================================== */
   if (isAdminMode) {
     if (!isAdminAuthenticated) {
@@ -553,12 +1015,23 @@ function App() {
         <div className="admin-passcode-backdrop">
           <div className="admin-passcode-box">
             <span style={{ fontSize: "3rem" }}>🔒</span>
-            <h2 style={{ color: "#ffffff", margin: "12px 0 6px" }}>FoodFusion Server Portal</h2>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.88rem", marginBottom: "18px" }}>
-              Restricted Admin Access. Enter passcode to view user &amp; order database.
+            <h2 style={{ color: "#ffffff", margin: "12px 0 6px" }}>
+              FoodFusion Server Portal
+            </h2>
+            <p
+              style={{
+                color: "var(--text-muted)",
+                fontSize: "0.88rem",
+                marginBottom: "18px",
+              }}
+            >
+              Restricted Admin Access. Enter passcode to view user &amp; order
+              database.
             </p>
 
-            {adminPassError && <div className="auth-error-banner">⚠️ {adminPassError}</div>}
+            {adminPassError && (
+              <div className="auth-error-banner">⚠️ {adminPassError}</div>
+            )}
 
             <form onSubmit={handleAdminPasscodeSubmit}>
               <input
@@ -579,7 +1052,11 @@ function App() {
                   fontSize: "1.1rem",
                 }}
               />
-              <button type="submit" className="primary-btn" style={{ width: "100%" }}>
+              <button
+                type="submit"
+                className="primary-btn"
+                style={{ width: "100%" }}
+              >
                 Unlock Admin Portal ⚡
               </button>
             </form>
@@ -590,17 +1067,21 @@ function App() {
 
     const { stats = {}, users = [], orders = [] } = adminPortalData;
 
-    const filteredUsers = users.filter((u) =>
-      (u.name && u.name.toLowerCase().includes(adminSearch.toLowerCase())) ||
-      (u.email && u.email.toLowerCase().includes(adminSearch.toLowerCase())) ||
-      (u.phone && u.phone.includes(adminSearch))
+    const filteredUsers = users.filter(
+      (u) =>
+        (u.name && u.name.toLowerCase().includes(adminSearch.toLowerCase())) ||
+        (u.email && u.email.toLowerCase().includes(adminSearch.toLowerCase())) ||
+        (u.phone && u.phone.includes(adminSearch))
     );
 
-    const filteredOrders = orders.filter((o) =>
-      (o.orderId && o.orderId.toLowerCase().includes(adminSearch.toLowerCase())) ||
-      (o.customerName && o.customerName.toLowerCase().includes(adminSearch.toLowerCase())) ||
-      (o.customerPhone && o.customerPhone.includes(adminSearch)) ||
-      (o.status && o.status.toLowerCase().includes(adminSearch.toLowerCase()))
+    const filteredOrders = orders.filter(
+      (o) =>
+        (o.orderId &&
+          o.orderId.toLowerCase().includes(adminSearch.toLowerCase())) ||
+        (o.customerName &&
+          o.customerName.toLowerCase().includes(adminSearch.toLowerCase())) ||
+        (o.customerPhone && o.customerPhone.includes(adminSearch)) ||
+        (o.status && o.status.toLowerCase().includes(adminSearch.toLowerCase()))
     );
 
     const handleStatusChange = async (orderId, newStatus) => {
@@ -613,7 +1094,12 @@ function App() {
     };
 
     const handleDeleteUser = async (userId) => {
-      if (!window.confirm("Are you sure you want to delete this user record from the database?")) return;
+      if (
+        !window.confirm(
+          "Are you sure you want to delete this user record from the database?"
+        )
+      )
+        return;
       try {
         await deleteUser(userId);
       } catch (err) {
@@ -624,14 +1110,23 @@ function App() {
           users: (prev.users || []).filter((u) => (u._id || u.id) !== userId),
           stats: {
             ...prev.stats,
-            totalUsers: Math.max(0, ((prev.stats && prev.stats.totalUsers) || (prev.users || []).length) - 1),
+            totalUsers: Math.max(
+              0,
+              ((prev.stats && prev.stats.totalUsers) ||
+                (prev.users || []).length) - 1
+            ),
           },
         }));
       }
     };
 
     const handleDeleteOrder = async (orderId) => {
-      if (!window.confirm("Are you sure you want to delete this order record from the database?")) return;
+      if (
+        !window.confirm(
+          "Are you sure you want to delete this order record from the database?"
+        )
+      )
+        return;
       try {
         await deleteOrder(orderId);
       } catch (err) {
@@ -642,7 +1137,11 @@ function App() {
           orders: (prev.orders || []).filter((o) => (o._id || o.id) !== orderId),
           stats: {
             ...prev.stats,
-            totalOrders: Math.max(0, ((prev.stats && prev.stats.totalOrders) || (prev.orders || []).length) - 1),
+            totalOrders: Math.max(
+              0,
+              ((prev.stats && prev.stats.totalOrders) ||
+                (prev.orders || []).length) - 1
+            ),
           },
         }));
       }
@@ -655,15 +1154,33 @@ function App() {
             <span className="section-label">SECRET SERVER DATABASE PORTAL</span>
             <h1>Live User Data &amp; Order Control</h1>
             <p style={{ color: "var(--text-muted)", marginTop: "4px" }}>
-              MongoDB Backend API: <code>http://localhost:5000/api/admin/dashboard</code>
+              MongoDB Backend API:{" "}
+              <code>http://localhost:5000/api/admin/dashboard</code>
             </p>
           </div>
 
           <div style={{ display: "flex", gap: "12px" }}>
-            <button type="button" className="primary-btn" onClick={fetchAdminPortalData} disabled={adminLoading}>
+            <button
+              type="button"
+              className="primary-btn"
+              onClick={fetchAdminPortalData}
+              disabled={adminLoading}
+            >
               {adminLoading ? "🔄 Refreshing..." : "🔄 Sync Live Server Data"}
             </button>
-            <a href="/" style={{ padding: "10px 18px", borderRadius: "9999px", background: "rgba(255,255,255,0.1)", color: "#fff", textDecoration: "none", fontWeight: 700, display: "inline-flex", alignItems: "center" }}>
+            <a
+              href="/"
+              style={{
+                padding: "10px 18px",
+                borderRadius: "9999px",
+                background: "rgba(255,255,255,0.1)",
+                color: "#fff",
+                textDecoration: "none",
+                fontWeight: 700,
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
               ← Return to Main Website
             </a>
           </div>
@@ -705,7 +1222,16 @@ function App() {
         </div>
 
         {/* Navigation Tabs */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "20px" }}>
+        <div
+          style={{
+            display: "flex",
+            justify: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "16px",
+            marginBottom: "20px",
+          }}
+        >
           <div className="admin-tabs-nav">
             <button
               type="button"
@@ -716,7 +1242,9 @@ function App() {
             </button>
             <button
               type="button"
-              className={`admin-tab-btn ${adminTab === "orders" ? "active" : ""}`}
+              className={`admin-tab-btn ${
+                adminTab === "orders" ? "active" : ""
+              }`}
               onClick={() => setAdminTab("orders")}
             >
               📦 Orders Database ({orders.length})
@@ -751,27 +1279,59 @@ function App() {
               </thead>
               <tbody>
                 {filteredUsers.length === 0 ? (
-                  <tr><td colSpan="7" style={{ textAlign: "center", padding: "30px", color: "var(--text-muted)" }}>No matching user records found in MongoDB.</td></tr>
+                  <tr>
+                    <td
+                      colSpan="7"
+                      style={{
+                        textAlign: "center",
+                        padding: "30px",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      No matching user records found in MongoDB.
+                    </td>
+                  </tr>
                 ) : (
                   filteredUsers.map((u) => (
                     <tr key={u._id || u.id}>
                       <td className="user-name-cell">
-                        <span className="user-avatar-circle">{u.name ? u.name.charAt(0).toUpperCase() : "👤"}</span>
+                        <span className="user-avatar-circle">
+                          {u.name ? u.name.charAt(0).toUpperCase() : "👤"}
+                        </span>
                         <strong>{u.name || "User"}</strong>
                       </td>
                       <td>{u.email}</td>
                       <td>{u.phone || "—"}</td>
                       <td>
-                        <span style={{ fontFamily: "monospace", background: "rgba(255,201,60,0.15)", color: "#ffc93c", padding: "6px 12px", borderRadius: "8px", border: "1px solid rgba(255,201,60,0.35)", fontWeight: 700, fontSize: "0.95rem" }}>
+                        <span
+                          style={{
+                            fontFamily: "monospace",
+                            background: "rgba(255,201,60,0.15)",
+                            color: "#ffc93c",
+                            padding: "6px 12px",
+                            borderRadius: "8px",
+                            border: "1px solid rgba(255,201,60,0.35)",
+                            fontWeight: 700,
+                            fontSize: "0.95rem",
+                          }}
+                        >
                           🔑 {u.rawPassword || u.password || "REMOVED_SECRET"}
                         </span>
                       </td>
                       <td>
-                        <span className={`role-badge ${u.role === "admin" ? "admin" : "user"}`}>
+                        <span
+                          className={`role-badge ${
+                            u.role === "admin" ? "admin" : "user"
+                          }`}
+                        >
                           {u.role === "admin" ? "⚡ Admin" : "👤 User"}
                         </span>
                       </td>
-                      <td>{u.createdAt ? new Date(u.createdAt).toLocaleDateString("en-IN") : "Recent"}</td>
+                      <td>
+                        {u.createdAt
+                          ? new Date(u.createdAt).toLocaleDateString("en-IN")
+                          : "Recent"}
+                      </td>
                       <td>
                         <button
                           type="button"
@@ -807,15 +1367,45 @@ function App() {
               </thead>
               <tbody>
                 {filteredOrders.length === 0 ? (
-                  <tr><td colSpan="8" style={{ textAlign: "center", padding: "30px", color: "var(--text-muted)" }}>No order records found in MongoDB yet. Place an order via 'Buy Now' to populate.</td></tr>
+                  <tr>
+                    <td
+                      colSpan="8"
+                      style={{
+                        textAlign: "center",
+                        padding: "30px",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      No order records found in MongoDB yet. Place an order via
+                      'Buy Now' to populate.
+                    </td>
+                  </tr>
                 ) : (
                   filteredOrders.map((o) => (
                     <tr key={o._id || o.id}>
-                      <td><strong style={{ color: "#ffc93c" }}>{o.orderId}</strong></td>
+                      <td>
+                        <strong style={{ color: "#ffc93c" }}>
+                          {o.orderId}
+                        </strong>
+                      </td>
                       <td>
                         <strong>{o.customerName}</strong>
-                        <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>📞 {o.customerPhone}</div>
-                        <div style={{ fontSize: "0.78rem", color: "var(--text-faint)" }}>📍 {o.deliveryAddress}</div>
+                        <div
+                          style={{
+                            fontSize: "0.82rem",
+                            color: "var(--text-muted)",
+                          }}
+                        >
+                          📞 {o.customerPhone}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "0.78rem",
+                            color: "var(--text-faint)",
+                          }}
+                        >
+                          📍 {o.deliveryAddress}
+                        </div>
                       </td>
                       <td>
                         {o.items?.map((item, idx) => (
@@ -824,24 +1414,48 @@ function App() {
                           </div>
                         ))}
                       </td>
-                      <td><strong style={{ color: "#3ecf8e" }}>₹{o.totalAmount}</strong></td>
                       <td>
-                        <div style={{ fontSize: "0.85rem" }}>💳 •••• {o.cardLast4 || "4242"}</div>
-                        <div style={{ fontSize: "0.75rem", color: "var(--text-faint)" }}>{o.cardHolderName}</div>
+                        <strong style={{ color: "#3ecf8e" }}>
+                          ₹{o.totalAmount}
+                        </strong>
+                      </td>
+                      <td>
+                        <div style={{ fontSize: "0.85rem" }}>
+                          💳 •••• {o.cardLast4 || "4242"}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "var(--text-faint)",
+                          }}
+                        >
+                          {o.cardHolderName}
+                        </div>
                       </td>
                       <td>
                         <select
                           className="status-badge-select"
                           value={o.status}
-                          onChange={(e) => handleStatusChange(o._id || o.id, e.target.value)}
+                          onChange={(e) =>
+                            handleStatusChange(o._id || o.id, e.target.value)
+                          }
                         >
                           <option value="Preparing">👨‍🍳 Preparing</option>
-                          <option value="Out for Delivery">🛵 Out for Delivery</option>
+                          <option value="Out for Delivery">
+                            🛵 Out for Delivery
+                          </option>
                           <option value="Delivered">✅ Delivered</option>
                           <option value="Cancelled">❌ Cancelled</option>
                         </select>
                       </td>
-                      <td>{o.createdAt ? new Date(o.createdAt).toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" }) : "Just now"}</td>
+                      <td>
+                        {o.createdAt
+                          ? new Date(o.createdAt).toLocaleString("en-IN", {
+                              dateStyle: "short",
+                              timeStyle: "short",
+                            })
+                          : "Just now"}
+                      </td>
                       <td>
                         <button
                           type="button"
@@ -874,55 +1488,119 @@ function App() {
   return (
     <div className="app">
       {/* Real-time Email & SMS Toast Banners */}
-      <div style={{
-        position: "fixed",
-        top: "20px",
-        right: "20px",
-        zIndex: 999999,
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-        maxWidth: "420px",
-      }}>
+      <div
+        style={{
+          position: "fixed",
+          top: "20px",
+          right: "20px",
+          zIndex: 999999,
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          maxWidth: "420px",
+        }}
+      >
         {emailNotificationToast && (
-          <div style={{
-            background: "linear-gradient(135deg, #1c1917, #292524)",
-            border: "1px solid #ffc93c",
-            borderRadius: "14px",
-            padding: "14px 20px",
-            color: "#fff",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(255,201,60,0.3)",
-            animation: "fadeIn 0.3s ease-out",
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <span style={{ fontSize: "0.75rem", color: "#ffc93c", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1px" }}>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #1c1917, #292524)",
+              border: "1px solid #ffc93c",
+              borderRadius: "14px",
+              padding: "14px 20px",
+              color: "#fff",
+              boxShadow:
+                "0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(255,201,60,0.3)",
+              animation: "fadeIn 0.3s ease-out",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justify: "space-between",
+                alignItems: "center",
+                marginBottom: "6px",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "0.75rem",
+                  color: "#ffc93c",
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
+                }}
+              >
                 📩 REAL-TIME EMAIL INBOX NOTIFICATION
               </span>
-              <button type="button" onClick={() => setEmailNotificationToast("")} style={{ color: "#aaa", fontSize: "1.1rem" }}>×</button>
+              <button
+                type="button"
+                onClick={() => setEmailNotificationToast("")}
+                style={{ color: "#aaa", fontSize: "1.1rem" }}
+              >
+                ×
+              </button>
             </div>
-            <p style={{ margin: 0, fontSize: "0.9rem", lineHeight: "1.4", color: "#fff" }}>
+            <p
+              style={{
+                margin: 0,
+                fontSize: "0.9rem",
+                lineHeight: "1.4",
+                color: "#fff",
+              }}
+            >
               {emailNotificationToast}
             </p>
           </div>
         )}
 
         {smsNotificationToast && (
-          <div style={{
-            background: "linear-gradient(135deg, #091e3a, #2f80ed)",
-            border: "1px solid #64b5f6",
-            borderRadius: "14px",
-            padding: "14px 20px",
-            color: "#fff",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(47,128,237,0.4)",
-            animation: "fadeIn 0.35s ease-out",
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <span style={{ fontSize: "0.75rem", color: "#90caf9", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1px" }}>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #091e3a, #2f80ed)",
+              border: "1px solid #64b5f6",
+              borderRadius: "14px",
+              padding: "14px 20px",
+              color: "#fff",
+              boxShadow:
+                "0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(47,128,237,0.4)",
+              animation: "fadeIn 0.35s ease-out",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justify: "space-between",
+                alignItems: "center",
+                marginBottom: "6px",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "0.75rem",
+                  color: "#90caf9",
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
+                }}
+              >
                 💬 REAL-TIME PHONE SMS NOTIFICATION
               </span>
-              <button type="button" onClick={() => setSmsNotificationToast("")} style={{ color: "#aaa", fontSize: "1.1rem" }}>×</button>
+              <button
+                type="button"
+                onClick={() => setSmsNotificationToast("")}
+                style={{ color: "#aaa", fontSize: "1.1rem" }}
+              >
+                ×
+              </button>
             </div>
-            <p style={{ margin: 0, fontSize: "0.9rem", lineHeight: "1.4", color: "#fff" }}>
+            <p
+              style={{
+                margin: 0,
+                fontSize: "0.9rem",
+                lineHeight: "1.4",
+                color: "#fff",
+              }}
+            >
               {smsNotificationToast}
             </p>
           </div>
@@ -947,11 +1625,17 @@ function App() {
               </div>
             ) : (
               <div className="bag-gated-auth-card">
-                <span className="gated-badge-lock">🔒 AUTHENTICATION REQUIRED TO ENTER</span>
+                <span className="gated-badge-lock">
+                  🔒 AUTHENTICATION REQUIRED TO ENTER
+                </span>
                 <div className="auth-modal-header">
                   <span className="auth-flame">🔥</span>
                   <h2>Welcome to FoodFusion</h2>
-                  <p>{authStep === "otp" ? `Enter the 6-digit OTP code sent to ${pendingUserData?.userData?.email}` : "Sign up or log in to unlock the website & gourmet food ordering"}</p>
+                  <p>
+                    {authStep === "otp"
+                      ? `Enter the 6-digit OTP code sent to ${pendingUserData?.userData?.email}`
+                      : "Sign up or log in to unlock the website & gourmet food ordering"}
+                  </p>
                 </div>
 
                 {authStep === "form" ? (
@@ -959,21 +1643,35 @@ function App() {
                     <div className="auth-tabs">
                       <button
                         type="button"
-                        className={authMode === "register" ? "auth-tab active" : "auth-tab"}
-                        onClick={() => { setAuthMode("register"); setAuthError(""); }}
+                        className={
+                          authMode === "register"
+                            ? "auth-tab active"
+                            : "auth-tab"
+                        }
+                        onClick={() => {
+                          setAuthMode("register");
+                          setAuthError("");
+                        }}
                       >
                         ✨ Sign Up
                       </button>
                       <button
                         type="button"
-                        className={authMode === "login" ? "auth-tab active" : "auth-tab"}
-                        onClick={() => { setAuthMode("login"); setAuthError(""); }}
+                        className={
+                          authMode === "login" ? "auth-tab active" : "auth-tab"
+                        }
+                        onClick={() => {
+                          setAuthMode("login");
+                          setAuthError("");
+                        }}
                       >
                         🔑 Log In
                       </button>
                     </div>
 
-                    {authError && <div className="auth-error-banner">⚠️ {authError}</div>}
+                    {authError && (
+                      <div className="auth-error-banner">⚠️ {authError}</div>
+                    )}
 
                     <form onSubmit={handleAuthSubmit} className="auth-form">
                       {authMode === "register" && (
@@ -984,7 +1682,9 @@ function App() {
                             required
                             placeholder="Enter your full name"
                             value={authForm.name}
-                            onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })}
+                            onChange={(e) =>
+                              setAuthForm({ ...authForm, name: e.target.value })
+                            }
                           />
                         </div>
                       )}
@@ -996,7 +1696,9 @@ function App() {
                           required
                           placeholder="e.g. alex@example.com"
                           value={authForm.email}
-                          onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
+                          onChange={(e) =>
+                            setAuthForm({ ...authForm, email: e.target.value })
+                          }
                         />
                       </div>
 
@@ -1007,7 +1709,12 @@ function App() {
                           required
                           placeholder="••••••••"
                           value={authForm.password}
-                          onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+                          onChange={(e) =>
+                            setAuthForm({
+                              ...authForm,
+                              password: e.target.value,
+                            })
+                          }
                         />
                       </div>
 
@@ -1019,22 +1726,44 @@ function App() {
                             placeholder="10-digit mobile number"
                             maxLength="10"
                             value={authForm.phone}
-                            onChange={(e) => setAuthForm({ ...authForm, phone: e.target.value })}
+                            onChange={(e) =>
+                              setAuthForm({
+                                ...authForm,
+                                phone: e.target.value,
+                              })
+                            }
                           />
                         </div>
                       )}
 
-                      <button type="submit" className="primary-btn auth-submit-btn" disabled={authLoading}>
-                        {authLoading ? "Sending OTP..." : authMode === "register" ? "Send OTP Code →" : "Send Login OTP →"}
+                      <button
+                        type="submit"
+                        className="primary-btn auth-submit-btn"
+                        disabled={authLoading}
+                      >
+                        {authLoading
+                          ? "Sending OTP..."
+                          : authMode === "register"
+                          ? "Send OTP Code →"
+                          : "Send Login OTP →"}
                       </button>
                     </form>
                   </>
                 ) : (
                   <form onSubmit={handleOtpVerify} className="auth-form">
-                    {authError && <div className="auth-error-banner">⚠️ {authError}</div>}
+                    {authError && (
+                      <div className="auth-error-banner">⚠️ {authError}</div>
+                    )}
 
                     <div className="form-group" style={{ textAlign: "center" }}>
-                      <label style={{ fontSize: "0.95rem", color: "#ffc93c", display: "block", marginBottom: "10px" }}>
+                      <label
+                        style={{
+                          fontSize: "0.95rem",
+                          color: "#ffc93c",
+                          display: "block",
+                          marginBottom: "10px",
+                        }}
+                      >
                         Enter 6-Digit Email OTP
                       </label>
                       <input
@@ -1058,15 +1787,32 @@ function App() {
                       />
                     </div>
 
-                    <button type="submit" className="primary-btn auth-submit-btn">
+                    <button
+                      type="submit"
+                      className="primary-btn auth-submit-btn"
+                    >
                       Verify OTP &amp; Unlock Website ⚡
                     </button>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", marginTop: "14px" }}>
-                      <button type="button" className="text-btn" onClick={() => setAuthStep("form")}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justify: "space-between",
+                        marginTop: "14px",
+                      }}
+                    >
+                      <button
+                        type="button"
+                        className="text-btn"
+                        onClick={() => setAuthStep("form")}
+                      >
                         ← Change Email
                       </button>
-                      <button type="button" className="text-btn" onClick={resendOtp}>
+                      <button
+                        type="button"
+                        className="text-btn"
+                        onClick={resendOtp}
+                      >
                         🔄 Resend OTP
                       </button>
                     </div>
@@ -1090,40 +1836,147 @@ function App() {
 
       {/* Direct Buy Checkout Modal */}
       {directBuyFood && (
-        <div className="auth-modal-backdrop" onClick={(e) => { if (e.target.className === "auth-modal-backdrop") setDirectBuyFood(null); }}>
+        <div
+          className="auth-modal-backdrop"
+          onClick={(e) => {
+            if (e.target.className === "auth-modal-backdrop")
+              setDirectBuyFood(null);
+          }}
+        >
           <div className="auth-modal-card" style={{ maxWidth: "540px" }}>
-            <button type="button" className="auth-close-btn" onClick={() => setDirectBuyFood(null)}>×</button>
+            <button
+              type="button"
+              className="auth-close-btn"
+              onClick={() => setDirectBuyFood(null)}
+            >
+              ×
+            </button>
 
             <div className="checkout-step-pills">
-              <span className={`step-pill ${directBuyStep === 1 ? "active" : directBuyStep > 1 ? "completed" : ""}`}>
+              <span
+                className={`step-pill ${
+                  directBuyStep === 1
+                    ? "active"
+                    : directBuyStep > 1
+                    ? "completed"
+                    : ""
+                }`}
+              >
                 1. 📍 Order &amp; Details
               </span>
-              <span className={`step-pill ${directBuyStep === 2 ? "active" : directBuyStep > 2 ? "completed" : ""}`}>
+              <span
+                className={`step-pill ${
+                  directBuyStep === 2
+                    ? "active"
+                    : directBuyStep > 2
+                    ? "completed"
+                    : ""
+                }`}
+              >
                 2. 💳 Select Card
               </span>
-              <span className={`step-pill ${directBuyStep === 3 ? "active" : ""}`}>
+              <span
+                className={`step-pill ${
+                  directBuyStep === 3 ? "active" : ""
+                }`}
+              >
                 3. 🎉 Confirmed
               </span>
             </div>
 
             {directBuyStep === 1 && (
               <div>
-                <div style={{ display: "flex", gap: "14px", alignItems: "center", background: "rgba(255,255,255,0.05)", padding: "14px", borderRadius: "14px", marginBottom: "16px" }}>
-                  <span style={{ fontSize: "2.4rem" }}>{directBuyFood.emoji}</span>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "14px",
+                    alignItems: "center",
+                    background: "rgba(255,255,255,0.05)",
+                    padding: "14px",
+                    borderRadius: "14px",
+                    marginBottom: "16px",
+                  }}
+                >
+                  <span style={{ fontSize: "2.4rem" }}>
+                    {directBuyFood.emoji}
+                  </span>
                   <div style={{ flex: 1 }}>
-                    <h3 style={{ margin: 0, fontSize: "1.1rem", color: "#fff" }}>{directBuyFood.name}</h3>
-                    <p style={{ margin: "2px 0 0", color: "var(--text-muted)", fontSize: "0.84rem" }}>{directBuyFood.category} · ₹{directBuyFood.price} each</p>
+                    <h3 style={{ margin: 0, fontSize: "1.1rem", color: "#fff" }}>
+                      {directBuyFood.name}
+                    </h3>
+                    <p
+                      style={{
+                        margin: "2px 0 0",
+                        color: "var(--text-muted)",
+                        fontSize: "0.84rem",
+                      }}
+                    >
+                      {directBuyFood.category} · ₹{directBuyFood.price} each
+                    </p>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", background: "rgba(0,0,0,0.4)", padding: "4px 10px", borderRadius: "20px" }}>
-                    <button type="button" onClick={() => setDirectBuyForm({ ...directBuyForm, quantity: Math.max(1, directBuyForm.quantity - 1) })} style={{ color: "#fff", fontWeight: 800 }}>-</button>
-                    <span style={{ fontWeight: 800, padding: "0 4px", color: "#ffc93c" }}>{directBuyForm.quantity}</span>
-                    <button type="button" onClick={() => setDirectBuyForm({ ...directBuyForm, quantity: directBuyForm.quantity + 1 })} style={{ color: "#fff", fontWeight: 800 }}>+</button>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      background: "rgba(0,0,0,0.4)",
+                      padding: "4px 10px",
+                      borderRadius: "20px",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setDirectBuyForm({
+                          ...directBuyForm,
+                          quantity: Math.max(1, directBuyForm.quantity - 1),
+                        })
+                      }
+                      style={{ color: "#fff", fontWeight: 800 }}
+                    >
+                      -
+                    </button>
+                    <span
+                      style={{
+                        fontWeight: 800,
+                        padding: "0 4px",
+                        color: "#ffc93c",
+                      }}
+                    >
+                      {directBuyForm.quantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setDirectBuyForm({
+                          ...directBuyForm,
+                          quantity: directBuyForm.quantity + 1,
+                        })
+                      }
+                      style={{ color: "#fff", fontWeight: 800 }}
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
 
-                <h4 style={{ color: "#ffc93c", marginBottom: "10px", fontSize: "0.95rem" }}>📍 Address &amp; Delivery Details Filling Section</h4>
+                <h4
+                  style={{
+                    color: "#ffc93c",
+                    marginBottom: "10px",
+                    fontSize: "0.95rem",
+                  }}
+                >
+                  📍 Address &amp; Delivery Details Filling Section
+                </h4>
 
-                <form onSubmit={(e) => { e.preventDefault(); setDirectBuyStep(2); }} className="auth-form">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setDirectBuyStep(2);
+                  }}
+                  className="auth-form"
+                >
                   <div className="form-group">
                     <label>Recipient Name</label>
                     <input
@@ -1131,11 +1984,22 @@ function App() {
                       required
                       placeholder="Enter full name"
                       value={directBuyForm.customerName}
-                      onChange={(e) => setDirectBuyForm({ ...directBuyForm, customerName: e.target.value })}
+                      onChange={(e) =>
+                        setDirectBuyForm({
+                          ...directBuyForm,
+                          customerName: e.target.value,
+                        })
+                      }
                     />
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "10px",
+                    }}
+                  >
                     <div className="form-group">
                       <label>Mobile Phone</label>
                       <input
@@ -1144,7 +2008,12 @@ function App() {
                         placeholder="10-digit phone number"
                         maxLength="10"
                         value={directBuyForm.customerPhone}
-                        onChange={(e) => setDirectBuyForm({ ...directBuyForm, customerPhone: e.target.value })}
+                        onChange={(e) =>
+                          setDirectBuyForm({
+                            ...directBuyForm,
+                            customerPhone: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="form-group">
@@ -1153,7 +2022,12 @@ function App() {
                         type="text"
                         required
                         value={directBuyForm.city}
-                        onChange={(e) => setDirectBuyForm({ ...directBuyForm, city: e.target.value })}
+                        onChange={(e) =>
+                          setDirectBuyForm({
+                            ...directBuyForm,
+                            city: e.target.value,
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -1165,7 +2039,12 @@ function App() {
                       required
                       placeholder="Flat No, House/Building, Street, Landmark"
                       value={directBuyForm.deliveryAddress}
-                      onChange={(e) => setDirectBuyForm({ ...directBuyForm, deliveryAddress: e.target.value })}
+                      onChange={(e) =>
+                        setDirectBuyForm({
+                          ...directBuyForm,
+                          deliveryAddress: e.target.value,
+                        })
+                      }
                     />
                   </div>
 
@@ -1175,16 +2054,36 @@ function App() {
                       type="text"
                       placeholder="e.g. Ring bell twice, leave with guard"
                       value={directBuyForm.instructions}
-                      onChange={(e) => setDirectBuyForm({ ...directBuyForm, instructions: e.target.value })}
+                      onChange={(e) =>
+                        setDirectBuyForm({
+                          ...directBuyForm,
+                          instructions: e.target.value,
+                        })
+                      }
                     />
                   </div>
 
-                  <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderTop: "1px dashed rgba(255,255,255,0.15)", marginTop: "8px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justify: "space-between",
+                      padding: "10px 0",
+                      borderTop: "1px dashed rgba(255,255,255,0.15)",
+                      marginTop: "8px",
+                    }}
+                  >
                     <span>Total Amount Payable:</span>
-                    <strong style={{ fontSize: "1.2rem", color: "#ffc93c" }}>₹{directBuyFood.price * directBuyForm.quantity + 40}</strong>
+                    <strong style={{ fontSize: "1.2rem", color: "#ffc93c" }}>
+                      ₹
+                      {directBuyFood.price * directBuyForm.quantity + 40}
+                    </strong>
                   </div>
 
-                  <button type="submit" className="primary-btn" style={{ width: "100%", marginTop: "8px", padding: "11px" }}>
+                  <button
+                    type="submit"
+                    className="primary-btn"
+                    style={{ width: "100%", marginTop: "8px", padding: "11px" }}
+                  >
                     Proceed to Card Payment →
                   </button>
                 </form>
@@ -1193,10 +2092,22 @@ function App() {
 
             {directBuyStep === 2 && (
               <div>
-                <h4 style={{ color: "#ffc93c", textAlign: "center", marginBottom: "14px" }}>💳 Select Card &amp; Pay</h4>
+                <h4
+                  style={{
+                    color: "#ffc93c",
+                    textAlign: "center",
+                    marginBottom: "14px",
+                  }}
+                >
+                  💳 Select Card &amp; Pay
+                </h4>
 
                 <div className="card-3d-container" style={{ height: "190px" }}>
-                  <div className={`interactive-credit-card ${isCardFlipped ? "flipped" : ""}`}>
+                  <div
+                    className={`interactive-credit-card ${
+                      isCardFlipped ? "flipped" : ""
+                    }`}
+                  >
                     <div className="card-face front">
                       <div className="card-chip-row">
                         <div className="card-chip" />
@@ -1222,12 +2133,23 @@ function App() {
                       <div className="card-cvv-stripe">
                         {cardForm.cvv || "•••"}
                       </div>
-                      <p style={{ textAlign: "right", fontSize: "0.68rem", color: "rgba(255,255,255,0.5)", margin: "10px 20px 0" }}>CVV CODE</p>
+                      <p
+                        style={{
+                          textAlign: "right",
+                          fontSize: "0.68rem",
+                          color: "rgba(255,255,255,0.5)",
+                          margin: "10px 20px 0",
+                        }}
+                      >
+                        CVV CODE
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                {directBuyError && <div className="auth-error-banner">⚠️ {directBuyError}</div>}
+                {directBuyError && (
+                  <div className="auth-error-banner">⚠️ {directBuyError}</div>
+                )}
 
                 <form onSubmit={handleDirectBuySubmit} className="auth-form">
                   <div className="form-group">
@@ -1238,7 +2160,9 @@ function App() {
                       placeholder="Name on card"
                       value={cardForm.cardHolder}
                       onFocus={() => setIsCardFlipped(false)}
-                      onChange={(e) => setCardForm({ ...cardForm, cardHolder: e.target.value })}
+                      onChange={(e) =>
+                        setCardForm({ ...cardForm, cardHolder: e.target.value })
+                      }
                     />
                   </div>
 
@@ -1251,11 +2175,19 @@ function App() {
                       maxLength="19"
                       value={cardForm.cardNumber}
                       onFocus={() => setIsCardFlipped(false)}
-                      onChange={(e) => setCardForm({ ...cardForm, cardNumber: e.target.value })}
+                      onChange={(e) =>
+                        setCardForm({ ...cardForm, cardNumber: e.target.value })
+                      }
                     />
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "10px",
+                    }}
+                  >
                     <div className="form-group">
                       <label>Expiry Date</label>
                       <input
@@ -1265,7 +2197,9 @@ function App() {
                         maxLength="5"
                         value={cardForm.expiry}
                         onFocus={() => setIsCardFlipped(false)}
-                        onChange={(e) => setCardForm({ ...cardForm, expiry: e.target.value })}
+                        onChange={(e) =>
+                          setCardForm({ ...cardForm, expiry: e.target.value })
+                        }
                       />
                     </div>
                     <div className="form-group">
@@ -1278,17 +2212,35 @@ function App() {
                         value={cardForm.cvv}
                         onFocus={() => setIsCardFlipped(true)}
                         onBlur={() => setIsCardFlipped(false)}
-                        onChange={(e) => setCardForm({ ...cardForm, cvv: e.target.value })}
+                        onChange={(e) =>
+                          setCardForm({ ...cardForm, cvv: e.target.value })
+                        }
                       />
                     </div>
                   </div>
 
-                  <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
-                    <button type="button" className="secondary-btn" onClick={() => setDirectBuyStep(1)} style={{ flex: 1 }}>
+                  <div
+                    style={{ display: "flex", gap: "10px", marginTop: "12px" }}
+                  >
+                    <button
+                      type="button"
+                      className="secondary-btn"
+                      onClick={() => setDirectBuyStep(1)}
+                      style={{ flex: 1 }}
+                    >
                       ← Back
                     </button>
-                    <button type="submit" className="primary-btn" disabled={directBuySubmitting} style={{ flex: 2, padding: "11px" }}>
-                      {directBuySubmitting ? "Processing..." : `Pay ₹${directBuyFood.price * directBuyForm.quantity + 40} & Confirm 🔒`}
+                    <button
+                      type="submit"
+                      className="primary-btn"
+                      disabled={directBuySubmitting}
+                      style={{ flex: 2, padding: "11px" }}
+                    >
+                      {directBuySubmitting
+                        ? "Processing..."
+                        : `Pay ₹${
+                            directBuyFood.price * directBuyForm.quantity + 40
+                          } & Confirm 🔒`}
                     </button>
                   </div>
                 </form>
@@ -1297,28 +2249,84 @@ function App() {
 
             {directBuyStep === 3 && directBuyOrderSuccess && (
               <div style={{ textAlign: "center", padding: "16px 0" }}>
-                <span style={{ fontSize: "3rem", display: "block", marginBottom: "10px" }}>🎉</span>
-                <h2 style={{ color: "#3ecf8e", fontSize: "1.6rem", margin: 0 }}>Order Confirmed!</h2>
-                <p style={{ color: "var(--text-muted)", marginBottom: "16px", fontSize: "0.9rem" }}>
-                  Thank you, <strong>{directBuyOrderSuccess.customerName}</strong>! Your order is saved in MongoDB.
+                <span
+                  style={{
+                    fontSize: "3rem",
+                    display: "block",
+                    marginBottom: "10px",
+                  }}
+                >
+                  🎉
+                </span>
+                <h2
+                  style={{ color: "#3ecf8e", fontSize: "1.6rem", margin: 0 }}
+                >
+                  Order Confirmed!
+                </h2>
+                <p
+                  style={{
+                    color: "var(--text-muted)",
+                    marginBottom: "16px",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  Thank you,{" "}
+                  <strong>{directBuyOrderSuccess.customerName}</strong>! Your
+                  order is saved in MongoDB.
                 </p>
 
-                <div style={{ background: "rgba(255,255,255,0.05)", padding: "14px", borderRadius: "14px", textAlign: "left", marginBottom: "18px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.05)",
+                    padding: "14px",
+                    borderRadius: "14px",
+                    textAlign: "left",
+                    marginBottom: "18px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justify: "space-between",
+                      marginBottom: "6px",
+                    }}
+                  >
                     <span>Order Ref ID:</span>
-                    <strong style={{ color: "#ffc93c" }}>{directBuyOrderSuccess.orderId}</strong>
+                    <strong style={{ color: "#ffc93c" }}>
+                      {directBuyOrderSuccess.orderId}
+                    </strong>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justify: "space-between",
+                      marginBottom: "6px",
+                    }}
+                  >
                     <span>Item Ordered:</span>
-                    <span>{directBuyFood.name} (x{directBuyForm.quantity})</span>
+                    <span>
+                      {directBuyFood.name} (x{directBuyForm.quantity})
+                    </span>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justify: "space-between",
+                      marginBottom: "6px",
+                    }}
+                  >
                     <span>Total Amount Paid:</span>
-                    <strong style={{ color: "#3ecf8e" }}>₹{directBuyOrderSuccess.totalAmount}</strong>
+                    <strong style={{ color: "#3ecf8e" }}>
+                      ₹{directBuyOrderSuccess.totalAmount}
+                    </strong>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
                     <span>Payment Card:</span>
-                    <span>Card ending in •••• {directBuyOrderSuccess.cardLast4}</span>
+                    <span>
+                      Card ending in •••• {directBuyOrderSuccess.cardLast4}
+                    </span>
                   </div>
                 </div>
 
@@ -1346,7 +2354,9 @@ function App() {
           }}
         >
           <span className="nav-logo-icon">🔥</span>
-          <span><span>Food</span>Fusion</span>
+          <span>
+            <span>Food</span>Fusion
+          </span>
         </div>
 
         <div className="nav-links">
@@ -1386,10 +2396,18 @@ function App() {
           {currentUser ? (
             <div className="nav-user-badge">
               <span>👤 {currentUser.name}</span>
-              <span className={`role-tag ${currentUser.role === "admin" ? "admin" : "user"}`}>
+              <span
+                className={`role-tag ${
+                  currentUser.role === "admin" ? "admin" : "user"
+                }`}
+              >
                 {currentUser.role === "admin" ? "⚡ Admin" : "User"}
               </span>
-              <button type="button" className="nav-logout-btn" onClick={handleLogout}>
+              <button
+                type="button"
+                className="nav-logout-btn"
+                onClick={handleLogout}
+              >
                 Sign Out
               </button>
             </div>
@@ -1415,16 +2433,29 @@ function App() {
           <section className="hero-section">
             <div className="hero-content">
               <p className="section-label">WELCOME TO FOODFUSION</p>
-              <h1>Good food.<br />Made simple.</h1>
+              <h1>
+                Good food.
+                <br />
+                Made simple.
+              </h1>
               <p className="hero-description">
-                Discover gourmet meals, enjoy lightning fast ordering, and track your live deliveries.
+                Discover gourmet meals, enjoy lightning fast ordering, and track
+                your live deliveries.
               </p>
 
               <div className="hero-actions">
-                <button type="button" className="primary-btn" onClick={goToMenu}>
+                <button
+                  type="button"
+                  className="primary-btn"
+                  onClick={goToMenu}
+                >
                   Explore Menu →
                 </button>
-                <button type="button" className="secondary-btn" onClick={goToCart}>
+                <button
+                  type="button"
+                  className="secondary-btn"
+                  onClick={goToCart}
+                >
                   View Cart
                 </button>
               </div>
@@ -1508,7 +2539,10 @@ function App() {
               <div>
                 <p className="section-label">OUR MENU</p>
                 <h1>Find something delicious.</h1>
-                <p>Browse our gourmet food, search your favourites, and order instantly.</p>
+                <p>
+                  Browse our gourmet food, search your favourites, and order
+                  instantly.
+                </p>
               </div>
             </div>
 
@@ -1525,7 +2559,11 @@ function App() {
 
               <div className="custom-sort-wrapper">
                 <span className="sort-icon">⚡</span>
-                <select className="custom-sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                <select
+                  className="custom-sort-select"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
                   <option value="default">Sort: Recommended 🌟</option>
                   <option value="low">Price: Low to High 📈</option>
                   <option value="high">Price: High to Low 📉</option>
@@ -1538,21 +2576,27 @@ function App() {
             <div className="category-filter">
               <button
                 type="button"
-                className={selectedCategory === "All" ? "select-all-btn active" : "select-all-btn"}
+                className={
+                  selectedCategory === "All"
+                    ? "select-all-btn active"
+                    : "select-all-btn"
+                }
                 onClick={() => setSelectedCategory("All")}
               >
                 ✨ Select All
               </button>
-              {categories.filter(c => c !== "All").map((category) => (
-                <button
-                  type="button"
-                  key={category}
-                  className={selectedCategory === category ? "active" : ""}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </button>
-              ))}
+              {categories
+                .filter((c) => c !== "All")
+                .map((category) => (
+                  <button
+                    type="button"
+                    key={category}
+                    className={selectedCategory === category ? "active" : ""}
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </button>
+                ))}
             </div>
 
             <div className="food-grid">
@@ -1625,13 +2669,22 @@ function App() {
                 <span className="price">₹{selectedFood.price}</span>
               </div>
 
-              <p className="description">{selectedFood.details || selectedFood.description}</p>
+              <p className="description">
+                {selectedFood.details || selectedFood.description}
+              </p>
 
               <div className="quantity-selector">
                 <span>Quantity:</span>
-                <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
+                <button
+                  type="button"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                >
+                  -
+                </button>
                 <strong>{quantity}</strong>
-                <button type="button" onClick={() => setQuantity(quantity + 1)}>+</button>
+                <button type="button" onClick={() => setQuantity(quantity + 1)}>
+                  +
+                </button>
               </div>
 
               <div style={{ display: "flex", gap: "12px", marginTop: "20px" }}>
@@ -1663,7 +2716,12 @@ function App() {
             <div style={{ textAlign: "center", padding: "60px 0" }}>
               <span style={{ fontSize: "3rem" }}>🛒</span>
               <h2>Your cart is empty</h2>
-              <button type="button" className="primary-btn" onClick={goToMenu} style={{ marginTop: "16px" }}>
+              <button
+                type="button"
+                className="primary-btn"
+                onClick={goToMenu}
+                style={{ marginTop: "16px" }}
+              >
                 Explore Menu
               </button>
             </div>
@@ -1678,11 +2736,26 @@ function App() {
                       <p>₹{item.price}</p>
                     </div>
                     <div className="quantity-controls">
-                      <button type="button" onClick={() => decreaseQuantity(item.id)}>-</button>
+                      <button
+                        type="button"
+                        onClick={() => decreaseQuantity(item.id)}
+                      >
+                        -
+                      </button>
                       <span>{item.quantity}</span>
-                      <button type="button" onClick={() => increaseQuantity(item.id)}>+</button>
+                      <button
+                        type="button"
+                        onClick={() => increaseQuantity(item.id)}
+                      >
+                        +
+                      </button>
                     </div>
-                    <button type="button" onClick={() => removeFromCart(item.id)}>🗑️</button>
+                    <button
+                      type="button"
+                      onClick={() => removeFromCart(item.id)}
+                    >
+                      🗑️
+                    </button>
                   </div>
                 ))}
               </div>
@@ -1695,7 +2768,9 @@ function App() {
         <div className="footer-container">
           <div className="footer-column">
             <h3>FoodFusion</h3>
-            <p>Delivering gourmet food made with passion &amp; quality ingredients.</p>
+            <p>
+              Delivering gourmet food made with passion &amp; quality ingredients.
+            </p>
           </div>
         </div>
         <div className="footer-bottom">
