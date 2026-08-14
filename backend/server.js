@@ -1,6 +1,14 @@
 const path = require("path");
+const dns = require("dns");
 const dotenv = require("dotenv");
 dotenv.config({ path: path.join(__dirname, ".env") });
+
+// Ensure SRV DNS lookup resolves reliably across all local network and Windows configurations
+try {
+  dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
+} catch (dnsErr) {
+  // Use default system resolver if custom DNS cannot be configured
+}
 
 const express = require("express");
 const cors = require("cors");

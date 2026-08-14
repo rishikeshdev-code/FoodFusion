@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 const path = require("path");
+const dns = require("dns");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
+
+try {
+  dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
+} catch (dnsErr) {
+  // Use default system resolver if custom DNS cannot be configured
+}
 
 const Food = require("./models/food");
 
