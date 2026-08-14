@@ -757,7 +757,6 @@ function App() {
         const userData = {
           ...res.user,
           token: res.token,
-          rawPassword: authForm.password,
         };
         dispatchRealtimeOtp(userData, `Welcome back, ${res.user.name}!`);
       } else {
@@ -770,7 +769,6 @@ function App() {
         const userData = {
           ...res.user,
           token: res.token || "demo_jwt_token",
-          rawPassword: authForm.password,
         };
         dispatchRealtimeOtp(
           userData,
@@ -1307,7 +1305,7 @@ function App() {
                             fontSize: "0.95rem",
                           }}
                         >
-                          🔑 {u.rawPassword || u.password || "Not available"}
+                          🔐 Password: Protected
                         </span>
                       </td>
                       <td>
@@ -1846,20 +1844,20 @@ function App() {
             <div className="checkout-step-pills">
               <span
                 className={`step-pill ${directBuyStep === 1
-                    ? "active"
-                    : directBuyStep > 1
-                      ? "completed"
-                      : ""
+                  ? "active"
+                  : directBuyStep > 1
+                    ? "completed"
+                    : ""
                   }`}
               >
                 1. 📍 Order &amp; Details
               </span>
               <span
                 className={`step-pill ${directBuyStep === 2
-                    ? "active"
-                    : directBuyStep > 2
-                      ? "completed"
-                      : ""
+                  ? "active"
+                  : directBuyStep > 2
+                    ? "completed"
+                    : ""
                   }`}
               >
                 2. 💳 Select Card
