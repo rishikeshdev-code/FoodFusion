@@ -12,9 +12,7 @@ import {
 } from "./api";
 import "./App.css";
 
-// =========================================================================
-// LOCAL ASSET IMPORTS FOR ALL 30 DISHES (src/assets/images/)
-// =========================================================================
+// Local image imports for 30 pure veg Indian dishes
 import imgShahiPaneer from "./assets/images/Shahi paneer masala.jpeg";
 import imgDalMakhani from "./assets/images/Dal Makhani Slow-Cooked.jpeg";
 import imgPalakPaneer from "./assets/images/Palak Paneer with Garlic Tadka.jpeg";
@@ -23,13 +21,11 @@ import imgKadaiPaneer from "./assets/images/Kadai Paneer Bell Pepper Toss.jpeg";
 import imgRajmaMasala from "./assets/images/Punjabi Rajma Masala.jpeg";
 import imgDumAloo from "./assets/images/Dum Aloo Banarasi.jpeg";
 import imgDalTadka from "./assets/images/Dhaba Yellow Dal Tadka.jpeg";
-
 import imgVegBiryani from "./assets/images/Royal Hyderabadi Dum Veg Biryani.jpeg";
 import imgButterNaan from "./assets/images/Butter Garlic Naan Basket.jpeg";
 import imgAlooParatha from "./assets/images/Amritsari Stuffed Aloo Paratha.jpeg";
 import imgLacchaParatha from "./assets/images/Crispy Laccha Paratha (2 Pcs).jpeg";
 import imgDalBaati from "./assets/images/Royal Dal Baati Churma Thali.jpeg";
-
 import imgCholeBhature from "./assets/images/Amritsari Chole Bhature Platter.jpeg";
 import imgPavBhaji from "./assets/images/Mumbai Special Butter Pav Bhaji.jpeg";
 import imgPaneerTikka from "./assets/images/Tandoori Paneer Tikka Platter.jpeg";
@@ -38,22 +34,16 @@ import imgDahiPuri from "./assets/images/Dahi Puri Papdi Chaat Platter.jpeg";
 import imgAlooTikki from "./assets/images/Crispy Aloo Tikki Chaat.jpeg";
 import imgSamosa from "./assets/images/Crispy Punjabi Samosa (3 Pcs).jpeg";
 import imgDhokla from "./assets/images/Spongy Khaman Dhokla (4 Pcs).jpeg";
-
 import imgMasalaDosa from "./assets/images/Mysore Masala Dosa Crisp.jpeg";
 import imgIdliSambar from "./assets/images/Steamed Fluffy Idli with Sambar (4 Pcs).jpeg";
 import imgMeduVada from "./assets/images/Crispy Medu Vada (3 Pcs).jpeg";
-
 import imgGulabJamun from "./assets/images/Royal Kesar Gulab Jamun (3 Pcs).jpeg";
 import imgRasmalai from "./assets/images/Bengali Malai Rasmalai (2 Pcs).jpeg";
 import imgJalebi from "./assets/images/Crispy Golden Jalebi with Rabri.jpeg";
 import imgRasgulla from "./assets/images/Spongy Kolkata Rasgulla (3 Pcs).jpeg";
-
 import imgMangoLassi from "./assets/images/Royal Kulhad Mango Lassi.jpeg";
 import imgMasalaChai from "./assets/images/Royal Masala Chai with Ginger & Cardamom.jpeg";
 
-// =========================================================================
-// 1. CONSTANTS & EXACTLY 30 100% PURE VEGETARIAN INDIAN DISHES
-// =========================================================================
 export const CATEGORIES = [
   "All",
   "Curries",
@@ -64,7 +54,6 @@ export const CATEGORIES = [
   "Drinks",
 ];
 
-// Fallback image placeholders using local bundled assets
 const CATEGORY_FALLBACK_IMAGES = {
   Curries: imgShahiPaneer,
   "Breads & Rice": imgButterNaan,
@@ -75,7 +64,6 @@ const CATEGORY_FALLBACK_IMAGES = {
 };
 
 export const INITIAL_30_INDIAN_VEG_FOODS = [
-  // --- 1. INDIAN CURRIES (8 Items) ---
   {
     id: 1,
     name: "Shahi Paneer Butter Masala",
@@ -84,7 +72,7 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.9,
     emoji: "🍛",
     image: imgShahiPaneer,
-    description: "Soft cottage cheese simmered in velvety, rich cashew tomato makhani gravy with fresh cream.",
+    description: "Soft cottage cheese simmered in velvety cashew tomato makhani gravy with fresh cream.",
     details: "Cooked slowly with pure dairy butter, whole green cardamoms, and aromatic kasuri methi.",
     ingredients: ["Fresh Cottage Cheese", "Cashew Tomato Puree", "Pure Cow Ghee", "Fresh Cream", "Kasuri Methi"],
     badge: "SIGNATURE",
@@ -101,7 +89,7 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     image: imgDalMakhani,
     description: "Overnight slow-cooked black lentils and kidney beans enriched with pure butter and cream.",
     details: "Traditional Dhaba recipe simmered on low embers for 12 hours for deep smoky creaminess.",
-    ingredients: ["Black Urad Dal", "Rajma Beans", "Butter Emulsion", "Garlic Ginger Paste", "Smoked Charcoal Infusion"],
+    ingredients: ["Black Urad Dal", "Rajma Beans", "Butter Emulsion", "Garlic Ginger Paste"],
     badge: "CLASSIC",
     pastelBg: "lavender",
     available: true,
@@ -114,9 +102,9 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.7,
     emoji: "🍛",
     image: imgPalakPaneer,
-    description: "Fresh tender spinach puree cooked with cottage cheese cubes and tempered with golden roasted garlic.",
+    description: "Fresh tender spinach puree cooked with cottage cheese cubes and golden garlic tadka.",
     details: "Blanched farm spinach blended with mild green chilies and finished with garlic infused ghee.",
-    ingredients: ["Farm Spinach", "Soft Paneer Cubes", "Golden Crispy Garlic", "Cumin Seeds", "Desi Ghee"],
+    ingredients: ["Farm Spinach", "Soft Paneer Cubes", "Golden Crispy Garlic", "Desi Ghee"],
     badge: "HEALTHY",
     pastelBg: "mint",
     available: true,
@@ -130,8 +118,8 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     emoji: "🍛",
     image: imgMalaiKofta,
     description: "Melt-in-mouth paneer and potato dumplings stuffed with dry fruits in rich cashew saffron sauce.",
-    details: "Royalty on a plate with golden fried soft koftas in a fragrant cardamom and cashew nut cream reduction.",
-    ingredients: ["Mawa Paneer Kofta", "Cashew Cream Reduction", "Raisins & Cashews", "Kashmiri Saffron", "Cardamom"],
+    details: "Royalty on a plate with golden fried soft koftas in a fragrant cardamom cashew cream reduction.",
+    ingredients: ["Mawa Paneer Kofta", "Cashew Cream Reduction", "Raisins & Cashews", "Kashmiri Saffron"],
     badge: "ROYAL PICK",
     pastelBg: "coral",
     available: true,
@@ -145,8 +133,8 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     emoji: "🍛",
     image: imgKadaiPaneer,
     description: "Succulent paneer with diced crunchy bell peppers and onions in freshly ground kadai masala.",
-    details: "Prepared in traditional iron wok with coarsely ground coriander seeds and dry Kashmiri red chilies.",
-    ingredients: ["Paneer Cubes", "Tricolor Capsicum", "Kadai Masala", "Tomato Onion Gravy", "Fresh Cilantro"],
+    details: "Prepared in traditional iron wok with coarsely ground coriander seeds and dry red chilies.",
+    ingredients: ["Paneer Cubes", "Tricolor Capsicum", "Kadai Masala", "Tomato Onion Gravy"],
     badge: "ZESTY",
     pastelBg: "yellow",
     available: true,
@@ -160,8 +148,8 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     emoji: "🍛",
     image: imgRajmaMasala,
     description: "Red kidney beans simmered in a thick, spiced onion-tomato gravy with ginger juliennes.",
-    details: "Authentic North Indian soul food slow cooked to melt in your mouth, perfect with steamed basmati rice.",
-    ingredients: ["Chitra Rajma Beans", "Spiced Tomato Onion Gravy", "Fresh Ginger Juliennes", "Ghee", "Kasuri Methi"],
+    details: "Authentic North Indian soul food slow cooked to melt in your mouth.",
+    ingredients: ["Chitra Rajma Beans", "Spiced Tomato Onion Gravy", "Fresh Ginger Juliennes", "Desi Ghee"],
     badge: "COMFORT FOOD",
     pastelBg: "lavender",
     available: true,
@@ -176,7 +164,7 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     image: imgDumAloo,
     description: "Baby potatoes deep-fried and slow-cooked in a tangy, fennel-scented yogurt and tomato gravy.",
     details: "Pricked baby potatoes sealed and dum-cooked in an aromatic Kashmiri red chili and saunf curry.",
-    ingredients: ["Baby Potatoes", "Fresh Yogurt Gravy", "Fennel Powder (Saunf)", "Dry Ginger (Sonth)", "Kashmiri Mirch"],
+    ingredients: ["Baby Potatoes", "Fresh Yogurt Gravy", "Fennel Powder", "Kashmiri Mirch"],
     badge: "TRADITIONAL",
     pastelBg: "mint",
     available: true,
@@ -189,15 +177,13 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.8,
     emoji: "🍲",
     image: imgDalTadka,
-    description: "Yellow arhar lentils tempered with desi ghee, cumin, roasted garlic, and Kashmiri whole red chilies.",
+    description: "Yellow arhar lentils tempered with desi ghee, cumin, roasted garlic, and whole red chilies.",
     details: "Hot tadka poured right before serving to infuse the lentils with sizzling aromatic ghee flavors.",
-    ingredients: ["Toor Dal & Moong Dal", "Desi Cow Ghee", "Whole Cumin", "Roasted Garlic Slivers", "Hing (Asafoetida)"],
+    ingredients: ["Toor Dal & Moong Dal", "Desi Cow Ghee", "Whole Cumin", "Roasted Garlic Slivers"],
     badge: "DHABA SPECIAL",
     pastelBg: "coral",
     available: true,
   },
-
-  // --- 2. BREADS & RICE (5 Items) ---
   {
     id: 9,
     name: "Royal Hyderabadi Dum Veg Biryani",
@@ -208,7 +194,7 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     image: imgVegBiryani,
     description: "Long-grain aged basmati rice layered with spiced vegetables, saffron, mint, and fried onions.",
     details: "Served in sealed clay handi with cooling cucumber raita and spicy salan.",
-    ingredients: ["Aged Basmati Rice", "Garden Vegetables", "Kashmiri Saffron", "Birista Fried Onions", "Raita"],
+    ingredients: ["Aged Basmati Rice", "Garden Vegetables", "Kashmiri Saffron", "Birista Fried Onions"],
     badge: "TOP RATED",
     pastelBg: "yellow",
     available: true,
@@ -221,9 +207,9 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.8,
     emoji: "🍞",
     image: imgButterNaan,
-    description: "Fresh clay tandoor baked breads brushed with melted butter and fresh crushed garlic.",
+    description: "Fresh clay tandoor baked breads brushed with melted butter and crushed garlic.",
     details: "Includes 1 Butter Naan, 1 Garlic Roti, and 1 Laccha Paratha baked fresh to order.",
-    ingredients: ["Refined & Whole Wheat Flour", "Dairy Butter", "Crushed Garlic", "Kalonji Black Seeds"],
+    ingredients: ["Refined & Whole Wheat Flour", "Dairy Butter", "Crushed Garlic", "Kalonji"],
     badge: "TANDOOR HOT",
     pastelBg: "lavender",
     available: true,
@@ -237,8 +223,8 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     emoji: "🍞",
     image: imgAlooParatha,
     description: "Whole wheat flatbreads stuffed with spicy mashed potatoes, served with white butter and curd.",
-    details: "Tandoor roasted and topped with a generous dollop of homemade white makkhan (butter) and mixed pickle.",
-    ingredients: ["Whole Wheat Dough", "Spiced Potato Mash", "Homemade White Butter", "Fresh Curd", "Mango Pickle"],
+    details: "Tandoor roasted and topped with a generous dollop of homemade white makkhan and mixed pickle.",
+    ingredients: ["Whole Wheat Dough", "Spiced Potato Mash", "Homemade White Butter", "Fresh Curd"],
     badge: "PUNJABI FAV",
     pastelBg: "mint",
     available: true,
@@ -252,7 +238,7 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     emoji: "🍞",
     image: imgLacchaParatha,
     description: "Multi-layered flaky whole wheat paratha roasted on iron tawa with pure ghee.",
-    details: "Crispy rings of whole wheat layers with roasted ajwain (carom seeds).",
+    details: "Crispy rings of whole wheat layers with roasted ajwain seeds.",
     ingredients: ["Whole Wheat Flour", "Desi Ghee", "Ajwain Seeds", "Rock Salt"],
     badge: "CRISPY LAYER",
     pastelBg: "coral",
@@ -266,15 +252,13 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.9,
     emoji: "🍛",
     image: imgDalBaati,
-    description: "Crisp baked wheat baatis dipped in pure ghee, served with spicy panchmel dal and sweet churma.",
+    description: "Crisp baked wheat baatis dipped in pure ghee, served with panchmel dal and sweet churma.",
     details: "Authentic Rajasthani royal feast with spicy garlic chutney and roasted papad.",
-    ingredients: ["Baked Wheat Baati", "Panchmel 5-Lentil Dal", "Pure Desi Ghee", "Sweet Jaggery Churma", "Garlic Chutney"],
+    ingredients: ["Baked Wheat Baati", "Panchmel Dal", "Pure Desi Ghee", "Sweet Churma", "Garlic Chutney"],
     badge: "ROYAL THALI",
     pastelBg: "yellow",
     available: true,
   },
-
-  // --- 3. STREET FOOD & CHAAT (8 Items) ---
   {
     id: 14,
     name: "Amritsari Chole Bhature Platter",
@@ -283,9 +267,9 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.9,
     emoji: "🥟",
     image: imgCholeBhature,
-    description: "Two giant puffy golden bhaturas served with spicy dark Amritsari chole, pickled onions, and mint chutney.",
+    description: "Two giant puffy golden bhaturas served with spicy dark Amritsari chole and pickled onions.",
     details: "Crispy on the outside and soft inside bhature paired with richly spiced chickpea gravy.",
-    ingredients: ["Puffy Fried Bhatura", "Amritsari Chole", "Pickled Onions", "Fried Green Chili", "Mint Chutney"],
+    ingredients: ["Puffy Fried Bhatura", "Amritsari Chole", "Pickled Onions", "Mint Chutney"],
     badge: "LEGENDARY",
     pastelBg: "lavender",
     available: true,
@@ -298,9 +282,9 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.9,
     emoji: "🍲",
     image: imgPavBhaji,
-    description: "Spiced mashed vegetable curry loaded with pure butter, served with two soft toasted pavs and lemon.",
-    details: "Cooked on a giant iron tawa with tomatoes, potatoes, green peas, capsicum, and generous Amul butter.",
-    ingredients: ["Mashed Mixed Vegetables", "Amul Butter", "Pav Bhaji Masala", "Toasted Pav Buns", "Lemon Wedges"],
+    description: "Spiced mashed vegetable curry loaded with pure butter, served with two soft toasted pavs.",
+    details: "Cooked on a giant iron tawa with tomatoes, potatoes, green peas, capsicum, and Amul butter.",
+    ingredients: ["Mashed Mixed Vegetables", "Amul Butter", "Pav Bhaji Masala", "Toasted Pav Buns"],
     badge: "MUMBAI ICON",
     pastelBg: "mint",
     available: true,
@@ -315,7 +299,7 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     image: imgPaneerTikka,
     description: "Smoky charcoal-grilled cottage cheese cubes marinated in spiced yogurt and mustard oil.",
     details: "Served with charred capsicums, red onions, lemon wedges, and fresh coriander mint dip.",
-    ingredients: ["Fresh Paneer Cubes", "Spiced Hung Curd", "Mustard Oil", "Bell Peppers", "Mint Chutney"],
+    ingredients: ["Fresh Paneer Cubes", "Spiced Hung Curd", "Mustard Oil", "Bell Peppers"],
     badge: "MUST TRY",
     pastelBg: "coral",
     available: true,
@@ -328,9 +312,9 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.9,
     emoji: "🥘",
     image: imgPaniPuri,
-    description: "Super crispy puris filled with spiced potato-chickpea mash, served with tangy mint-coriander water.",
-    details: "Accompanied by spicy teekha paani and sweet meetha tamarind chutney for the authentic burst of flavor.",
-    ingredients: ["Semolina Puris", "Spiced Potato Mash", "Hing Jeera Spicy Water", "Sweet Tamarind Chutney", "Boondi"],
+    description: "Super crispy puris filled with spiced potato-chickpea mash, served with tangy mint water.",
+    details: "Accompanied by spicy teekha paani and sweet meetha tamarind chutney.",
+    ingredients: ["Semolina Puris", "Spiced Potato Mash", "Hing Jeera Spicy Water", "Tamarind Chutney"],
     badge: "BURST OF TASTE",
     pastelBg: "yellow",
     available: true,
@@ -343,9 +327,9 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.8,
     emoji: "🥘",
     image: imgDahiPuri,
-    description: "Crispy hollow puris filled with potatoes, sweetened curd, tamarind chutney, and fine nylon sev.",
+    description: "Crispy hollow puris filled with potatoes, sweetened curd, tamarind chutney, and nylon sev.",
     details: "Topped with roasted cumin, chaat masala, pomegranate seeds, and fresh coriander.",
-    ingredients: ["Crispy Puris", "Sweet Chilled Curd", "Tamarind & Mint Chutneys", "Fine Sev", "Pomegranate"],
+    ingredients: ["Crispy Puris", "Sweet Chilled Curd", "Tamarind & Mint Chutneys", "Fine Sev"],
     badge: "CHAAT SPECIAL",
     pastelBg: "lavender",
     available: true,
@@ -360,7 +344,7 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     image: imgAlooTikki,
     description: "Crispy pan-fried spiced potato patties topped with hot chole, yogurt, and sweet-spicy chutneys.",
     details: "Golden brown tikkis crushed and drizzled with beaten sweet curd and crunchy onions.",
-    ingredients: ["Pan Fried Potato Patties", "Spiced Chole", "Sweet Curd", "Tamarind & Green Chutneys", "Ginger Juliennes"],
+    ingredients: ["Pan Fried Potato Patties", "Spiced Chole", "Sweet Curd", "Green Chutneys"],
     badge: "HOT & TANGY",
     pastelBg: "mint",
     available: true,
@@ -375,7 +359,7 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     image: imgSamosa,
     description: "Flaky golden fried pastry cones filled with spiced potatoes, green peas, and cashews.",
     details: "Served piping hot with tangy tamarind saunth chutney and spicy green mint dip.",
-    ingredients: ["Crispy Pastry Crust", "Spiced Potatoes & Peas", "Cashew Bits", "Tamarind Chutney", "Mint Dip"],
+    ingredients: ["Crispy Pastry Crust", "Spiced Potatoes & Peas", "Cashew Bits", "Tamarind Chutney"],
     badge: "CRISPY CONES",
     pastelBg: "coral",
     available: true,
@@ -388,15 +372,13 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.8,
     emoji: "🧀",
     image: imgDhokla,
-    description: "Juicy, steamed gram flour savory cakes tempered with mustard seeds, curry leaves, and green chilies.",
+    description: "Juicy steamed gram flour savory cakes tempered with mustard seeds, curry leaves, and green chilies.",
     details: "Garnished with grated fresh coconut and fresh cilantro, served with spicy papaya relish.",
-    ingredients: ["Gram Flour", "Mustard Seed Tadka", "Curry Leaves", "Fresh Coconut", "Green Chilies"],
+    ingredients: ["Gram Flour", "Mustard Seed Tadka", "Curry Leaves", "Fresh Coconut"],
     badge: "GUJARATI ICON",
     pastelBg: "yellow",
     available: true,
   },
-
-  // --- 4. SOUTH INDIAN DELICACIES (3 Items) ---
   {
     id: 22,
     name: "Mysore Masala Dosa Crisp",
@@ -405,9 +387,9 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.9,
     emoji: "🥞",
     image: imgMasalaDosa,
-    description: "Crispy fermented crepe smeared with spicy red chili-garlic chutney and stuffed with spiced potato masala.",
-    details: "Served with piping hot drumstick sambar, fresh coconut chutney, and tangy tomato chutney.",
-    ingredients: ["Crispy Rice Lentil Crepe", "Red Garlic Chutney", "Spiced Potato Mash", "Piping Sambar", "Coconut Dip"],
+    description: "Crispy fermented crepe smeared with red chili-garlic chutney and spiced potato masala.",
+    details: "Served with piping hot drumstick sambar, fresh coconut chutney, and tomato chutney.",
+    ingredients: ["Crispy Rice Lentil Crepe", "Red Garlic Chutney", "Spiced Potato Mash", "Sambar"],
     badge: "SOUTH INDIAN FAV",
     pastelBg: "lavender",
     available: true,
@@ -422,7 +404,7 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     image: imgIdliSambar,
     description: "Steamed fluffy rice and lentil cakes served with aromatic vegetable sambar and coconut dip.",
     details: "Healthy, oil-free, and super soft idlis dipped in freshly brewed drumstick sambar.",
-    ingredients: ["Fermented Rice Batter", "Vegetable Sambar", "Fresh Coconut Chutney", "Mustard Seed Tadka"],
+    ingredients: ["Fermented Rice Batter", "Vegetable Sambar", "Fresh Coconut Chutney"],
     badge: "HEALTHY BREAKFAST",
     pastelBg: "mint",
     available: true,
@@ -436,14 +418,12 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     emoji: "🍩",
     image: imgMeduVada,
     description: "Golden fried crispy urad dal donuts with black peppercorns and curry leaves.",
-    details: "Crisp exterior with an airy, pillowy interior, paired with hot sambar and tomato chutney.",
-    ingredients: ["Urad Dal Batter", "Cracked Black Pepper", "Curry Leaves", "Fresh Ginger", "Coconut Chutney"],
+    details: "Crisp exterior with an airy pillowy interior, paired with hot sambar and chutney.",
+    ingredients: ["Urad Dal Batter", "Cracked Black Pepper", "Curry Leaves", "Coconut Chutney"],
     badge: "CRUNCHY",
     pastelBg: "coral",
     available: true,
   },
-
-  // --- 5. INDIAN SWEETS & DESSERTS (4 Items) ---
   {
     id: 25,
     name: "Royal Kesar Gulab Jamun (3 Pcs)",
@@ -452,9 +432,9 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.9,
     emoji: "🍮",
     image: imgGulabJamun,
-    description: "Warm, soft khoya dumplings soaked in fragrant saffron, rose water, and green cardamom sugar syrup.",
+    description: "Soft khoya dumplings soaked in fragrant saffron, rose water, and green cardamom sugar syrup.",
     details: "Made with pure milk mawa and deep fried in desi ghee, garnished with pistachio slivers.",
-    ingredients: ["Fresh Milk Khoya (Mawa)", "Pure Desi Ghee", "Kashmiri Saffron Sugar Syrup", "Rose Water", "Pistachio Slivers"],
+    ingredients: ["Fresh Milk Khoya", "Pure Desi Ghee", "Saffron Sugar Syrup", "Pistachio Slivers"],
     badge: "TRADITIONAL FAV",
     pastelBg: "yellow",
     available: true,
@@ -469,7 +449,7 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     image: imgRasmalai,
     description: "Spongy cottage cheese patties floating in chilled, thickened saffron and cardamom infused milk.",
     details: "Chilled delicacy garnished with toasted almonds and Kashmiri saffron strands.",
-    ingredients: ["Fresh Chenna Patties", "Reduced Condensed Milk", "Saffron Strands", "Almonds & Pistachios"],
+    ingredients: ["Fresh Chenna Patties", "Reduced Condensed Milk", "Saffron Strands", "Almonds"],
     badge: "ROYAL SWEET",
     pastelBg: "lavender",
     available: true,
@@ -484,7 +464,7 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     image: imgJalebi,
     description: "Spiral golden crispy jalebis soaked in saffron syrup paired with slow-reduced thick malai rabri.",
     details: "Fried in pure desi ghee for irresistible crunch and rich milk dessert pairing.",
-    ingredients: ["Fermented Batter", "Desi Ghee", "Saffron Sugar Syrup", "Thickened Malai Rabri", "Cardamom"],
+    ingredients: ["Fermented Batter", "Desi Ghee", "Saffron Sugar Syrup", "Thickened Rabri"],
     badge: "ICONIC DUO",
     pastelBg: "mint",
     available: true,
@@ -497,15 +477,13 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.8,
     emoji: "⚪",
     image: imgRasgulla,
-    description: "Light, melt-in-mouth spongy chenna spheres cooked in clear aromatic cardamom sugar syrup.",
-    details: "Made strictly with cow milk chenna for authentic super-soft, juicy texture.",
-    ingredients: ["Cow Milk Chenna", "Light Sugar Syrup", "Crushed Green Cardamom", "Rose Essence"],
+    description: "Light melt-in-mouth spongy chenna spheres cooked in clear aromatic cardamom sugar syrup.",
+    details: "Made strictly with cow milk chenna for authentic super-soft juicy texture.",
+    ingredients: ["Cow Milk Chenna", "Light Sugar Syrup", "Crushed Green Cardamom"],
     badge: "BENGALI CLASSIC",
     pastelBg: "coral",
     available: true,
   },
-
-  // --- 6. DRINKS & REFRESHERS (2 Items) ---
   {
     id: 29,
     name: "Royal Kulhad Mango Lassi",
@@ -514,9 +492,9 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.9,
     emoji: "🥛",
     image: imgMangoLassi,
-    description: "Thick, creamy churned sweet mango yogurt drink served in a traditional clay kulhad with fresh malai.",
-    details: "Flavored with Ratnagiri Alphonso mango pulp, rose water, crushed green cardamoms, and slivered almonds.",
-    ingredients: ["Thick Buffalo Milk Curd", "Alphonso Mango Pulp", "Heavy Malai Clot", "Rose Water", "Cardamom & Almonds"],
+    description: "Thick creamy churned sweet mango yogurt drink served in a traditional clay kulhad with malai.",
+    details: "Flavored with Ratnagiri Alphonso mango pulp, rose water, and slivered almonds.",
+    ingredients: ["Thick Milk Curd", "Alphonso Mango Pulp", "Heavy Malai", "Cardamom & Almonds"],
     badge: "REFRESHING",
     pastelBg: "yellow",
     available: true,
@@ -529,9 +507,9 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
     rating: 4.9,
     emoji: "☕",
     image: imgMasalaChai,
-    description: "Slow-brewed Assam CTC black tea with crushed fresh ginger, green cardamoms, cinnamon, and whole milk.",
+    description: "Slow-brewed Assam CTC black tea with crushed fresh ginger, green cardamoms, and whole milk.",
     details: "Served steaming hot in an earthen kulhad for the authentic aroma.",
-    ingredients: ["Assam CTC Tea", "Fresh Ginger", "Green Cardamom", "Cinnamon & Cloves", "Fresh Milk"],
+    ingredients: ["Assam CTC Tea", "Fresh Ginger", "Green Cardamom", "Fresh Milk"],
     badge: "AUTHENTIC CHAI",
     pastelBg: "lavender",
     available: true,
@@ -539,8 +517,8 @@ export const INITIAL_30_INDIAN_VEG_FOODS = [
 ];
 
 function App() {
-  // Check if user is navigating directly to the isolated private admin database portal
-  const [isAdminPage, setIsAdminPage] = useState(() => {
+  // Admin Route Detector
+  const [isAdminPage] = useState(() => {
     if (typeof window !== "undefined") {
       return (
         window.location.pathname.startsWith("/admin") ||
@@ -551,22 +529,22 @@ function App() {
     return false;
   });
 
-  // Navigation & Page routing for the main website
-  const [currentPage, setCurrentPage] = useState("home"); // 'home' | 'menu' | 'categories' | 'orders' | 'profile'
+  // Navigation State
+  const [currentPage, setCurrentPage] = useState("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Food Catalog State (30 Pure Indian Veg Dishes)
+  // Catalog & Filter State
   const [apiFoods, setApiFoods] = useState([]);
   const [loadingFoods, setLoadingFoods] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [sortBy, setSortBy] = useState("default"); // 'default' | 'price-low' | 'price-high' | 'rating' | 'name'
+  const [sortBy, setSortBy] = useState("default");
 
-  // Food detail modal
+  // Selected item detail modal
   const [selectedFoodItem, setSelectedFoodItem] = useState(null);
   const [detailQuantity, setDetailQuantity] = useState(1);
 
-  // Shopping Cart State
+  // Cart State
   const [cart, setCart] = useState(() => {
     try {
       const saved = localStorage.getItem("foodfusion_cart");
@@ -589,7 +567,6 @@ function App() {
     }
   });
 
-  // Auth Card Mode: 'login' | 'register'
   const [authMode, setAuthMode] = useState("login");
   const [authForm, setAuthForm] = useState({
     name: "",
@@ -602,7 +579,7 @@ function App() {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState("");
 
-  // Checkout & Direct Buy State
+  // Checkout State
   const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
   const [checkoutDirectItem, setCheckoutDirectItem] = useState(null);
   const [checkoutForm, setCheckoutForm] = useState({
@@ -621,7 +598,7 @@ function App() {
   const [checkoutSubmitting, setCheckoutSubmitting] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
 
-  // Live Order Tracking & Confirmation State
+  // Order Tracking & Confirmation State
   const [trackedOrder, setTrackedOrder] = useState(null);
   const [orderSuccessModalOpen, setOrderSuccessModalOpen] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState(null);
@@ -634,7 +611,7 @@ function App() {
     }
   });
 
-  // Standalone Private Admin Database Explorer (Passcode: Rishikesh7102005)
+  // Admin Database Console State (Passcode: Rishikesh7102005)
   const [isAdminUnlocked, setIsAdminUnlocked] = useState(false);
   const [adminPasscode, setAdminPasscode] = useState("");
   const [adminPassError, setAdminPassError] = useState("");
@@ -644,12 +621,12 @@ function App() {
     users: [],
     orders: [],
   });
-  const [adminTab, setAdminTab] = useState("orders"); // 'orders' | 'users' | 'foods' | 'json'
+  const [adminTab, setAdminTab] = useState("orders");
 
-  // Toast Notification State
+  // Notification Toast State
   const [toastMessage, setToastMessage] = useState("");
 
-  // Sync cart to local storage
+  // Save cart
   useEffect(() => {
     try {
       localStorage.setItem("foodfusion_cart", JSON.stringify(cart));
@@ -658,7 +635,7 @@ function App() {
     }
   }, [cart]);
 
-  // Load live food catalog from backend API (or fallback to 30 pure veg Indian items)
+  // Load foods catalog
   useEffect(() => {
     const fetchCatalog = async () => {
       setLoadingFoods(true);
@@ -668,7 +645,7 @@ function App() {
           setApiFoods(data);
         }
       } catch (err) {
-        console.warn("Backend offline or loading, using offline catalog:", err.message);
+        console.warn("Backend offline, using offline catalog:", err.message);
       } finally {
         setLoadingFoods(false);
       }
@@ -676,7 +653,7 @@ function App() {
     fetchCatalog();
   }, []);
 
-  // Real-time synchronization of orders across tabs & portal status changes
+  // Real-time synchronization of orders across tabs & storage
   useEffect(() => {
     const syncOrdersFromStorage = () => {
       try {
@@ -689,7 +666,7 @@ function App() {
             const matching = parsed.find(
               (o) => o.orderId === curr.orderId || o._id === curr._id
             );
-            return matching ? matching : curr;
+            return matching || curr;
           });
         }
       } catch (e) {
@@ -698,7 +675,7 @@ function App() {
     };
 
     window.addEventListener("storage", syncOrdersFromStorage);
-    const interval = setInterval(syncOrdersFromStorage, 2500);
+    const interval = setInterval(syncOrdersFromStorage, 2000);
 
     return () => {
       window.removeEventListener("storage", syncOrdersFromStorage);
@@ -706,7 +683,6 @@ function App() {
     };
   }, []);
 
-  // Helper toast notification
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => {
@@ -714,14 +690,12 @@ function App() {
     }, 4000);
   };
 
-  // Helper fallback for image loading errors
   const handleImageError = (e, category) => {
     e.target.onerror = null;
-    e.target.src =
-      CATEGORY_FALLBACK_IMAGES[category] || imgShahiPaneer;
+    e.target.src = CATEGORY_FALLBACK_IMAGES[category] || imgShahiPaneer;
   };
 
-  // Active Catalog: Fallback to exactly 30 pure veg Indian dishes with local images
+  // Active Catalog
   const foodsCatalog = useMemo(() => {
     if (apiFoods && apiFoods.length === 30) {
       return apiFoods;
@@ -729,7 +703,7 @@ function App() {
     return INITIAL_30_INDIAN_VEG_FOODS;
   }, [apiFoods]);
 
-  // Filter and Sort Catalog
+  // Filter and sort catalog
   const filteredFoods = useMemo(() => {
     return foodsCatalog
       .filter((food) => {
@@ -751,18 +725,18 @@ function App() {
       });
   }, [foodsCatalog, selectedCategory, searchQuery, sortBy]);
 
-  // Shopping Cart Calculations
+  // Cart Calculations
   const cartSubtotal = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }, [cart]);
 
   const deliveryFee = cartSubtotal > 499 || cartSubtotal === 0 ? 0 : 40;
-  const taxAmount = Math.round(cartSubtotal * 0.05); // 5% GST
-  const discountAmount = discountApplied ? Math.round(cartSubtotal * 0.5) : 0; // 50% discount with FOODFUSION50
+  const taxAmount = Math.round(cartSubtotal * 0.05);
+  const discountAmount = discountApplied ? Math.round(cartSubtotal * 0.5) : 0;
   const finalCartTotal = Math.max(0, cartSubtotal + deliveryFee + taxAmount - discountAmount);
   const cartTotalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Cart Operations
+  // Cart Handlers
   const addToCart = (food, qty = 1) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === food.id || item._id === food._id);
@@ -808,11 +782,9 @@ function App() {
     showToast("🗑️ Item removed from cart");
   };
 
-  const clearCart = () => {
-    setCart([]);
-  };
+  const clearCart = () => setCart([]);
 
-  // Auth Operations
+  // Auth Handlers
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
     setAuthError("");
@@ -843,7 +815,6 @@ function App() {
             address: authForm.address,
           };
         } catch {
-          // Local fallback for offline/client evaluation
           userObj = {
             name: authForm.name,
             email: authForm.email,
@@ -867,7 +838,6 @@ function App() {
             email: authForm.email,
           };
         } catch {
-          // Local fallback for offline/client evaluation
           userObj = {
             name: authForm.email.split("@")[0] || "Food Lover",
             email: authForm.email,
@@ -887,7 +857,7 @@ function App() {
     }
   };
 
-  // 1-Click Fast Demo Login for Professor Presentation
+  // 1-Click Demo Login
   const handleDemoLogin = () => {
     const demoUser = {
       name: "Professor / Evaluator",
@@ -897,7 +867,6 @@ function App() {
       role: "Evaluator",
     };
 
-    // Prepopulate sample order if none exists
     if (userOrders.length === 0) {
       const sampleOrder = {
         orderId: "#FF-98210",
@@ -922,7 +891,7 @@ function App() {
 
     setCurrentUser(demoUser);
     localStorage.setItem("foodfusion_user", JSON.stringify(demoUser));
-    showToast("⚡ 1-Click Professor Demo Login Successful!");
+    showToast("⚡ 1-Click Demo Login Successful!");
   };
 
   const handleLogout = () => {
@@ -989,7 +958,6 @@ function App() {
         const response = await createOrder(orderPayload);
         placedOrder = response.order;
       } catch {
-        // Fallback for offline / demo mode
         const generatedId = `#FF-${Math.floor(10000 + Math.random() * 90000)}`;
         placedOrder = {
           ...orderPayload,
@@ -999,13 +967,12 @@ function App() {
         };
       }
 
-      // Save to local user orders
       const updatedOrders = [placedOrder, ...userOrders];
       setUserOrders(updatedOrders);
       try {
         localStorage.setItem("foodfusion_orders", JSON.stringify(updatedOrders));
-      } catch {
-        // Ignore
+      } catch (err) {
+        console.error(err);
       }
 
       if (!checkoutDirectItem) {
@@ -1025,14 +992,39 @@ function App() {
     }
   };
 
-  // Direct Buy Now trigger
   const handleDirectBuy = (food, qty = 1) => {
     setSelectedFoodItem(null);
     setCheckoutDirectItem({ food, quantity: qty });
     setCheckoutModalOpen(true);
   };
 
-  // Private Admin Passcode Verification (Passcode: Rishikesh7102005)
+  // User Deletes Order from their Dashboard
+  const handleDeleteUserOrder = async (orderId) => {
+    if (!window.confirm(`Are you sure you want to cancel / delete order ${orderId}?`)) return;
+
+    try {
+      await deleteOrder(orderId);
+    } catch {
+      // Local fallback
+    }
+
+    const updated = userOrders.filter(
+      (o) => o._id !== orderId && o.orderId !== orderId
+    );
+    setUserOrders(updated);
+    try {
+      localStorage.setItem("foodfusion_orders", JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
+
+    if (trackedOrder && (trackedOrder._id === orderId || trackedOrder.orderId === orderId)) {
+      setTrackedOrder(null);
+    }
+    showToast(`🗑️ Order ${orderId} has been deleted.`);
+  };
+
+  // Admin Master Passcode Gate
   const handleVerifyAdminPasscode = async (e) => {
     e.preventDefault();
     setAdminPassError("");
@@ -1066,23 +1058,30 @@ function App() {
       const data = await getAdminDashboardData();
       setAdminData(data);
     } catch {
-      // Offline fallback with combined local data
-      const combinedOrders = userOrders.length > 0 ? userOrders : [];
+      const savedOrders = (() => {
+        try {
+          const s = localStorage.getItem("foodfusion_orders");
+          return s ? JSON.parse(s) : [];
+        } catch {
+          return userOrders;
+        }
+      })();
       setAdminData({
         stats: {
           totalUsers: currentUser ? 1 : 0,
-          totalOrders: combinedOrders.length,
-          totalRevenue: combinedOrders.reduce((sum, o) => sum + (o.totalAmount || 0), 0),
-          activeOrders: combinedOrders.filter((o) => o.status !== "Delivered").length,
+          totalOrders: savedOrders.length,
+          totalRevenue: savedOrders.reduce((sum, o) => sum + (o.totalAmount || 0), 0),
+          activeOrders: savedOrders.filter((o) => o.status !== "Delivered").length,
         },
         users: currentUser ? [currentUser] : [],
-        orders: combinedOrders,
+        orders: savedOrders,
       });
     } finally {
       setAdminLoading(false);
     }
   };
 
+  // Admin Updates Order Status (Real-time live sync with User view)
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
     try {
       await updateOrderStatus(orderId, newStatus);
@@ -1100,12 +1099,12 @@ function App() {
     }));
 
     // 2. Real-Time Sync with User Orders:
-    // If admin marks "Delivered", remove from user active orders as requested
+    // If admin marks "Delivered", remove from user active orders list as requested
     setUserOrders((prevOrders) => {
       let updated;
       if (newStatus === "Delivered") {
         updated = prevOrders.filter((o) => o._id !== orderId && o.orderId !== orderId);
-        showToast(`📦 Order ${orderId} marked Delivered & cleared from active list!`);
+        showToast(`📦 Order ${orderId} Delivered & cleared from user list!`);
       } else {
         updated = prevOrders.map((o) =>
           o._id === orderId || o.orderId === orderId ? { ...o, status: newStatus } : o
@@ -1131,24 +1130,38 @@ function App() {
     });
   };
 
+  // Admin deletes order from database
   const handleDeleteOrderRecord = async (orderId) => {
     if (!window.confirm("Are you sure you want to delete this order record from the database?")) return;
     try {
       await deleteOrder(orderId);
       showToast("Order record deleted from database.");
-      loadAdminDashboardData();
     } catch {
-      setAdminData((prev) => ({
-        ...prev,
-        orders: prev.orders.filter((o) => o._id !== orderId && o.orderId !== orderId),
-      }));
       showToast("Order record deleted.");
+    }
+
+    setAdminData((prev) => ({
+      ...prev,
+      orders: prev.orders.filter((o) => o._id !== orderId && o.orderId !== orderId),
+    }));
+
+    // Also remove from user orders
+    setUserOrders((prev) => {
+      const updated = prev.filter((o) => o._id !== orderId && o.orderId !== orderId);
+      try {
+        localStorage.setItem("foodfusion_orders", JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
+
+    if (trackedOrder && (trackedOrder._id === orderId || trackedOrder.orderId === orderId)) {
+      setTrackedOrder(null);
     }
   };
 
-  // =========================================================================
-  // STANDALONE PRIVATE ADMIN WEBPAGE (DIRECT /admin ROUTE)
-  // =========================================================================
+  // Standalone Admin Webpage (/admin)
   if (isAdminPage) {
     return (
       <div className="foodfusion-app">
@@ -1224,7 +1237,7 @@ function App() {
                 </div>
               </div>
 
-              {/* Stats Overview */}
+              {/* Stats Grid */}
               <div className="admin-stats-grid">
                 <div className="stat-card">
                   <span className="stat-icon">👥</span>
@@ -1260,7 +1273,7 @@ function App() {
                 </div>
               </div>
 
-              {/* Tab Navigation */}
+              {/* Admin Tabs */}
               <div className="admin-tabs-row">
                 <button
                   type="button"
@@ -1292,7 +1305,7 @@ function App() {
                 </button>
               </div>
 
-              {/* TAB 1: ORDERS DATABASE TABLE */}
+              {/* Orders Table */}
               {adminTab === "orders" && (
                 <div className="admin-table-wrapper">
                   <h3>Customer Orders Database Records</h3>
@@ -1360,7 +1373,7 @@ function App() {
                 </div>
               )}
 
-              {/* TAB 2: USERS DATABASE TABLE */}
+              {/* Users Table */}
               {adminTab === "users" && (
                 <div className="admin-table-wrapper">
                   <h3>Registered User Accounts Database Records</h3>
@@ -1408,7 +1421,7 @@ function App() {
                 </div>
               )}
 
-              {/* TAB 3: FOOD MENU MANAGER */}
+              {/* Food Catalog View */}
               {adminTab === "foods" && (
                 <div className="admin-table-wrapper">
                   <h3>Food Catalog Collection ({foodsCatalog.length} Pure Indian Veg Dishes)</h3>
@@ -1433,13 +1446,10 @@ function App() {
                 </div>
               )}
 
-              {/* TAB 4: RAW MONGODB JSON INSPECTOR */}
+              {/* JSON Inspector */}
               {adminTab === "json" && (
                 <div className="admin-table-wrapper">
-                  <h3>Raw MongoDB Collections Document Inspector (Live Schema View)</h3>
-                  <p style={{ color: "var(--text-muted)", marginBottom: "16px" }}>
-                    Live JSON serialization of Orders and Users documents directly stored in MongoDB Atlas:
-                  </p>
+                  <h3>Raw MongoDB Collections Document Inspector</h3>
                   <pre style={{ background: "var(--cocoa-dark)", color: "#bbf2d8", padding: "20px", borderRadius: "16px", overflowX: "auto", fontSize: "0.85rem", maxHeight: "400px" }}>
                     {JSON.stringify(
                       {
@@ -1463,10 +1473,7 @@ function App() {
     );
   }
 
-  // =========================================================================
-  // MANDATORY AUTH GATE: USER MUST LOGIN OR SIGNUP TO ENTER THE WEBSITE
-  // Includes 1-Click Fast Demo Login for Professor Evaluation
-  // =========================================================================
+  // Auth Gate: User must Sign In or Sign Up
   if (!currentUser) {
     return (
       <div className="foodfusion-auth-gate-page">
@@ -1478,7 +1485,6 @@ function App() {
         )}
 
         <div className="auth-gate-container">
-          {/* Brand Header */}
           <div className="auth-gate-brand">
             <span className="gate-brand-icon">🌿</span>
             <h1 className="gate-brand-name">FOODFUSION</h1>
@@ -1490,13 +1496,9 @@ function App() {
             </div>
           </div>
 
-          {/* Interactive Sliding Auth Container */}
           <div className="auth-switch-card">
-            {/* Sliding Toggle Navigation Bar */}
             <div className="auth-switch-nav">
-              <div
-                className={`auth-switch-slider ${authMode === "register" ? "slide-right" : "slide-left"}`}
-              />
+              <div className={`auth-switch-slider ${authMode === "register" ? "slide-right" : "slide-left"}`} />
               <button
                 type="button"
                 className={`auth-switch-tab ${authMode === "login" ? "active" : ""}`}
@@ -1513,17 +1515,12 @@ function App() {
               </button>
             </div>
 
-            {authError && (
-              <div className="auth-error-box">
-                ⚠️ {authError}
-              </div>
-            )}
+            {authError && <div className="auth-error-box">⚠️ {authError}</div>}
 
-            {/* Sliding Content Container */}
             <div className="auth-forms-slider-wrapper">
               <div className={`auth-forms-track ${authMode === "register" ? "show-register" : "show-login"}`}>
                 
-                {/* 1. LOGIN FORM PANEL */}
+                {/* Login Panel */}
                 <div className="auth-panel-form">
                   <div className="auth-panel-heading">
                     <h2>Welcome Back!</h2>
@@ -1553,28 +1550,20 @@ function App() {
                       />
                     </div>
 
-                    <button
-                      type="submit"
-                      className="auth-submit-btn"
-                      disabled={authLoading}
-                    >
+                    <button type="submit" className="auth-submit-btn" disabled={authLoading}>
                       {authLoading ? "Authenticating..." : "Sign In to Website →"}
                     </button>
                   </form>
 
                   <div className="switch-prompt">
                     <span>Don't have an account yet? </span>
-                    <button
-                      type="button"
-                      className="switch-link"
-                      onClick={() => setAuthMode("register")}
-                    >
+                    <button type="button" className="switch-link" onClick={() => setAuthMode("register")}>
                       Create Account (Sign Up)
                     </button>
                   </div>
                 </div>
 
-                {/* 2. SIGNUP / REGISTER FORM PANEL */}
+                {/* Register Panel */}
                 <div className="auth-panel-form">
                   <div className="auth-panel-heading">
                     <h2>Create New Account</h2>
@@ -1637,22 +1626,14 @@ function App() {
                       />
                     </div>
 
-                    <button
-                      type="submit"
-                      className="auth-submit-btn"
-                      disabled={authLoading}
-                    >
+                    <button type="submit" className="auth-submit-btn" disabled={authLoading}>
                       {authLoading ? "Creating Account..." : "Create Account & Enter 🚀"}
                     </button>
                   </form>
 
                   <div className="switch-prompt">
                     <span>Already registered? </span>
-                    <button
-                      type="button"
-                      className="switch-link"
-                      onClick={() => setAuthMode("login")}
-                    >
+                    <button type="button" className="switch-link" onClick={() => setAuthMode("login")}>
                       Back to Sign In
                     </button>
                   </div>
@@ -1661,13 +1642,9 @@ function App() {
               </div>
             </div>
 
-            {/* ⚡ 1-CLICK DEMO LOGIN */}
+            {/* 1-Click Demo Login */}
             <div className="auth-professor-demo-box">
-              <button
-                type="button"
-                className="demo-one-click-btn"
-                onClick={handleDemoLogin}
-              >
+              <button type="button" className="demo-one-click-btn" onClick={handleDemoLogin}>
                 ⚡ 1-Click Demo Login →
               </button>
             </div>
@@ -1677,12 +1654,9 @@ function App() {
     );
   }
 
-  // =========================================================================
-  // MAIN PUBLIC WEBSITE (Unlocked for Logged In Users)
-  // =========================================================================
+  // Main Public Application
   return (
     <div className="foodfusion-app">
-      {/* Toast Notification */}
       {toastMessage && (
         <div className="ff-toast-banner">
           <span>{toastMessage}</span>
@@ -1690,12 +1664,9 @@ function App() {
         </div>
       )}
 
-      {/* ===================================================
-          1. NAVIGATION BAR (Clean, Public & Food Focused)
-      =================================================== */}
+      {/* Navbar */}
       <header className="ff-navbar">
         <div className="ff-nav-container">
-          {/* Brand Logo */}
           <div className="ff-logo" onClick={() => setCurrentPage("home")}>
             <span className="ff-logo-icon">🌿</span>
             <div className="ff-logo-text">
@@ -1704,7 +1675,6 @@ function App() {
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
           <nav className="ff-nav-links">
             <button
               type="button"
@@ -1748,9 +1718,7 @@ function App() {
             </button>
           </nav>
 
-          {/* Nav Right CTAs */}
           <div className="ff-nav-actions">
-            {/* Search shortcut */}
             <button
               type="button"
               className="icon-btn search-trigger"
@@ -1763,7 +1731,6 @@ function App() {
               🔍
             </button>
 
-            {/* Cart Trigger */}
             <button
               type="button"
               className="cart-trigger-btn"
@@ -1774,7 +1741,6 @@ function App() {
               <span className="cart-badge">{cartTotalQuantity}</span>
             </button>
 
-            {/* User Profile Button */}
             <button
               type="button"
               className="user-profile-btn"
@@ -1785,7 +1751,6 @@ function App() {
               <span className="user-name-short">{currentUser.name?.split(" ")[0]}</span>
             </button>
 
-            {/* Primary Order CTA */}
             <button
               type="button"
               className="ff-btn-primary nav-order-cta"
@@ -1794,7 +1759,6 @@ function App() {
               Order Now <span>→</span>
             </button>
 
-            {/* Mobile Hamburger */}
             <button
               type="button"
               className="hamburger-btn"
@@ -1806,7 +1770,6 @@ function App() {
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
           <div className="ff-mobile-menu">
             <button type="button" onClick={() => { setCurrentPage("home"); setMobileMenuOpen(false); }}>🏠 Home</button>
@@ -1819,12 +1782,9 @@ function App() {
         )}
       </header>
 
-      {/* ===================================================
-          2. HOME PAGE (Indian Theme with Roti Animation)
-      =================================================== */}
+      {/* Home Page */}
       {currentPage === "home" && (
         <main className="ff-home-page">
-          {/* SECTION 1: HERO SECTION WITH ROTI ANIMATION */}
           <section className="ff-hero-section">
             <div className="hero-content-wrapper">
               <div className="hero-left-column">
@@ -1846,23 +1806,14 @@ function App() {
                 </p>
 
                 <div className="hero-cta-group">
-                  <button
-                    type="button"
-                    className="hero-btn-primary"
-                    onClick={() => setCurrentPage("menu")}
-                  >
+                  <button type="button" className="hero-btn-primary" onClick={() => setCurrentPage("menu")}>
                     Order Now <span>→</span>
                   </button>
-                  <button
-                    type="button"
-                    className="hero-btn-secondary"
-                    onClick={() => setCurrentPage("categories")}
-                  >
+                  <button type="button" className="hero-btn-secondary" onClick={() => setCurrentPage("categories")}>
                     Explore Categories
                   </button>
                 </div>
 
-                {/* Micro trust indicators */}
                 <div className="hero-trust-row">
                   <span className="trust-item">⚡ 30 Min Express Delivery</span>
                   <span className="trust-item">🌱 100% Pure Vegetarian</span>
@@ -1870,25 +1821,19 @@ function App() {
                 </div>
               </div>
 
-              {/* Hero Right Image Stage: Authentic Indian Roti Animation */}
               <div className="hero-right-column">
                 <div className="hero-image-stage">
                   <div className="hero-glow-ring" />
-                  
-                  {/* High-res authentic Indian Roti / Flatbread from local assets */}
                   <img
                     src={imgButterNaan}
                     alt="Authentic Hot Indian Tandoori Roti with Butter"
                     className="hero-hero-roti-img"
                     onError={(e) => handleImageError(e, "Breads & Rice")}
                   />
-
-                  {/* Floating Indian Spice / Flavor Elements */}
                   <div className="hero-floating-badge float-butter" title="Desi Cow Butter">🧈</div>
                   <div className="hero-floating-badge float-basil" title="Fresh Coriander">🌿</div>
                   <div className="hero-floating-badge float-chili" title="Spicy Green Chili">🌶️</div>
                   <div className="hero-floating-badge float-wheat" title="Organic Wheat">🌾</div>
-
                   <div className="hero-discount-tag">
                     <span>HOT DEAL</span>
                     <strong>50% OFF</strong>
@@ -1897,7 +1842,6 @@ function App() {
               </div>
             </div>
 
-            {/* Jagged / Serrated edge transition */}
             <div className="serrated-edge-divider">
               <svg viewBox="0 0 1200 40" preserveAspectRatio="none">
                 <path d="M0,0 L30,30 L60,0 L90,30 L120,0 L150,30 L180,0 L210,30 L240,0 L270,30 L300,0 L330,30 L360,0 L390,30 L420,0 L450,30 L480,0 L510,30 L540,0 L570,30 L600,0 L630,30 L660,0 L690,30 L720,0 L750,30 L780,0 L810,30 L840,0 L870,30 L880,0 L900,0 L930,30 L960,0 L990,30 L1020,0 L1050,30 L1080,0 L1110,30 L1140,0 L1170,30 L1200,0 L1200,40 L0,40 Z" />
@@ -1905,23 +1849,21 @@ function App() {
             </div>
           </section>
 
-          {/* SECTION 2: ABOUT STORIES (3-BOX REFERENCE LAYOUT) */}
+          {/* About Stories */}
           <section className="ff-about-stories-section" id="about-section">
             <div className="stories-container">
               <div className="stories-heading-col">
                 <span className="section-label">ORIGIN &amp; QUALITY</span>
                 <h2 className="stories-title">ABOUT<br />STORIES</h2>
               </div>
-
               <div className="stories-content-col">
                 <div className="stories-emblem">❂</div>
                 <p className="stories-paragraph">
-                  We improve flavor consistency, boost and balance aromatic Indian spices, and elevate
+                  We improve flavor consistency, boost aromatic Indian spices, and elevate
                   the precision of pure vegetarian culinary craftsmanship with farm-fresh organic ingredients.
                 </p>
                 <div className="stories-cocoa-icon">🌰</div>
               </div>
-
               <div className="stories-reviews-badge">
                 <div className="avatar-stack">
                   <span className="stacked-avatar">👩</span>
@@ -1935,7 +1877,7 @@ function App() {
             </div>
           </section>
 
-          {/* SECTION 3: 100% HEALTHY DOUBLE RIBBON MARQUEE */}
+          {/* Marquee Banner */}
           <section className="ff-ribbon-marquee">
             <div className="marquee-track">
               <span>★ 100% HEALTHY</span>
@@ -1946,11 +1888,10 @@ function App() {
               <span>★ 100% HEALTHY</span>
               <span>★ PURE VEGETARIAN</span>
               <span>★ CLAY TANDOOR BAKED</span>
-              <span>★ HYGIENIC PACKAGING</span>
             </div>
           </section>
 
-          {/* SECTION 4: OUR POPULAR PRODUCTS (Pastel Cards Matching Reference) */}
+          {/* Popular Products */}
           <section className="ff-popular-products-section">
             <div className="popular-section-header">
               <div className="floating-seed">🌰 🌰 🌰</div>
@@ -2026,7 +1967,7 @@ function App() {
             </div>
           </section>
 
-          {/* SECTION 5: SHOP BY CATEGORIES */}
+          {/* Categories Showcase */}
           <section className="ff-shop-categories-section">
             <div className="categories-header-box">
               <span className="section-label-gold">CURATED SELECTIONS</span>
@@ -2066,7 +2007,7 @@ function App() {
             </div>
           </section>
 
-          {/* SECTION 6: MEET DINE OUT DEALS */}
+          {/* Dine Out Deals */}
           <section className="ff-dineout-deals-section">
             <div className="dineout-card">
               <div className="dineout-left">
@@ -2084,27 +2025,22 @@ function App() {
                 <h2 className="dineout-title">MEET DINE OUT DEALS</h2>
                 <p className="dineout-text">
                   Enjoy authentic flavor harmony, flat 50% discount with promo code{" "}
-                  <strong>FOODFUSION50</strong>, and free contactless delivery on all orders above ₹499!
+                  <strong>FOODFUSION50</strong>, and free delivery on all orders above ₹499!
                 </p>
-                <button
-                  type="button"
-                  className="dineout-cta-btn"
-                  onClick={() => setCurrentPage("menu")}
-                >
+                <button type="button" className="dineout-cta-btn" onClick={() => setCurrentPage("menu")}>
                   Order Now <span>→</span>
                 </button>
               </div>
             </div>
           </section>
 
-          {/* SECTION 7: WHY FOODFUSION */}
+          {/* Why FoodFusion */}
           <section className="ff-why-section">
             <div className="why-header">
               <span className="section-label">THE FOODFUSION ADVANTAGE</span>
               <h2>WHY CHOOSE US?</h2>
               <p>Engineering perfection in every pure vegetarian bite</p>
             </div>
-
             <div className="why-cards-grid">
               <div className="why-feature-card">
                 <span className="feature-icon">⚡</span>
@@ -2129,14 +2065,13 @@ function App() {
             </div>
           </section>
 
-          {/* SECTION 8: OUR VALUABLE CUSTOMER */}
+          {/* Testimonials */}
           <section className="ff-testimonials-section">
             <div className="testi-header">
               <span className="section-label">REVIEWS &amp; LOVE</span>
               <h2>OUR VALUABLE CUSTOMER</h2>
               <p>Real stories from food lovers across the city</p>
             </div>
-
             <div className="testi-cards-grid">
               {[
                 { name: "Priya Sharma", role: "Food Critic", text: "The Shahi Paneer, Dal Makhani and Royal Gulab Jamun are sensational! Always hot and fresh.", rating: 5, avatar: "👩💼" },
@@ -2158,16 +2093,12 @@ function App() {
             </div>
           </section>
 
-          {/* SECTION 9: PROMOTIONAL FINAL CTA */}
+          {/* Final CTA */}
           <section className="ff-final-cta-section">
             <div className="cta-box">
               <h2>Ready to Taste Perfection?</h2>
               <p>Explore all 30 chef-crafted pure vegetarian Indian delicacies now.</p>
-              <button
-                type="button"
-                className="final-cta-btn"
-                onClick={() => setCurrentPage("menu")}
-              >
+              <button type="button" className="final-cta-btn" onClick={() => setCurrentPage("menu")}>
                 Explore Full Menu <span>→</span>
               </button>
             </div>
@@ -2175,9 +2106,7 @@ function App() {
         </main>
       )}
 
-      {/* ===================================================
-          3. DEDICATED MENU PAGE (30 Indian Veg Items)
-      =================================================== */}
+      {/* Menu Page (30 Dishes) */}
       {currentPage === "menu" && (
         <main className="ff-menu-page">
           <div className="menu-header-banner">
@@ -2186,7 +2115,6 @@ function App() {
             <p>Explore 30 delicious chef-curated Indian vegetarian dishes with live search &amp; filter</p>
           </div>
 
-          {/* Search & Category Filter Bar */}
           <div className="menu-controls-container">
             <div className="menu-search-wrapper">
               <span className="search-icon">🔍</span>
@@ -2202,7 +2130,6 @@ function App() {
               )}
             </div>
 
-            {/* Sort Control */}
             <div className="menu-sort-wrapper">
               <div className="sort-label-group">
                 <span className="sort-icon">⚡</span>
@@ -2226,7 +2153,6 @@ function App() {
             </div>
           </div>
 
-          {/* Category Filter Pills */}
           <div className="category-pills-bar">
             {CATEGORIES.map((category) => (
               <button
@@ -2247,7 +2173,6 @@ function App() {
             ))}
           </div>
 
-          {/* Food Grid Display (30 Veg Items) */}
           <div className="menu-food-grid">
             {loadingFoods ? (
               <div style={{ textAlign: "center", gridColumn: "1/-1", padding: "40px" }}>
@@ -2342,9 +2267,7 @@ function App() {
         </main>
       )}
 
-      {/* ===================================================
-          4. DEDICATED CATEGORIES PAGE
-      =================================================== */}
+      {/* Categories Page */}
       {currentPage === "categories" && (
         <main className="ff-menu-page">
           <div className="menu-header-banner">
@@ -2386,22 +2309,20 @@ function App() {
         </main>
       )}
 
-      {/* ===================================================
-          5. ORDERS HISTORY PAGE
-      =================================================== */}
+      {/* Orders Page (With Delete/Cancel Order option & Live Status Sync) */}
       {currentPage === "orders" && (
         <main className="ff-menu-page">
           <div className="menu-header-banner">
-            <span className="menu-badge">ORDER TRACKING</span>
+            <span className="menu-badge">ORDER TRACKING &amp; MANAGEMENT</span>
             <h1>YOUR ORDER HISTORY</h1>
-            <p>Track live delivery progress and review previous food orders</p>
+            <p>Track live delivery progress or manage previous food orders</p>
           </div>
 
           <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
             {userOrders.length === 0 ? (
               <div style={{ background: "#fff", padding: "50px", borderRadius: "24px", textAlign: "center" }}>
                 <span style={{ fontSize: "3rem" }}>📦</span>
-                <h3 style={{ marginTop: "12px", marginBottom: "8px" }}>No orders placed yet</h3>
+                <h3 style={{ marginTop: "12px", marginBottom: "8px" }}>No active orders</h3>
                 <p style={{ color: "var(--text-muted)", marginBottom: "20px" }}>Browse our 30 vegetarian dishes and place your first order!</p>
                 <button
                   type="button"
@@ -2414,8 +2335,8 @@ function App() {
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 {userOrders.map((order, idx) => (
-                  <div key={order.orderId || idx} style={{ background: "#fff", padding: "24px", borderRadius: "20px", border: "1px solid var(--cream-border)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+                  <div key={order.orderId || order._id || idx} style={{ background: "#fff", padding: "24px", borderRadius: "20px", border: "1px solid var(--cream-border)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "8px" }}>
                       <div>
                         <strong style={{ fontSize: "1.2rem", color: "var(--cocoa-dark)" }}>{order.orderId || `#FF-${1000 + idx}`}</strong>
                         <span style={{ fontSize: "0.85rem", color: "var(--text-muted)", display: "block" }}>
@@ -2423,7 +2344,7 @@ function App() {
                         </span>
                       </div>
                       <span className={`status-select status-${(order.status || "Preparing").toLowerCase().replace(/\s+/g, "-")}`}>
-                        {order.status || "Preparing"}
+                        ● {order.status || "Preparing"}
                       </span>
                     </div>
 
@@ -2436,18 +2357,29 @@ function App() {
                       ))}
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
                       <div>
                         <span style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>Total Paid: </span>
                         <strong style={{ fontSize: "1.3rem", color: "var(--cocoa-dark)" }}>₹{order.totalAmount}</strong>
                       </div>
-                      <button
-                        type="button"
-                        className="btn-quick-buy"
-                        onClick={() => setTrackedOrder(order)}
-                      >
-                        Track Live Status 🛰️
-                      </button>
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        <button
+                          type="button"
+                          className="btn-del-record"
+                          style={{ width: "auto", padding: "8px 14px", borderRadius: "var(--radius-pill)", fontSize: "0.85rem", fontWeight: 700 }}
+                          onClick={() => handleDeleteUserOrder(order.orderId || order._id)}
+                          title="Delete / Cancel Order"
+                        >
+                          🗑️ Delete Order
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-quick-buy"
+                          onClick={() => setTrackedOrder(order)}
+                        >
+                          Track Live Status 🛰️
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -2457,9 +2389,7 @@ function App() {
         </main>
       )}
 
-      {/* ===================================================
-          6. USER PROFILE PAGE
-      =================================================== */}
+      {/* User Profile Page */}
       {currentPage === "profile" && (
         <main className="ff-menu-page">
           <div style={{ maxWidth: "600px", margin: "40px auto", background: "#fff", padding: "40px", borderRadius: "28px", border: "1px solid var(--cream-border)", textAlign: "center" }}>
@@ -2493,26 +2423,18 @@ function App() {
                 style={{ flex: 1, padding: "12px" }}
                 onClick={handleLogout}
               >
-                Sign Out (Return to Login)
+                Sign Out
               </button>
             </div>
           </div>
         </main>
       )}
 
-      {/* ===================================================
-          7. FOOD DETAILS MODAL
-      =================================================== */}
+      {/* Food Details Modal */}
       {selectedFoodItem && (
         <div className="ff-modal-backdrop" onClick={() => setSelectedFoodItem(null)}>
           <div className="ff-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "680px" }}>
-            <button
-              type="button"
-              className="modal-close-btn"
-              onClick={() => setSelectedFoodItem(null)}
-            >
-              ✕
-            </button>
+            <button type="button" className="modal-close-btn" onClick={() => setSelectedFoodItem(null)}>✕</button>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: "24px", alignItems: "center" }}>
               <div style={{ borderRadius: "20px", overflow: "hidden", height: "240px" }}>
@@ -2576,9 +2498,7 @@ function App() {
         </div>
       )}
 
-      {/* ===================================================
-          8. SHOPPING CART DRAWER
-      =================================================== */}
+      {/* Cart Drawer */}
       {cartDrawerOpen && (
         <div className="ff-drawer-backdrop" onClick={() => setCartDrawerOpen(false)}>
           <div className="ff-cart-drawer" onClick={(e) => e.stopPropagation()}>
@@ -2694,9 +2614,7 @@ function App() {
         </div>
       )}
 
-      {/* ===================================================
-          9. EXPRESS CHECKOUT MODAL
-      =================================================== */}
+      {/* Checkout Modal */}
       {checkoutModalOpen && (
         <div className="ff-modal-backdrop" onClick={() => setCheckoutModalOpen(false)}>
           <div className="ff-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "560px" }}>
@@ -2774,15 +2692,12 @@ function App() {
         </div>
       )}
 
-      {/* ===================================================
-          10. ORDER CONFIRMED BIG TICK CELEBRATION MODAL
-      =================================================== */}
+      {/* Order Confirmed Big Tick Modal */}
       {orderSuccessModalOpen && confirmedOrder && (
         <div className="ff-modal-backdrop" onClick={() => setOrderSuccessModalOpen(false)}>
           <div className="ff-modal-card order-success-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "540px", textAlign: "center" }}>
             <button type="button" className="modal-close-btn" onClick={() => setOrderSuccessModalOpen(false)}>✕</button>
 
-            {/* Big Animated Green Tick (✓) with Pulse Rings */}
             <div className="big-tick-wrapper">
               <div className="big-tick-pulse" />
               <div className="big-tick-circle">
@@ -2799,7 +2714,6 @@ function App() {
               Your 100% pure vegetarian meal has been forwarded to the master kitchen.
             </p>
 
-            {/* Order Details Quick Card */}
             <div className="order-summary-quick-box">
               <div className="summary-line">
                 <span>Order Reference:</span>
@@ -2819,7 +2733,6 @@ function App() {
               </div>
             </div>
 
-            {/* Modal Actions */}
             <div className="order-success-actions">
               <button
                 type="button"
@@ -2846,9 +2759,7 @@ function App() {
         </div>
       )}
 
-      {/* ===================================================
-          11. LIVE ORDER TRACKING MODAL (Real-time Synced)
-      =================================================== */}
+      {/* Live Order Tracking Modal */}
       {trackedOrder && (
         <div className="ff-modal-backdrop" onClick={() => setTrackedOrder(null)}>
           <div className="ff-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "580px", textAlign: "center" }}>
@@ -2866,7 +2777,6 @@ function App() {
               )}
             </p>
 
-            {/* Stepper Progress Bar */}
             <div style={{ display: "flex", justifyContent: "space-between", position: "relative", marginBottom: "30px" }}>
               <div style={{ textAlign: "center" }}>
                 <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#22c55e", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 6px", fontWeight: 800, fontSize: "1.1rem", boxShadow: "0 4px 12px rgba(34,197,94,0.35)" }}>✓</div>
@@ -2886,7 +2796,6 @@ function App() {
               </div>
             </div>
 
-            {/* Status Info Banner */}
             <div className={`live-status-pill-banner status-bg-${(trackedOrder.status || "preparing").toLowerCase().replace(/\s+/g, "-")}`}>
               <span className="live-pulse-dot" />
               <span>Current Status: <strong>{trackedOrder.status || "Preparing in Kitchen"}</strong></span>
@@ -2913,9 +2822,7 @@ function App() {
         </div>
       )}
 
-      {/* ===================================================
-          11. FOOTER (Clean & Public)
-      =================================================== */}
+      {/* Footer */}
       <footer className="ff-footer">
         <div className="footer-container">
           <div className="footer-col">

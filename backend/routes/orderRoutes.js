@@ -97,8 +97,9 @@ router.patch("/:id/status", async (req, res) => {
       });
     }
 
-    const order = await Order.findByIdAndUpdate(
-      id,
+    const filter = mongoose.Types.ObjectId.isValid(id) ? { _id: id } : { orderId: id };
+    const order = await Order.findOneAndUpdate(
+      filter,
       { status },
       { new: true }
     );
@@ -124,11 +125,12 @@ router.patch("/:id/status", async (req, res) => {
   }
 });
 
-// delete order by id
+// delete order by id or orderId
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const order = await Order.findByIdAndDelete(id);
+    const filter = mongoose.Types.ObjectId.isValid(id) ? { _id: id } : { orderId: id };
+    const order = await Order.findOneAndDelete(filter);
 
     if (!order) {
       return res.status(404).json({

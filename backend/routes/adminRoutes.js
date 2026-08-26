@@ -79,7 +79,9 @@ router.delete("/users/:id", async (req, res) => {
 router.delete("/orders/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedOrder = await Order.findByIdAndDelete(id);
+    const mongoose = require("mongoose");
+    const filter = mongoose.Types.ObjectId.isValid(id) ? { _id: id } : { orderId: id };
+    const deletedOrder = await Order.findOneAndDelete(filter);
     if (!deletedOrder) {
       return res.status(404).json({
         success: false,
