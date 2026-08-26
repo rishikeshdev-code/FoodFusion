@@ -32,6 +32,11 @@ const foodSchema = new mongoose.Schema(
       default: "🍽️",
     },
 
+    image: {
+      type: String,
+      default: "",
+    },
+
     description: {
       type: String,
       required: true,

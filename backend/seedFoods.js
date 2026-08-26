@@ -12,526 +12,912 @@ try {
 const Food = require("./models/food");
 
 const foods = [
+  // ==========================================
+  // 1. INDIAN CURRIES & SPECIALS (15 Items)
+  // ==========================================
   {
-    name: "Veg Cheese Pizza",
-    category: "Pizza",
-    price: 279,
-    rating: 4.8,
-    emoji: "🍕",
-    description:
-      "Cheesy pizza topped with fresh vegetables and Italian herbs.",
-    details:
-      "A delicious crispy pizza topped with melted mozzarella, tomato, capsicum, onion and aromatic Italian herbs.",
-    ingredients: [
-      "Pizza Dough",
-      "Mozzarella Cheese",
-      "Tomato",
-      "Capsicum",
-      "Onion",
-      "Oregano",
-    ],
-  },
-
-  {
-    name: "Veg Burger",
-    category: "Burgers",
-    price: 169,
-    rating: 4.7,
-    emoji: "🍔",
-    description:
-      "Crispy vegetable patty burger with fresh vegetables and special sauce.",
-    details:
-      "A soft toasted burger bun filled with a crispy vegetable patty, fresh lettuce, tomato, onion and creamy special sauce.",
-    ingredients: [
-      "Burger Bun",
-      "Veg Patty",
-      "Lettuce",
-      "Tomato",
-      "Onion",
-      "Special Sauce",
-    ],
-  },
-
-  {
-    name: "French Fries",
-    category: "Burgers",
-    price: 119,
-    rating: 4.6,
-    emoji: "🍟",
-    description:
-      "Crispy golden French fries seasoned with salt and herbs.",
-    details:
-      "Golden and crispy potato fries prepared fresh and lightly seasoned for the perfect crunchy snack.",
-    ingredients: ["Potato", "Salt", "Black Pepper", "Herbs", "Oil"],
-  },
-
-  {
-    name: "Veg Tacos",
+    name: "Shahi Paneer Butter Masala",
     category: "Indian",
-    price: 179,
-    rating: 4.7,
-    emoji: "🌮",
-    description:
-      "Crispy taco shells filled with seasoned vegetables and cheese.",
-    details:
-      "Crunchy taco shells filled with flavorful vegetables, lettuce, tomato, cheese and a creamy Mexican-style sauce.",
-    ingredients: [
-      "Taco Shell",
-      "Capsicum",
-      "Lettuce",
-      "Tomato",
-      "Cheese",
-      "Mexican Sauce",
-    ],
-  },
-
-  {
-    name: "Veg Wrap",
-    category: "Indian",
-    price: 149,
-    rating: 4.7,
-    emoji: "🌯",
-    description:
-      "Soft wrap filled with fresh vegetables, paneer and creamy sauce.",
-    details:
-      "A soft tortilla wrap packed with seasoned vegetables, grilled paneer, lettuce and flavorful creamy sauce.",
-    ingredients: [
-      "Tortilla",
-      "Paneer",
-      "Capsicum",
-      "Lettuce",
-      "Onion",
-      "Creamy Sauce",
-    ],
-  },
-
-  {
-    name: "White Sauce Pasta",
-    category: "Pasta",
-    price: 189,
-    rating: 4.8,
-    emoji: "🍝",
-    description:
-      "Creamy pasta cooked with vegetables, herbs and melted cheese.",
-    details:
-      "Soft pasta tossed in a rich and creamy white sauce with fresh vegetables, Italian herbs and melted cheese.",
-    ingredients: [
-      "Pasta",
-      "Milk",
-      "Cheese",
-      "Capsicum",
-      "Corn",
-      "Italian Herbs",
-    ],
-  },
-
-  {
-    name: "Veg Hakka Noodles",
-    category: "Chinese",
-    price: 159,
-    rating: 4.7,
-    emoji: "🍜",
-    description:
-      "Stir-fried noodles loaded with fresh vegetables and Chinese sauces.",
-    details:
-      "Delicious noodles stir-fried with cabbage, carrot, capsicum, spring onion and flavorful Indo-Chinese sauces.",
-    ingredients: [
-      "Noodles",
-      "Cabbage",
-      "Carrot",
-      "Capsicum",
-      "Soy Sauce",
-      "Spring Onion",
-    ],
-  },
-
-  {
-    name: "Veg Fried Rice",
-    category: "Chinese",
-    price: 149,
-    rating: 4.7,
-    emoji: "🍚",
-    description:
-      "Fragrant fried rice tossed with colorful fresh vegetables.",
-    details:
-      "Fluffy rice stir-fried with carrots, peas, capsicum, spring onions and flavorful Chinese sauces.",
-    ingredients: [
-      "Rice",
-      "Carrot",
-      "Peas",
-      "Capsicum",
-      "Spring Onion",
-      "Soy Sauce",
-    ],
-  },
-
-  {
-    name: "Paneer Curry",
-    category: "Indian",
-    price: 229,
+    price: 320,
     rating: 4.9,
     emoji: "🍛",
-    description:
-      "Soft paneer cooked in a rich and flavorful Indian curry.",
-    details:
-      "Tender paneer cubes cooked in creamy tomato and onion gravy with aromatic Indian spices and fresh coriander.",
-    ingredients: [
-      "Paneer",
-      "Tomato",
-      "Onion",
-      "Cream",
-      "Indian Spices",
-      "Coriander",
-    ],
+    image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=600&auto=format&fit=crop&q=80",
+    description: "Soft cottage cheese simmered in velvety, rich cashew tomato makhani gravy with fresh cream.",
+    details: "Cooked slowly with pure dairy butter, whole green cardamoms, and aromatic kasuri methi.",
+    ingredients: ["Fresh Cottage Cheese", "Cashew Tomato Puree", "Pure Cow Ghee", "Fresh Cream", "Kasuri Methi"],
+    badge: "SIGNATURE",
+    available: true,
   },
-
   {
-    name: "Fresh Veg Salad",
+    name: "Dal Makhani Slow-Cooked",
     category: "Indian",
-    price: 99,
+    price: 260,
+    rating: 4.9,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80",
+    description: "Overnight slow-cooked black lentils and kidney beans enriched with pure butter and cream.",
+    details: "Traditional Dhaba recipe simmered on low embers for 12 hours for deep smoky creaminess.",
+    ingredients: ["Black Urad Dal", "Rajma Beans", "Butter Emulsion", "Garlic Ginger Paste", "Smoked Charcoal Infusion"],
+    badge: "CLASSIC",
+    available: true,
+  },
+  {
+    name: "Palak Paneer with Garlic Tadka",
+    category: "Indian",
+    price: 280,
+    rating: 4.7,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1589647363585-f4a7d3877b10?w=600&auto=format&fit=crop&q=80",
+    description: "Fresh tender spinach puree cooked with cottage cheese cubes and tempered with golden roasted garlic.",
+    details: "Blanched farm spinach blended with mild green chilies and finished with garlic infused ghee.",
+    ingredients: ["Farm Spinach", "Soft Paneer Cubes", "Golden Crispy Garlic", "Cumin Seeds", "Desi Ghee"],
+    badge: "HEALTHY",
+    available: true,
+  },
+  {
+    name: "Kadai Paneer Bell Pepper Toss",
+    category: "Indian",
+    price: 310,
+    rating: 4.7,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1567184109411-b28f29ecb89a?w=600&auto=format&fit=crop&q=80",
+    description: "Succulent paneer with diced crunchy bell peppers and onions in freshly ground kadai masala.",
+    details: "Prepared in traditional iron wok with coarsely ground coriander seeds and dry Kashmiri red chilies.",
+    ingredients: ["Paneer Cubes", "Tricolor Capsicum", "Kadai Masala", "Tomato Onion Gravy", "Fresh Cilantro"],
+    badge: "ZESTY",
+    available: true,
+  },
+  {
+    name: "Malai Kofta in Royal White Gravy",
+    category: "Indian",
+    price: 340,
+    rating: 4.9,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80",
+    description: "Melt-in-mouth paneer and potato dumplings stuffed with dry fruits in rich cashew saffron sauce.",
+    details: "Royalty on a plate with golden fried soft koftas in a fragrant cardamom and cashew nut cream reduction.",
+    ingredients: ["Mawa Paneer Kofta", "Cashew Cream Reduction", "Raisins & Cashews", "Kashmiri Saffron", "Cardamom"],
+    badge: "ROYAL CHEF PICK",
+    available: true,
+  },
+  {
+    name: "Matar Paneer Homestyle Curry",
+    category: "Indian",
+    price: 270,
+    rating: 4.8,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=600&auto=format&fit=crop&q=80",
+    description: "Tender green peas and soft paneer cubes cooked in a spiced tomato and onion gravy.",
+    details: "Comfort food classic cooked with whole garam masalas and garnished with fresh coriander.",
+    ingredients: ["Sweet Green Peas", "Fresh Paneer", "Tomato Onion Base", "Garam Masala", "Coriander Leaves"],
+    badge: "HOMESTYLE",
+    available: true,
+  },
+  {
+    name: "Dhaba Style Yellow Dal Tadka",
+    category: "Indian",
+    price: 210,
+    rating: 4.8,
+    emoji: "🍲",
+    image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80",
+    description: "Yellow arhar lentils tempered with desi ghee, cumin, roasted garlic, and Kashmiri whole red chilies.",
+    details: "Hot tadka poured right before serving to infuse the lentils with sizzling aromatic ghee flavors.",
+    ingredients: ["Toor Dal & Moong Dal", "Desi Cow Ghee", "Whole Cumin", "Roasted Garlic Slivers", "Hing (Asafoetida)"],
+    badge: "DHABA SPECIAL",
+    available: true,
+  },
+  {
+    name: "Punjabi Rajma Masala",
+    category: "Indian",
+    price: 240,
+    rating: 4.8,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80",
+    description: "Red kidney beans simmered in a thick, spiced onion-tomato gravy with ginger juliennes.",
+    details: "Authentic North Indian soul food slow cooked to melt in your mouth, perfect with steamed basmati rice.",
+    ingredients: ["Chitra Rajma Beans", "Spiced Tomato Onion Gravy", "Fresh Ginger Juliennes", "Ghee", "Kasuri Methi"],
+    badge: "COMFORT FOOD",
+    available: true,
+  },
+  {
+    name: "Amritsari Chana Masala",
+    category: "Indian",
+    price: 230,
+    rating: 4.7,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=600&auto=format&fit=crop&q=80",
+    description: "Dark, tangy chickpeas cooked with dried pomegranate seeds and traditional Punjabi spices.",
+    details: "Pindi style chickpeas slow simmered with black tea infusion and roasted anardana for authentic flavor.",
+    ingredients: ["Kabuli Chickpeas", "Dried Pomegranate Seeds", "Amchur", "Garam Masala", "Ginger Green Chilies"],
+    badge: "AUTHENTIC",
+    available: true,
+  },
+  {
+    name: "Dum Aloo Banarasi",
+    category: "Indian",
+    price: 250,
     rating: 4.6,
-    emoji: "🥗",
-    description:
-      "Fresh and crunchy vegetables tossed with lemon and herbs.",
-    details:
-      "A refreshing combination of crisp lettuce, cucumber, tomato, carrot and onion finished with lemon juice and herbs.",
-    ingredients: [
-      "Lettuce",
-      "Cucumber",
-      "Tomato",
-      "Carrot",
-      "Onion",
-      "Lemon",
-    ],
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80",
+    description: "Baby potatoes deep-fried and slow-cooked in a tangy, fennel-scented yogurt and tomato gravy.",
+    details: "Pricked baby potatoes sealed and dum-cooked in an aromatic Kashmiri red chili and saunf curry.",
+    ingredients: ["Baby Potatoes", "Fresh Yogurt Gravy", "Fennel Powder (Saunf)", "Dry Ginger (Sonth)", "Kashmiri Mirch"],
+    badge: "TRADITIONAL",
+    available: true,
+  },
+  {
+    name: "Paneer Lababdar Delight",
+    category: "Indian",
+    price: 330,
+    rating: 4.9,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=600&auto=format&fit=crop&q=80",
+    description: "Paneer cubes and grated paneer tossed in an intensely flavorful chopped masala & cashew gravy.",
+    details: "Enriched with grated cottage cheese throughout the gravy for a remarkably rich and coarse texture.",
+    ingredients: ["Cottage Cheese Cubes & Grated", "Chopped Onion Tomato Masala", "Cashew Paste", "Butter", "Kasuri Methi"],
+    badge: "TOP RATED",
+    available: true,
+  },
+  {
+    name: "Kashmiri Navratan Korma",
+    category: "Indian",
+    price: 310,
+    rating: 4.7,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80",
+    description: "Nine garden vegetables and dry fruits simmered in a mildly sweet, aromatic coconut cashew sauce.",
+    details: "Gently spiced royal curry featuring pineapple chunks, paneer, dry nuts, and fresh seasonal greens.",
+    ingredients: ["Mixed Vegetables", "Cashews & Almonds", "Paneer", "Pineapple Morsels", "Sweet Cream"],
+    badge: "ROYAL MILD",
+    available: true,
+  },
+  {
+    name: "Bhindi Do Pyaza",
+    category: "Indian",
+    price: 220,
+    rating: 4.6,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80",
+    description: "Crispy ladyfingers stir-fried with two varieties of crunchy onions and tangy spices.",
+    details: "Non-slimy okra tossed in high heat with cumin, amchur (dry mango powder), and caramelized shallots.",
+    ingredients: ["Farm Okra (Bhindi)", "Sliced & Diced Onions", "Dry Mango Powder", "Turmeric", "Green Chilies"],
+    badge: "STIR FRY",
+    available: true,
+  },
+  {
+    name: "Baingan Bharta Smoked",
+    category: "Indian",
+    price: 230,
+    rating: 4.7,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80",
+    description: "Charcoal-roasted eggplant mashed and cooked with green peas, onions, tomatoes, and mustard oil.",
+    details: "Direct flame roasted for deep rustic aroma, mashed and tempered with garlic and green chilies.",
+    ingredients: ["Flame Roasted Eggplant", "Sweet Green Peas", "Mustard Oil Tadka", "Garlic & Ginger", "Fresh Coriander"],
+    badge: "RUSTIC",
+    available: true,
+  },
+  {
+    name: "Aloo Gobi Adraki",
+    category: "Indian",
+    price: 210,
+    rating: 4.6,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80",
+    description: "Potatoes and cauliflower florets sautéed with lots of fresh ginger, cumin, and dry spices.",
+    details: "Classic homestyle dry sabzi finished with fresh chopped cilantro and julienned ginger.",
+    ingredients: ["Cauliflower Florets", "Diced Potatoes", "Fresh Ginger Slivers", "Cumin & Coriander", "Turmeric"],
+    badge: "HOMELY",
+    available: true,
   },
 
+  // ==========================================
+  // 2. INDIAN BIRYANI & RICE (4 Items)
+  // ==========================================
   {
-    name: "Pav Bhaji",
+    name: "Royal Dum Hyderabadi Veg Biryani",
     category: "Indian",
-    price: 159,
+    price: 299,
+    rating: 4.8,
+    emoji: "🍚",
+    image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80",
+    description: "Long-grain aged basmati rice layered with spiced vegetables, saffron, mint, and fried onions.",
+    details: "Served in sealed clay handi with cooling cucumber raita and spicy salan.",
+    ingredients: ["Aged Basmati Rice", "Garden Vegetables", "Kashmiri Saffron", "Birista Fried Onions", "Raita"],
+    badge: "TOP RATED",
+    available: true,
+  },
+  {
+    name: "Paneer Tikka Dum Biryani",
+    category: "Indian",
+    price: 349,
+    rating: 4.9,
+    emoji: "🍚",
+    image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80",
+    description: "Smoky tandoori paneer cubes layered with aromatic saffron basmati rice and fresh mint leaves.",
+    details: "Slow dum-cooked with whole spices, desi ghee, and served with roasted garlic burani raita.",
+    ingredients: ["Charcoal Grilled Paneer", "Basmati Rice", "Saffron Ghee", "Fresh Mint & Coriander", "Burani Raita"],
+    badge: "MUST TRY",
+    available: true,
+  },
+  {
+    name: "Kashmiri Saffron Pulao",
+    category: "Indian",
+    price: 260,
+    rating: 4.7,
+    emoji: "🍚",
+    image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80",
+    description: "Sweet fragrant basmati rice tossed with whole spices, roasted almonds, cashews, and saffron.",
+    details: "Garnished with pomegranate pearls and fried dry fruits.",
+    ingredients: ["Basmati Rice", "Kashmiri Saffron Infusion", "Almonds & Cashews", "Pomegranate Seeds", "Ghee"],
+    badge: "EXOTIC",
+    available: true,
+  },
+  {
+    name: "Jeera Rice with Desi Ghee",
+    category: "Indian",
+    price: 160,
+    rating: 4.7,
+    emoji: "🍚",
+    image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80",
+    description: "Steamed fluffy basmati rice tempered with roasted royal cumin seeds and pure cow ghee.",
+    details: "The ultimate companion to Dal Makhani and Shahi Paneer.",
+    ingredients: ["Basmati Rice", "Shahi Jeera (Royal Cumin)", "Pure Cow Ghee", "Coriander Garnish"],
+    badge: "STAPLE",
+    available: true,
+  },
+
+  // ==========================================
+  // 3. INDIAN BREADS & PARATHAS (4 Items)
+  // ==========================================
+  {
+    name: "Butter Naan & Garlic Roti Basket",
+    category: "Indian",
+    price: 120,
+    rating: 4.8,
+    emoji: "🍞",
+    image: "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=600&auto=format&fit=crop&q=80",
+    description: "Fresh clay tandoor baked breads brushed with melted butter and fresh crushed garlic.",
+    details: "Includes 1 Butter Naan, 1 Garlic Roti, and 1 Laccha Paratha baked fresh to order.",
+    ingredients: ["Refined & Whole Wheat Flour", "Dairy Butter", "Crushed Garlic", "Kalonji Black Seeds"],
+    badge: "BREAD BASKET",
+    available: true,
+  },
+  {
+    name: "Amritsari Stuffed Aloo Paratha (2 Pcs)",
+    category: "Indian",
+    price: 180,
+    rating: 4.9,
+    emoji: "🍞",
+    image: "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=600&auto=format&fit=crop&q=80",
+    description: "Whole wheat flatbreads stuffed with spicy mashed potatoes, served with white butter and curd.",
+    details: "Tandoor roasted and topped with a generous dollop of homemade white makkhan (butter) and mixed pickle.",
+    ingredients: ["Whole Wheat Dough", "Spiced Potato Mash", "Homemade White Butter", "Fresh Curd", "Mango Pickle"],
+    badge: "PUNJABI FAV",
+    available: true,
+  },
+  {
+    name: "Paneer Stuffed Onion Kulcha",
+    category: "Indian",
+    price: 140,
+    rating: 4.8,
+    emoji: "🍞",
+    image: "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=600&auto=format&fit=crop&q=80",
+    description: "Soft leavened bread filled with spiced crumbled paneer and finely chopped shallots.",
+    details: "Baked in tandoor until golden brown and flaky, brushed with melted butter.",
+    ingredients: ["Flour Dough", "Spiced Crumbled Paneer", "Shallots", "Coriander", "Butter"],
+    badge: "SUPER FLAKY",
+    available: true,
+  },
+  {
+    name: "Crispy Laccha Paratha (2 Pcs)",
+    category: "Indian",
+    price: 110,
+    rating: 4.7,
+    emoji: "🍞",
+    image: "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=600&auto=format&fit=crop&q=80",
+    description: "Multi-layered flaky whole wheat paratha roasted with pure ghee.",
+    details: "Crispy rings of whole wheat layers with roasted ajwain (carom seeds).",
+    ingredients: ["Whole Wheat Flour", "Desi Ghee", "Ajwain Seeds", "Rock Salt"],
+    badge: "LAYERED",
+    available: true,
+  },
+
+  // ==========================================
+  // 4. INDIAN STREET FOOD & CHAAT (7 Items)
+  // ==========================================
+  {
+    name: "Amritsari Chole Bhature Platter",
+    category: "Snacks",
+    price: 240,
+    rating: 4.9,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=600&auto=format&fit=crop&q=80",
+    description: "Two giant puffy golden bhaturas served with spicy dark Amritsari chole, pickled onions, and mint chutney.",
+    details: "Crispy on the outside and soft inside bhature paired with richly spiced chickpea gravy.",
+    ingredients: ["Puffy Fried Bhatura", "Amritsari Chole", "Pickled Onions", "Fried Green Chili", "Mint Chutney"],
+    badge: "LEGENDARY",
+    available: true,
+  },
+  {
+    name: "Mumbai Special Butter Pav Bhaji",
+    category: "Snacks",
+    price: 210,
+    rating: 4.9,
+    emoji: "🍲",
+    image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=600&auto=format&fit=crop&q=80",
+    description: "Spiced mashed vegetable curry loaded with pure butter, served with two soft toasted pavs and lemon.",
+    details: "Cooked on a giant iron tawa with tomatoes, potatoes, green peas, capsicum, and generous Amul butter.",
+    ingredients: ["Mashed Mixed Vegetables", "Amul Butter", "Pav Bhaji Masala", "Toasted Pav Buns", "Lemon Wedges"],
+    badge: "MUMBAI ICON",
+    available: true,
+  },
+  {
+    name: "Crispy Samosa with Mint Chutney (3 Pcs)",
+    category: "Snacks",
+    price: 120,
+    rating: 4.8,
+    emoji: "🥟",
+    image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80",
+    description: "Flaky golden fried pastry cones filled with spiced potatoes, green peas, and cashews.",
+    details: "Served piping hot with tangy tamarind saunth chutney and spicy green mint dip.",
+    ingredients: ["Crispy Pastry Crust", "Spiced Potatoes & Peas", "Cashew Bits", "Tamarind Chutney", "Mint Dip"],
+    badge: "STREET SPECIAL",
+    available: true,
+  },
+  {
+    name: "Dahi Puri Papdi Chaat Platter",
+    category: "Snacks",
+    price: 160,
     rating: 4.8,
     emoji: "🥘",
-    description:
-      "Spicy mashed vegetable curry served with buttery toasted pav.",
-    details:
-      "A popular Mumbai-style dish made with mashed vegetables, aromatic spices and buttery toasted pav.",
-    ingredients: [
-      "Potato",
-      "Peas",
-      "Cauliflower",
-      "Tomato",
-      "Pav Bhaji Masala",
-      "Butter",
-    ],
+    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80",
+    description: "Crispy hollow puris filled with potatoes, sweetened curd, tamarind chutney, and fine nylon sev.",
+    details: "Topped with roasted cumin, chaat masala, pomegranate seeds, and fresh coriander.",
+    ingredients: ["Crispy Puris", "Sweet Chilled Curd", "Tamarind & Mint Chutneys", "Fine Sev", "Pomegranate"],
+    badge: "CHAAT SPECIAL",
+    available: true,
+  },
+  {
+    name: "Pani Puri Golgappa Platter (8 Pcs)",
+    category: "Snacks",
+    price: 130,
+    rating: 4.9,
+    emoji: "🥘",
+    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80",
+    description: "Super crispy puris filled with spiced potato-chickpea mash, served with tangy mint-coriander water.",
+    details: "Accompanied by spicy teekha paani and sweet meetha tamarind chutney for the authentic burst of flavor.",
+    ingredients: ["Semolina Puris", "Spiced Potato Mash", "Hing Jeera Spicy Water", "Sweet Tamarind Chutney", "Boondi"],
+    badge: "EXPLOSIVE TASTE",
+    available: true,
+  },
+  {
+    name: "Crispy Aloo Tikki Chole Chaat",
+    category: "Snacks",
+    price: 170,
+    rating: 4.7,
+    emoji: "🥘",
+    image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80",
+    description: "Crispy pan-fried spiced potato patties topped with hot chole, yogurt, and sweet-spicy chutneys.",
+    details: "Golden brown tikkis crushed and drizzled with beaten sweet curd and crunchy onions.",
+    ingredients: ["Pan Fried Potato Patties", "Spiced Chole", "Sweet Curd", "Tamarind & Green Chutneys", "Ginger Juliennes"],
+    badge: "HOT & TANGY",
+    available: true,
+  },
+  {
+    name: "Crispy Mixed Veg Pakora Platter",
+    category: "Snacks",
+    price: 180,
+    rating: 4.7,
+    emoji: "🍢",
+    image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80",
+    description: "Assorted fritters of paneer, onion, potato, and spinach in spiced gram flour batter.",
+    details: "Deep fried to golden crispness and sprinkled with spicy chaat masala.",
+    ingredients: ["Gram Flour (Besan)", "Paneer & Onion Strips", "Spinach Leaves", "Ajwain Spices", "Mint Chutney"],
+    badge: "MONSOON FAV",
+    available: true,
   },
 
+  // ==========================================
+  // 5. SOUTH INDIAN DELICACIES (4 Items)
+  // ==========================================
   {
-    name: "Samosa",
+    name: "Mysore Masala Dosa Crisp",
     category: "Indian",
-    price: 59,
-    rating: 4.6,
-    emoji: "🔺",
-    description:
-      "Crispy golden pastry filled with spicy potato and peas.",
-    details:
-      "A classic Indian snack with a crispy golden shell filled with seasoned potatoes, peas and aromatic spices.",
-    ingredients: [
-      "Flour",
-      "Potato",
-      "Peas",
-      "Green Chili",
-      "Cumin",
-      "Indian Spices",
-    ],
+    price: 220,
+    rating: 4.9,
+    emoji: "🥞",
+    image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80",
+    description: "Crispy fermented crepe smeared with spicy red chili-garlic chutney and stuffed with spiced potato masala.",
+    details: "Served with piping hot drumstick sambar, fresh coconut chutney, and tangy tomato chutney.",
+    ingredients: ["Crispy Rice Lentil Crepe", "Red Garlic Chutney", "Spiced Potato Mash", "Piping Sambar", "Coconut Dip"],
+    badge: "SOUTH INDIAN FAV",
+    available: true,
   },
-
   {
-    name: "Masala Dosa",
+    name: "Steamed Fluffy Idli with Sambar (4 Pcs)",
     category: "Indian",
-    price: 129,
+    price: 150,
     rating: 4.8,
     emoji: "🥞",
-    description:
-      "Crispy South Indian dosa filled with flavorful masala potatoes.",
-    details:
-      "A thin and crispy dosa served with spiced potato filling, coconut chutney and traditional sambar.",
-    ingredients: [
-      "Rice",
-      "Urad Dal",
-      "Potato",
-      "Onion",
-      "Mustard Seeds",
-      "Spices",
-    ],
+    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80",
+    description: "Steamed fluffy rice and lentil cakes served with aromatic vegetable sambar and coconut dip.",
+    details: "Healthy, oil-free, and super soft idlis dipped in freshly brewed drumstick sambar.",
+    ingredients: ["Fermented Rice Batter", "Vegetable Sambar", "Fresh Coconut Chutney", "Mustard Seed Tadka"],
+    badge: "HEALTHY BREAKFAST",
+    available: true,
   },
-
   {
-    name: "Idli Sambar",
+    name: "Crispy Medu Vada (3 Pcs)",
     category: "Indian",
-    price: 109,
+    price: 160,
     rating: 4.7,
-    emoji: "🍘",
-    description:
-      "Soft steamed idlis served with hot flavorful sambar.",
-    details:
-      "Soft and fluffy steamed rice cakes served with aromatic vegetable sambar and fresh coconut chutney.",
-    ingredients: [
-      "Rice",
-      "Urad Dal",
-      "Lentils",
-      "Vegetables",
-      "Tamarind",
-      "Spices",
-    ],
+    emoji: "🍩",
+    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80",
+    description: "Golden fried crispy urad dal donuts with black peppercorns and curry leaves.",
+    details: "Crisp exterior with an airy, pillowy interior, paired with hot sambar and tomato chutney.",
+    ingredients: ["Urad Dal Batter", "Cracked Black Pepper", "Curry Leaves", "Fresh Ginger", "Coconut Chutney"],
+    badge: "CRUNCHY",
+    available: true,
   },
-
   {
-    name: "Chole Bhature",
+    name: "Cheese Corn Rava Dosa",
     category: "Indian",
-    price: 179,
+    price: 240,
     rating: 4.8,
-    emoji: "🫓",
-    description:
-      "Spicy chickpea curry served with fluffy fried bhature.",
-    details:
-      "A delicious North Indian combination of spicy chickpea curry served with soft, fluffy and golden bhature.",
-    ingredients: [
-      "Chickpeas",
-      "Flour",
-      "Tomato",
-      "Onion",
-      "Chole Masala",
-      "Yogurt",
-    ],
+    emoji: "🥞",
+    image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80",
+    description: "Lacy, ultra-crispy semolina crepe topped with sweet golden corn and molten mozzarella cheese.",
+    details: "Prepared with cracked black pepper, cumin seeds, and fresh green chilies on a hot tawa.",
+    ingredients: ["Rava Semolina Batter", "Sweet Corn", "Mozzarella Cheese", "Cumin & Pepper", "Chutneys"],
+    badge: "FUSION DOSA",
+    available: true,
   },
 
+  // ==========================================
+  // 6. GUJARATI & RAJASTHANI DELIGHTS (2 Items)
+  // ==========================================
   {
-    name: "Veg Momos",
-    category: "Chinese",
-    price: 139,
-    rating: 4.7,
-    emoji: "🥟",
-    description:
-      "Steamed dumplings filled with seasoned fresh vegetables.",
-    details:
-      "Soft steamed dumplings filled with finely chopped vegetables and served with spicy red chutney.",
-    ingredients: [
-      "Flour",
-      "Cabbage",
-      "Carrot",
-      "Capsicum",
-      "Garlic",
-      "Chili Sauce",
-    ],
-  },
-
-  {
-    name: "Spring Rolls",
-    category: "Chinese",
-    price: 129,
-    rating: 4.6,
-    emoji: "🥠",
-    description:
-      "Crispy rolls stuffed with seasoned vegetables.",
-    details:
-      "Golden crispy spring rolls packed with crunchy cabbage, carrots, capsicum and flavorful Chinese seasoning.",
-    ingredients: [
-      "Spring Roll Sheets",
-      "Cabbage",
-      "Carrot",
-      "Capsicum",
-      "Soy Sauce",
-      "Pepper",
-    ],
-  },
-
-  {
-    name: "Garlic Bread",
-    category: "Pizza",
-    price: 129,
-    rating: 4.7,
-    emoji: "🥖",
-    description:
-      "Crispy garlic bread topped with butter, herbs and cheese.",
-    details:
-      "Freshly baked bread brushed with garlic butter, Italian herbs and melted cheese.",
-    ingredients: [
-      "Bread",
-      "Garlic",
-      "Butter",
-      "Cheese",
-      "Oregano",
-      "Parsley",
-    ],
-  },
-
-  {
-    name: "Cheese Nachos",
-    category: "Burgers",
-    price: 149,
-    rating: 4.7,
+    name: "Spongy Khaman Dhokla (4 Pcs)",
+    category: "Snacks",
+    price: 130,
+    rating: 4.8,
     emoji: "🧀",
-    description:
-      "Crunchy nachos loaded with melted cheese and flavorful toppings.",
-    details:
-      "Crispy tortilla chips covered with melted cheese, jalapeños, tomato salsa and a creamy dip.",
-    ingredients: [
-      "Tortilla Chips",
-      "Cheese",
-      "Jalapeño",
-      "Tomato",
-      "Salsa",
-      "Cream",
-    ],
+    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80",
+    description: "Juicy, steamed gram flour savory cakes tempered with mustard seeds, curry leaves, and green chilies.",
+    details: "Garnished with grated fresh coconut and fresh cilantro, served with spicy papaya relish.",
+    ingredients: ["Gram Flour", "Mustard Seed Tadka", "Curry Leaves", "Fresh Coconut", "Green Chilies"],
+    badge: "GUJARATI ICON",
+    available: true,
+  },
+  {
+    name: "Royal Dal Baati Churma Thali",
+    category: "Indian",
+    price: 360,
+    rating: 4.9,
+    emoji: "🍛",
+    image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80",
+    description: "Crisp baked wheat baatis dipped in pure ghee, served with spicy panchmel dal and sweet churma.",
+    details: "Authentic Rajasthani royal feast with garlic chutney and roasted papad.",
+    ingredients: ["Baked Wheat Baati", "Panchmel 5-Lentil Dal", "Pure Desi Ghee", "Sweet Jaggery Churma", "Garlic Chutney"],
+    badge: "ROYAL THALI",
+    available: true,
   },
 
+  // ==========================================
+  // 7. GOURMET PIZZAS (4 Items)
+  // ==========================================
   {
-    name: "Chocolate Cake",
+    name: "Farmhouse Deluxe Veggie Pizza",
+    category: "Pizza",
+    price: 349,
+    rating: 4.8,
+    emoji: "🍕",
+    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=80",
+    description: "Crispy crust topped with crunchy capsicum, sweet corn, black olives, onions, and melted mozzarella.",
+    details: "Crafted with hand-stretched artisanal sourdough base, slow-cooked San Marzano tomato marinara, and pure dairy mozzarella.",
+    ingredients: ["Hand-stretched Dough", "San Marzano Marinara", "Mozzarella Cheese", "Bell Peppers", "Sweet Corn", "Black Olives", "Red Onions"],
+    badge: "BESTSELLER",
+    available: true,
+  },
+  {
+    name: "Paneer Tikka Stuffed Crust Pizza",
+    category: "Pizza",
+    price: 399,
+    rating: 4.9,
+    emoji: "🍕",
+    image: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=600&auto=format&fit=crop&q=80",
+    description: "Char-grilled clay oven paneer cubes with spicy tandoori drizzle and cheese-burst crust.",
+    details: "Marinated malai paneer infused with roasted cumin, kasuri methi, and molten cheddar-stuffed crust.",
+    ingredients: ["Fresh Cottage Cheese", "Tandoori Spice Marinade", "Cheddar Crust", "Charred Capsicum", "Smoked Paprika"],
+    badge: "POPULAR",
+    available: true,
+  },
+  {
+    name: "Classic Margherita Basil Pizza",
+    category: "Pizza",
+    price: 299,
+    rating: 4.7,
+    emoji: "🍕",
+    image: "https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=600&auto=format&fit=crop&q=80",
+    description: "Authentic Italian style with ripe Roma tomatoes, fresh buffalo mozzarella, and aromatic basil leaves.",
+    details: "Neapolitan style wood-fired Margherita with extra virgin cold-pressed olive oil.",
+    ingredients: ["Roma Tomatoes", "Fresh Buffalo Mozzarella", "Organic Sweet Basil", "Cold Pressed Olive Oil", "Sea Salt"],
+    badge: "CHEF PICK",
+    available: true,
+  },
+  {
+    name: "Fiery Peri Peri Exotic Veg Pizza",
+    category: "Pizza",
+    price: 379,
+    rating: 4.6,
+    emoji: "🍕",
+    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&auto=format&fit=crop&q=80",
+    description: "Spicy African bird's eye chili seasoning with jalapenos, sliced mushrooms, and sun-dried tomatoes.",
+    details: "Intense peri-peri spice blend with juicy button mushrooms and gooey mozzarella.",
+    ingredients: ["Peri Peri Spice Blend", "Pickled Jalapenos", "Button Mushrooms", "Sun-dried Tomatoes", "Mozzarella"],
+    badge: "SPICY",
+    available: true,
+  },
+
+  // ==========================================
+  // 8. BURGERS & FAST FOOD (4 Items)
+  // ==========================================
+  {
+    name: "Crispy Herb Potato Supreme Burger",
+    category: "Burgers",
+    price: 179,
+    rating: 4.6,
+    emoji: "🍔",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80",
+    description: "Golden fried seasoned potato & green pea patty topped with crunchy lettuce and herb mayonnaise.",
+    details: "Toasted sesame brioche bun stuffed with crispy crumbed patty, juicy tomatoes, and gherkins.",
+    ingredients: ["Toasted Brioche Bun", "Crispy Potato Pea Patty", "Iceberg Lettuce", "Eggless Herb Mayo", "Tomato Relish"],
+    badge: "VALUE MEAL",
+    available: true,
+  },
+  {
+    name: "Gourmet Paneer Royale Brioche Burger",
+    category: "Burgers",
+    price: 249,
+    rating: 4.8,
+    emoji: "🍔",
+    image: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&auto=format&fit=crop&q=80",
+    description: "Thick grilled paneer steak coated in smokey chipotle sauce with cheddar cheese slice.",
+    details: "Fresh whole malai paneer steak grilled to perfection with caramelized red onions and chipotle emulsion.",
+    ingredients: ["Malai Paneer Steak", "Smoked Chipotle Sauce", "Cheddar Cheese Slice", "Caramelized Onions", "Butter Bun"],
+    badge: "MUST TRY",
+    available: true,
+  },
+  {
+    name: "Crunchy Double Veggie Cheese Burger",
+    category: "Burgers",
+    price: 229,
+    rating: 4.7,
+    emoji: "🍔",
+    image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&auto=format&fit=crop&q=80",
+    description: "Twin crispy veggie patties with double cheese slices, tangy thousand island dip, and pickles.",
+    details: "Two golden veggie patties layered with molten cheese and fresh crisp lettuce.",
+    ingredients: ["Dual Vegetable Patties", "Twin Cheese Slices", "Thousand Island Dip", "Gherkins", "Sesame Bun"],
+    badge: "SUPER HIT",
+    available: true,
+  },
+  {
+    name: "Spicy Mexican Avocado Salsa Burger",
+    category: "Burgers",
+    price: 269,
+    rating: 4.9,
+    emoji: "🍔",
+    image: "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=600&auto=format&fit=crop&q=80",
+    description: "Black bean and sweet corn patty paired with guacamole, fresh tomato salsa, and nachos crunch.",
+    details: "A Mexican-inspired wholesome burger loaded with buttery Hass avocado guacamole and crunchy nachos.",
+    ingredients: ["Black Bean Sweet Corn Patty", "Hass Avocado Guacamole", "Pico De Gallo Salsa", "Tortilla Chips"],
+    badge: "GOURMET",
+    available: true,
+  },
+
+  // ==========================================
+  // 9. CHINESE & ASIAN (4 Items)
+  // ==========================================
+  {
+    name: "Chilli Paneer Dry (Indo-Chinese)",
+    category: "Chinese",
+    price: 270,
+    rating: 4.8,
+    emoji: "🍜",
+    image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80",
+    description: "Crisp-fried cottage cheese wok-tossed with green chilies, bell peppers, spring onions, and dark soy.",
+    details: "High-flame wok toss for smoky aroma, balanced with soy sauce, garlic, and fiery schezwan paste.",
+    ingredients: ["Crispy Paneer Cubes", "Spring Onions", "Dark Soy Sauce", "Green Chilies", "Toasted Sesame"],
+    badge: "SPICY FAV",
+    available: true,
+  },
+  {
+    name: "Veg Hakka Noodles Wok Tossed",
+    category: "Chinese",
+    price: 210,
+    rating: 4.7,
+    emoji: "🍜",
+    image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&auto=format&fit=crop&q=80",
+    description: "Thin noodles tossed with shredded cabbage, carrots, bell peppers, and scallions in aromatic seasoning.",
+    details: "Street-style Hakka noodles cooked al-dente in high heat with white pepper and light soy.",
+    ingredients: ["Al Dente Noodles", "Julienned Carrots", "Shredded Cabbage", "Scallions", "White Pepper"],
+    badge: "STREET SPECIAL",
+    available: true,
+  },
+  {
+    name: "Schezwan Veg Fried Rice",
+    category: "Chinese",
+    price: 220,
+    rating: 4.6,
+    emoji: "🍜",
+    image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&auto=format&fit=crop&q=80",
+    description: "Wok fried fragrant jasmine rice tossed with spicy schezwan sauce and finely chopped garden vegetables.",
+    details: "Spiced with Sichuan peppercorns, roasted garlic, and fiery red chili paste.",
+    ingredients: ["Jasmine Rice", "Schezwan Chili Paste", "French Beans", "Carrots", "Spring Onions"],
+    badge: "FIERY",
+    available: true,
+  },
+  {
+    name: "Crispy Vegetable Spring Rolls",
+    category: "Chinese",
+    price: 190,
+    rating: 4.8,
+    emoji: "🥟",
+    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80",
+    description: "Golden crispy pastry rolls stuffed with seasoned shredded vegetables, served with sweet chili dip.",
+    details: "Super crisp wonton pastry parcels served steaming hot with home-style sweet & sour dip.",
+    ingredients: ["Rice Paper Pastry", "Shredded Vegetables", "Glass Noodles", "Sweet Chili Dip"],
+    badge: "CRISPY",
+    available: true,
+  },
+
+  // ==========================================
+  // 10. PASTA & CONTINENTAL (4 Items)
+  // ==========================================
+  {
+    name: "Creamy Alfredo Penne White Sauce",
+    category: "Pasta",
+    price: 299,
+    rating: 4.8,
+    emoji: "🍝",
+    image: "https://images.unsplash.com/photo-1621996346565-e3d5d6281699?w=600&auto=format&fit=crop&q=80",
+    description: "Penne pasta enveloped in velvety parmesan cream sauce with sauteed broccoli and button mushrooms.",
+    details: "Authentic Alfredo made with roasted garlic butter, heavy dairy cream, and aged parmesan.",
+    ingredients: ["Durum Wheat Penne", "Parmesan Cream Sauce", "Fresh Broccoli Florets", "Mushrooms", "Black Pepper"],
+    badge: "CREAMY FAV",
+    available: true,
+  },
+  {
+    name: "Arrabbiata Spicy Red Sauce Pasta",
+    category: "Pasta",
+    price: 279,
+    rating: 4.7,
+    emoji: "🍝",
+    image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&auto=format&fit=crop&q=80",
+    description: "Penne tossed in fiery Italian tomato sauce with crushed chili flakes, garlic, basil, and black olives.",
+    details: "Tangy San Marzano tomato base infused with extra virgin olive oil and fresh Italian parsley.",
+    ingredients: ["Penne Pasta", "San Marzano Tomatoes", "Crushed Red Pepper", "Kalamata Olives", "Fresh Basil"],
+    badge: "ITALIAN TASTE",
+    available: true,
+  },
+  {
+    name: "Pink Sauce Rosa Veggie Pasta",
+    category: "Pasta",
+    price: 310,
+    rating: 4.9,
+    emoji: "🍝",
+    image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=600&auto=format&fit=crop&q=80",
+    description: "The best of both worlds: a velvety blend of rich cream and tangy tomato sauce with sweet corn and zucchini.",
+    details: "Silky pink sauce pasta topped with fresh mozzarella gratings and dried oregano.",
+    ingredients: ["Fusilli Pasta", "Tomato Cream Blend", "Yellow Zucchini", "Sweet Corn", "Mozzarella Flakes"],
+    badge: "TOP LOVED",
+    available: true,
+  },
+  {
+    name: "Cheesy Loaded Mexican Nachos",
+    category: "Snacks",
+    price: 220,
+    rating: 4.8,
+    emoji: "🧀",
+    image: "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=600&auto=format&fit=crop&q=80",
+    description: "Crunchy corn tortilla chips drenched in warm melted cheddar cheese, refried beans, jalapenos, and salsa.",
+    details: "Layered with house-made sour cream, fresh pico de gallo, and pickled Mexican peppers.",
+    ingredients: ["Corn Tortilla Chips", "Melted Cheddar Sauce", "Black Beans", "Sour Cream", "Pico De Gallo"],
+    badge: "PARTY SNACK",
+    available: true,
+  },
+
+  // ==========================================
+  // 11. INDIAN SWEETS & DESSERTS (6 Items)
+  // ==========================================
+  {
+    name: "Royal Kesar Gulab Jamun (3 Pcs)",
     category: "Desserts",
-    price: 129,
+    price: 140,
+    rating: 4.9,
+    emoji: "🍮",
+    // Verified authentic Gulab Jamun photo (golden fried khoya balls in saffron sugar syrup)
+    image: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&auto=format&fit=crop&q=80",
+    description: "Warm, soft khoya dumplings soaked in fragrant saffron, rose water, and green cardamom sugar syrup.",
+    details: "Made with pure milk mawa and deep fried in desi ghee, garnished with pistachio slivers and edible silver vark.",
+    ingredients: ["Fresh Milk Khoya (Mawa)", "Pure Desi Ghee", "Kashmiri Saffron Sugar Syrup", "Rose Water", "Pistachio Slivers"],
+    badge: "TRADITIONAL FAV",
+    available: true,
+  },
+  {
+    name: "Bengali Malai Rasmalai (2 Pcs)",
+    category: "Desserts",
+    price: 150,
+    rating: 4.9,
+    emoji: "🍨",
+    image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80",
+    description: "Spongy cottage cheese patties floating in chilled, thickened saffron and cardamom infused milk.",
+    details: "Chilled delicacy garnished with toasted almonds and Kashmiri saffron strands.",
+    ingredients: ["Fresh Chenna Patties", "Reduced Condensed Milk", "Saffron Strands", "Almonds & Pistachios"],
+    badge: "ROYAL SWEET",
+    available: true,
+  },
+  {
+    name: "Crispy Golden Jalebi with Rabri",
+    category: "Desserts",
+    price: 160,
+    rating: 4.9,
+    emoji: "🥨",
+    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80",
+    description: "Spiral golden crispy jalebis soaked in saffron syrup paired with slow-reduced thick malai rabri.",
+    details: "Fried in pure desi ghee for irresistible crunch and rich milk dessert pairing.",
+    ingredients: ["Fermented Batter", "Desi Ghee", "Saffron Sugar Syrup", "Thickened Malai Rabri", "Cardamom"],
+    badge: "ICONIC DUO",
+    available: true,
+  },
+  {
+    name: "Spongy Kolkata Rasgulla (3 Pcs)",
+    category: "Desserts",
+    price: 130,
     rating: 4.8,
-    emoji: "🍰",
-    description:
-      "Soft and rich chocolate cake with creamy chocolate frosting.",
-    details:
-      "A moist chocolate cake layered with smooth chocolate cream and finished with rich chocolate frosting.",
-    ingredients: [
-      "Flour",
-      "Cocoa",
-      "Chocolate",
-      "Sugar",
-      "Milk",
-      "Cream",
-    ],
+    emoji: "⚪",
+    image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80",
+    description: "Light, melt-in-mouth spongy chenna spheres cooked in clear aromatic cardamom sugar syrup.",
+    details: "Made strictly with cow milk chenna for authentic super-soft, juicy texture.",
+    ingredients: ["Cow Milk Chenna", "Light Sugar Syrup", "Crushed Green Cardamom", "Rose Essence"],
+    badge: "BENGALI CLASSIC",
+    available: true,
+  },
+  {
+    name: "Kesar Pista Kulfi Falooda",
+    category: "Desserts",
+    price: 170,
+    rating: 4.9,
+    emoji: "🍦",
+    image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600&auto=format&fit=crop&q=80",
+    description: "Traditional dense saffron pistachio kulfi served over silky falooda sev, rose syrup, and sabja seeds.",
+    details: "Creamy traditional Indian ice cream topped with chilled sweet rabri.",
+    ingredients: ["Kesar Pista Kulfi", "Falooda Sev", "Sweet Basil Seeds (Sabja)", "Rose Syrup", "Rabri"],
+    badge: "SUMMER DELIGHT",
+    available: true,
+  },
+  {
+    name: "Sizzling Chocolate Walnut Brownie",
+    category: "Desserts",
+    price: 210,
+    rating: 4.9,
+    emoji: "🍫",
+    image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&auto=format&fit=crop&q=80",
+    description: "Warm fudgy dark chocolate brownie served with a scoop of vanilla bean ice cream and hot chocolate fudge.",
+    details: "Served on a hot sizzler plate with melted Belgian chocolate drizzle.",
+    ingredients: ["Dark Cocoa", "Roasted Walnuts", "Bourbon Vanilla Ice Cream", "Hot Chocolate Fudge"],
+    badge: "HEAVENLY",
+    available: true,
   },
 
+  // ==========================================
+  // 12. DRINKS & REFRESHERS (6 Items)
+  // ==========================================
   {
-    name: "Hot Coffee",
+    name: "Sweet Punjabi Lassi with Malai",
     category: "Drinks",
-    price: 89,
-    rating: 4.6,
+    price: 120,
+    rating: 4.9,
+    emoji: "🥛",
+    image: "https://images.unsplash.com/photo-1546173159-315724a31696?w=600&auto=format&fit=crop&q=80",
+    description: "Thick, creamy churned sweet yogurt drink served in a traditional clay kulhad with a dollop of fresh malai.",
+    details: "Flavored with rose water, crushed green cardamoms, and garnished with slivered almonds.",
+    ingredients: ["Thick Buffalo Milk Curd", "Pure Cane Sugar", "Heavy Malai Clot", "Rose Water", "Cardamom & Almonds"],
+    badge: "REFRESHING",
+    available: true,
+  },
+  {
+    name: "Alphonso Mango Thick Shake",
+    category: "Drinks",
+    price: 180,
+    rating: 4.9,
+    emoji: "🥭",
+    image: "https://images.unsplash.com/photo-1546173159-315724a31696?w=600&auto=format&fit=crop&q=80",
+    description: "Chilled thick shake blended with 100% natural Ratnagiri Alphonso mango pulp and vanilla ice cream.",
+    details: "Topped with fresh diced mango chunks and chopped nuts.",
+    ingredients: ["Ratnagiri Alphonso Mango Pulp", "Full Cream Milk", "Vanilla Ice Cream", "Pistachios"],
+    badge: "BESTSELLER",
+    available: true,
+  },
+  {
+    name: "Royal Masala Chai with Ginger & Cardamom",
+    category: "Drinks",
+    price: 80,
+    rating: 4.9,
     emoji: "☕",
-    description:
-      "Freshly brewed hot coffee with a rich and aromatic flavor.",
-    details:
-      "A comforting cup of freshly brewed coffee made with premium coffee beans and served hot.",
-    ingredients: ["Coffee", "Milk", "Sugar", "Water"],
+    image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80",
+    description: "Slow-brewed Assam CTC black tea with crushed fresh ginger, green cardamoms, cinnamon, and whole milk.",
+    details: "Served steaming hot in an earthen kulhad for the authentic aroma.",
+    ingredients: ["Assam CTC Tea", "Fresh Ginger", "Green Cardamom", "Cinnamon & Cloves", "Fresh Milk"],
+    badge: "AUTHENTIC CHAI",
+    available: true,
   },
-
   {
-    name: "Cold Coffee",
+    name: "Iced Cold Brew Hazelnut Coffee",
     category: "Drinks",
-    price: 119,
-    rating: 4.7,
-    emoji: "🥤",
-    description:
-      "Creamy chilled coffee blended with milk and ice.",
-    details:
-      "A refreshing cold coffee made with rich coffee, chilled milk, sugar and ice, blended until smooth and creamy.",
-    ingredients: ["Coffee", "Milk", "Sugar", "Ice", "Cream"],
-  },
-
-  {
-    name: "Milkshake",
-    category: "Drinks",
-    price: 139,
+    price: 160,
     rating: 4.8,
-    emoji: "🧋",
-    description:
-      "Thick and creamy milkshake blended with rich flavors.",
-    details:
-      "A smooth and creamy milkshake prepared with chilled milk, ice cream and delicious flavoring.",
-    ingredients: [
-      "Milk",
-      "Ice Cream",
-      "Sugar",
-      "Flavor Syrup",
-      "Ice",
-    ],
+    emoji: "☕",
+    image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=600&auto=format&fit=crop&q=80",
+    description: "16-hour slow-steeped Arabica cold brew with rich roasted hazelnut syrup and cold milk froth.",
+    details: "Smooth, non-bitter cold coffee served over crystal ice cubes.",
+    ingredients: ["100% Arabica Coffee Beans", "Roasted Hazelnut Extract", "Cold Whole Milk", "Crystal Ice"],
+    badge: "ENERGIZING",
+    available: true,
   },
-
   {
-    name: "Green Tea",
+    name: "Virgin Garden Mint Mojito",
     category: "Drinks",
-    price: 79,
-    rating: 4.5,
-    emoji: "🍵",
-    description:
-      "Light and refreshing green tea with a delicate herbal flavor.",
-    details:
-      "A soothing cup of freshly brewed green tea prepared with premium green tea leaves.",
-    ingredients: ["Green Tea Leaves", "Water", "Honey", "Lemon"],
-  },
-
-  {
-    name: "Mango Juice",
-    category: "Drinks",
-    price: 109,
+    price: 140,
     rating: 4.7,
-    emoji: "🧃",
-    description:
-      "Sweet and refreshing mango juice made from ripe mangoes.",
-    details:
-      "A naturally sweet and refreshing mango drink prepared from ripe, juicy mangoes.",
-    ingredients: ["Mango", "Water", "Sugar", "Ice"],
+    emoji: "🍹",
+    image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80",
+    description: "Muddled garden fresh mint leaves, zesty lime wedges, sparkling soda, and crushed ice.",
+    details: "The quintessential palate cleanser and summer refresher.",
+    ingredients: ["Fresh Garden Mint", "Persian Limes", "Cane Sugar", "Sparkling Club Soda", "Crushed Ice"],
+    badge: "COOLER",
+    available: true,
   },
-
   {
-    name: "Masala Chai",
+    name: "Rose Badam Thandai Cooler",
     category: "Drinks",
-    price: 69,
-    rating: 4.6,
-    emoji: "🫖",
-    description:
-      "Classic Indian tea brewed with milk and aromatic spices.",
-    details:
-      "A comforting Indian masala chai prepared with black tea, milk, ginger and aromatic spices.",
-    ingredients: [
-      "Black Tea",
-      "Milk",
-      "Ginger",
-      "Cardamom",
-      "Cinnamon",
-    ],
+    price: 150,
+    rating: 4.8,
+    emoji: "🥛",
+    image: "https://images.unsplash.com/photo-1546173159-315724a31696?w=600&auto=format&fit=crop&q=80",
+    description: "Chilled milk infused with ground almonds, fennel seeds, melon seeds, rose petals, and black pepper.",
+    details: "Traditional cooling elixir sweetened with organic sugar and scented with saffron.",
+    ingredients: ["Whole Milk", "Ground Almond Paste", "Fennel & Poppy Seeds", "Dried Rose Petals", "Kashmiri Saffron"],
+    badge: "ROYAL THANDAI",
+    available: true,
   },
 ];
 
-/* =====================================================
-   SEED DATABASE
-===================================================== */
-
-const seedFoods = async () => {
+async function seedDatabase() {
   try {
-    const mongoUri = process.env.MONGO_URI || process.env.MONGO_URL;
-    await mongoose.connect(mongoUri);
+    const mongoURI =
+      process.env.MONGO_URI ||
+      "mongodb+srv://rishidubey7102005:Rishikesh7102005@cluster0.nhwcf.mongodb.net/FoodFusion_DB?retryWrites=true&w=majority&appName=Cluster0";
 
+    await mongoose.connect(mongoURI, {
+      serverSelectionTimeoutMS: 8000,
+    });
     console.log("MongoDB connected successfully ✅");
 
-    /* Remove existing food data */
     await Food.deleteMany({});
-
     console.log("Existing food data cleared.");
 
-    /* Insert new food data */
-    const insertedFoods = await Food.insertMany(foods);
+    await Food.insertMany(foods);
+    console.log(`✅ ${foods.length} Pure Veg food items inserted successfully into FoodFusion database 🍽️`);
 
-    console.log(
-      `${insertedFoods.length} food items inserted successfully 🍽️`
-    );
-
-    await mongoose.connection.close();
-
-    console.log("Database connection closed.");
-
+    mongoose.connection.close();
+    console.log("Database connection closed cleanly.");
     process.exit(0);
   } catch (error) {
-    console.error("Food seeding failed ❌");
-    console.error(error.message);
-
-    await mongoose.connection.close();
-
+    console.error("Error seeding database:", error.message);
     process.exit(1);
   }
-};
+}
 
-seedFoods();
+seedDatabase();
