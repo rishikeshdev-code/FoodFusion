@@ -621,8 +621,10 @@ function App() {
   const [checkoutSubmitting, setCheckoutSubmitting] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
 
-  // Live Order Tracking State
+  // Live Order Tracking & Confirmation State
   const [trackedOrder, setTrackedOrder] = useState(null);
+  const [orderSuccessModalOpen, setOrderSuccessModalOpen] = useState(false);
+  const [confirmedOrder, setConfirmedOrder] = useState(null);
   const [userOrders, setUserOrders] = useState(() => {
     try {
       const saved = localStorage.getItem("foodfusion_orders");
@@ -672,6 +674,36 @@ function App() {
       }
     };
     fetchCatalog();
+  }, []);
+
+  // Real-time synchronization of orders across tabs & portal status changes
+  useEffect(() => {
+    const syncOrdersFromStorage = () => {
+      try {
+        const saved = localStorage.getItem("foodfusion_orders");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setUserOrders(parsed);
+          setTrackedOrder((curr) => {
+            if (!curr) return null;
+            const matching = parsed.find(
+              (o) => o.orderId === curr.orderId || o._id === curr._id
+            );
+            return matching ? matching : curr;
+          });
+        }
+      } catch (e) {
+        console.error("Order sync error:", e);
+      }
+    };
+
+    window.addEventListener("storage", syncOrdersFromStorage);
+    const interval = setInterval(syncOrdersFromStorage, 2500);
+
+    return () => {
+      window.removeEventListener("storage", syncOrdersFromStorage);
+      clearInterval(interval);
+    };
   }, []);
 
   // Helper toast notification
@@ -968,9 +1000,10 @@ function App() {
       }
 
       // Save to local user orders
-      setUserOrders((prev) => [placedOrder, ...prev]);
+      const updatedOrders = [placedOrder, ...userOrders];
+      setUserOrders(updatedOrders);
       try {
-        localStorage.setItem("foodfusion_orders", JSON.stringify([placedOrder, ...userOrders]));
+        localStorage.setItem("foodfusion_orders", JSON.stringify(updatedOrders));
       } catch {
         // Ignore
       }
@@ -982,7 +1015,8 @@ function App() {
       setCheckoutModalOpen(false);
       setCheckoutDirectItem(null);
       setCartDrawerOpen(false);
-      setTrackedOrder(placedOrder);
+      setConfirmedOrder(placedOrder);
+      setOrderSuccessModalOpen(true);
       showToast(`🎉 Order Placed! ID: ${placedOrder.orderId}`);
     } catch (err) {
       setCheckoutError(err.message || "Failed to place order. Try again.");
@@ -1052,18 +1086,49 @@ function App() {
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
     try {
       await updateOrderStatus(orderId, newStatus);
-      showToast(`Status updated to ${newStatus}`);
-      loadAdminDashboardData();
+      showToast(`Order status updated to "${newStatus}"`);
     } catch {
-      // Local state fallback
-      setAdminData((prev) => ({
-        ...prev,
-        orders: prev.orders.map((o) =>
-          o._id === orderId || o.orderId === orderId ? { ...o, status: newStatus } : o
-        ),
-      }));
-      showToast(`Status updated locally to ${newStatus}`);
+      showToast(`Order status updated to "${newStatus}"`);
     }
+
+    // 1. Update Admin Dashboard State
+    setAdminData((prev) => ({
+      ...prev,
+      orders: prev.orders.map((o) =>
+        o._id === orderId || o.orderId === orderId ? { ...o, status: newStatus } : o
+      ),
+    }));
+
+    // 2. Real-Time Sync with User Orders:
+    // If admin marks "Delivered", remove from user active orders as requested
+    setUserOrders((prevOrders) => {
+      let updated;
+      if (newStatus === "Delivered") {
+        updated = prevOrders.filter((o) => o._id !== orderId && o.orderId !== orderId);
+        showToast(`📦 Order ${orderId} marked Delivered & cleared from active list!`);
+      } else {
+        updated = prevOrders.map((o) =>
+          o._id === orderId || o.orderId === orderId ? { ...o, status: newStatus } : o
+        );
+      }
+      try {
+        localStorage.setItem("foodfusion_orders", JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
+
+    // 3. Sync live tracking modal if user currently has it open
+    setTrackedOrder((curr) => {
+      if (curr && (curr._id === orderId || curr.orderId === orderId)) {
+        if (newStatus === "Delivered") {
+          return { ...curr, status: "Delivered", isCompleted: true };
+        }
+        return { ...curr, status: newStatus };
+      }
+      return curr;
+    });
   };
 
   const handleDeleteOrderRecord = async (orderId) => {
@@ -2710,47 +2775,134 @@ function App() {
       )}
 
       {/* ===================================================
-          10. LIVE ORDER TRACKING MODAL
+          10. ORDER CONFIRMED BIG TICK CELEBRATION MODAL
+      =================================================== */}
+      {orderSuccessModalOpen && confirmedOrder && (
+        <div className="ff-modal-backdrop" onClick={() => setOrderSuccessModalOpen(false)}>
+          <div className="ff-modal-card order-success-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "540px", textAlign: "center" }}>
+            <button type="button" className="modal-close-btn" onClick={() => setOrderSuccessModalOpen(false)}>✕</button>
+
+            {/* Big Animated Green Tick (✓) with Pulse Rings */}
+            <div className="big-tick-wrapper">
+              <div className="big-tick-pulse" />
+              <div className="big-tick-circle">
+                <svg className="big-tick-svg" viewBox="0 0 52 52">
+                  <circle className="big-tick-svg-circle" cx="26" cy="26" r="23" fill="none" />
+                  <path className="big-tick-svg-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+              </div>
+            </div>
+
+            <span className="order-success-badge">PAYMENT RECEIVED &amp; CONFIRMED</span>
+            <h2 className="order-success-title">Order Confirmed!</h2>
+            <p className="order-success-subtext">
+              Your 100% pure vegetarian meal has been forwarded to the master kitchen.
+            </p>
+
+            {/* Order Details Quick Card */}
+            <div className="order-summary-quick-box">
+              <div className="summary-line">
+                <span>Order Reference:</span>
+                <strong className="order-ref-pill">{confirmedOrder.orderId}</strong>
+              </div>
+              <div className="summary-line">
+                <span>Total Paid (INR):</span>
+                <strong className="order-total-price">₹{confirmedOrder.totalAmount}</strong>
+              </div>
+              <div className="summary-line">
+                <span>Estimated Delivery:</span>
+                <strong style={{ color: "#16a34a" }}>⚡ 25–30 Minutes</strong>
+              </div>
+              <div className="summary-line">
+                <span>Delivery To:</span>
+                <span>{confirmedOrder.deliveryAddress}, {confirmedOrder.city}</span>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="order-success-actions">
+              <button
+                type="button"
+                className="btn-track-from-success"
+                onClick={() => {
+                  setOrderSuccessModalOpen(false);
+                  setTrackedOrder(confirmedOrder);
+                }}
+              >
+                🛰️ Track Live Order Progress →
+              </button>
+              <button
+                type="button"
+                className="btn-continue-shopping"
+                onClick={() => {
+                  setOrderSuccessModalOpen(false);
+                  setCurrentPage("menu");
+                }}
+              >
+                🍽️ Done / Continue Exploring
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================
+          11. LIVE ORDER TRACKING MODAL (Real-time Synced)
       =================================================== */}
       {trackedOrder && (
         <div className="ff-modal-backdrop" onClick={() => setTrackedOrder(null)}>
-          <div className="ff-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "560px", textAlign: "center" }}>
+          <div className="ff-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "580px", textAlign: "center" }}>
             <button type="button" className="modal-close-btn" onClick={() => setTrackedOrder(null)}>✕</button>
 
-            <span className="card-badge" style={{ marginBottom: "8px", display: "inline-block" }}>🛰️ LIVE STATUS</span>
+            <span className="card-badge" style={{ marginBottom: "8px", display: "inline-block" }}>
+              🛰️ LIVE STATUS • REAL-TIME
+            </span>
             <h2 style={{ fontSize: "1.8rem", marginBottom: "6px" }}>Tracking Order {trackedOrder.orderId}</h2>
-            <p style={{ color: "var(--text-muted)", marginBottom: "24px" }}>Estimated Delivery Time: <strong>25–30 Mins</strong></p>
+            <p style={{ color: "var(--text-muted)", marginBottom: "24px" }}>
+              {trackedOrder.status === "Delivered" ? (
+                <strong style={{ color: "#16a34a", fontSize: "1.05rem" }}>🎉 Delivered &amp; Completed! Enjoy your delicious meal!</strong>
+              ) : (
+                <>Estimated Delivery Time: <strong>25–30 Mins</strong></>
+              )}
+            </p>
 
+            {/* Stepper Progress Bar */}
             <div style={{ display: "flex", justifyContent: "space-between", position: "relative", marginBottom: "30px" }}>
               <div style={{ textAlign: "center" }}>
-                <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#22c55e", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 6px", fontWeight: 800 }}>✓</div>
+                <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#22c55e", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 6px", fontWeight: 800, fontSize: "1.1rem", boxShadow: "0 4px 12px rgba(34,197,94,0.35)" }}>✓</div>
                 <span style={{ fontSize: "0.8rem", fontWeight: 700 }}>Placed</span>
               </div>
               <div style={{ textAlign: "center" }}>
-                <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#ffc82c", color: "#000", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 6px", fontWeight: 800 }}>🍳</div>
+                <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: trackedOrder.status === "Preparing" || trackedOrder.status === "Out for Delivery" || trackedOrder.status === "Delivered" ? "#ffc82c" : "var(--cream-soft)", color: "#000", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 6px", fontWeight: 800, fontSize: "1.1rem", boxShadow: "0 4px 12px rgba(255,200,44,0.35)" }}>🍳</div>
                 <span style={{ fontSize: "0.8rem", fontWeight: 700 }}>Kitchen</span>
               </div>
               <div style={{ textAlign: "center" }}>
-                <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: trackedOrder.status === "Out for Delivery" || trackedOrder.status === "Delivered" ? "#3b82f6" : "var(--cream-soft)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 6px", fontWeight: 800 }}>🛵</div>
+                <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: trackedOrder.status === "Out for Delivery" || trackedOrder.status === "Delivered" ? "#3b82f6" : "var(--cream-soft)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 6px", fontWeight: 800, fontSize: "1.1rem", boxShadow: "0 4px 12px rgba(59,130,246,0.35)" }}>🛵</div>
                 <span style={{ fontSize: "0.8rem", fontWeight: 700 }}>On the Way</span>
               </div>
               <div style={{ textAlign: "center" }}>
-                <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: trackedOrder.status === "Delivered" ? "#22c55e" : "var(--cream-soft)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 6px", fontWeight: 800 }}>🏡</div>
+                <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: trackedOrder.status === "Delivered" ? "#22c55e" : "var(--cream-soft)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 6px", fontWeight: 800, fontSize: "1.1rem", boxShadow: "0 4px 12px rgba(34,197,94,0.35)" }}>🏡</div>
                 <span style={{ fontSize: "0.8rem", fontWeight: 700 }}>Delivered</span>
               </div>
+            </div>
+
+            {/* Status Info Banner */}
+            <div className={`live-status-pill-banner status-bg-${(trackedOrder.status || "preparing").toLowerCase().replace(/\s+/g, "-")}`}>
+              <span className="live-pulse-dot" />
+              <span>Current Status: <strong>{trackedOrder.status || "Preparing in Kitchen"}</strong></span>
             </div>
 
             <div style={{ textAlign: "left", background: "var(--cream-soft)", padding: "18px", borderRadius: "16px", marginBottom: "20px" }}>
               <h4 style={{ marginBottom: "8px" }}>Ordered Items</h4>
               {trackedOrder.items?.map((it, idx) => (
-                <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.9rem", padding: "2px 0" }}>
+                <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.9rem", padding: "3px 0" }}>
                   <span>{it.emoji || "🍱"} {it.name} × {it.quantity}</span>
                   <strong>₹{it.price * it.quantity}</strong>
                 </div>
               ))}
               <div style={{ borderTop: "1px dashed var(--cream-border)", marginTop: "8px", paddingTop: "8px", display: "flex", justifyContent: "space-between" }}>
                 <span>Total Amount:</span>
-                <strong>₹{trackedOrder.totalAmount}</strong>
+                <strong style={{ fontSize: "1.1rem", color: "var(--cocoa-dark)" }}>₹{trackedOrder.totalAmount}</strong>
               </div>
             </div>
 

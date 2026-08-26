@@ -2182,6 +2182,250 @@ h1, h2, h3, h4, .chunky-title {
 }
 
 /* ==========================================================================
+   13B. ORDER CONFIRMATION CELEBRATION MODAL (BIG ANIMATED TICK)
+========================================================================== */
+.order-success-card {
+  padding: 36px 30px;
+  animation: popModal 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.big-tick-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px auto 22px;
+  position: relative;
+  width: 110px;
+  height: 110px;
+}
+
+.big-tick-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 35px rgba(34, 197, 94, 0.45), 0 0 25px rgba(34, 197, 94, 0.3);
+  position: relative;
+  z-index: 2;
+  animation: popScaleTick 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.big-tick-pulse {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid rgba(34, 197, 94, 0.45);
+  animation: pulseRings 2.2s infinite ease-out;
+  z-index: 1;
+}
+
+.big-tick-svg {
+  width: 54px;
+  height: 54px;
+  display: block;
+}
+
+.big-tick-svg-circle {
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+}
+
+.big-tick-svg-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke: #ffffff;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: drawCheck 0.45s 0.3s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+@keyframes popScaleTick {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulseRings {
+  0% { transform: scale(0.85); opacity: 1; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+@keyframes drawCheck {
+  100% { stroke-dashoffset: 0; }
+}
+
+.order-success-badge {
+  background: #dcfce7;
+  color: #15803d;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  display: inline-block;
+  margin-bottom: 8px;
+  border: 1px solid #bbf7d0;
+}
+
+.order-success-title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--cocoa-dark);
+  margin-bottom: 6px;
+}
+
+.order-success-subtext {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 22px;
+}
+
+.order-summary-quick-box {
+  background: var(--cream-soft);
+  border-radius: 20px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  text-align: left;
+  border: 1px solid var(--cream-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.order-ref-pill {
+  background: #ffffff;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--cocoa-dark);
+  border: 1px solid var(--cream-border);
+}
+
+.order-total-price {
+  font-size: 1.25rem;
+  color: var(--cocoa-dark);
+  font-weight: 900;
+  font-family: var(--font-display);
+}
+
+.order-success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-track-from-success {
+  background: var(--yellow-primary);
+  color: var(--cocoa-dark);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 900;
+  padding: 14px 24px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 6px 20px rgba(255, 200, 44, 0.4);
+  width: 100%;
+}
+
+.btn-track-from-success:hover {
+  background: var(--yellow-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 200, 44, 0.55);
+}
+
+.btn-continue-shopping {
+  background: transparent;
+  color: var(--text-dark);
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+}
+
+.btn-continue-shopping:hover {
+  background: var(--cream-soft);
+}
+
+/* Real-Time Live Status Pill Banner */
+.live-status-pill-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  border: 1.5px solid transparent;
+}
+
+.live-pulse-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: pulseDot 1.4s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.4; }
+}
+
+.status-bg-preparing {
+  background: #fef9c3;
+  color: #854d0e;
+  border-color: #fef08a;
+}
+.status-bg-preparing .live-pulse-dot {
+  background: #eab308;
+}
+
+.status-bg-out-for-delivery {
+  background: #dbeafe;
+  color: #1e40af;
+  border-color: #bfdbfe;
+}
+.status-bg-out-for-delivery .live-pulse-dot {
+  background: #3b82f6;
+}
+
+.status-bg-delivered {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+.status-bg-delivered .live-pulse-dot {
+  background: #22c55e;
+}
+
+.status-bg-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+.status-bg-cancelled .live-pulse-dot {
+  background: #ef4444;
+}
+
+/* ==========================================================================
    14. FOOTER
 ========================================================================== */
 .ff-footer {
