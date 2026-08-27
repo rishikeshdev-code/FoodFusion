@@ -8,14 +8,28 @@ const { isEmailConfigured, sendOtpEmail, sendPasswordResetEmail } = require("../
 
 const router = express.Router();
 
-// Email validation helper
+// Strict Email validation helper
 const isValidEmail = (email) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
+  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(String(email || "").trim());
 };
 
-// 10-digit Indian Mobile validation helper
+// 10-digit Mobile validation helper
 const isValid10DigitPhone = (phone) => {
-  return /^[6-9]\d{9}$/.test(String(phone || "").trim()) || /^\d{10}$/.test(String(phone || "").trim());
+  const cleaned = String(phone || "").replace(/[\s\-+]/g, "");
+  return /^[6-9]\d{9}$/.test(cleaned) || /^\d{10}$/.test(cleaned);
+};
+
+// Real Strong Password validator (min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special character)
+const getPasswordRequirementsError = (password) => {
+  if (!password || typeof password !== "string") return "Password is required.";
+  if (password.length < 8) return "Password must be at least 8 characters long.";
+  if (!/[A-Z]/.test(password)) return "Password must contain at least one uppercase letter (A-Z).";
+  if (!/[a-z]/.test(password)) return "Password must contain at least one lowercase letter (a-z).";
+  if (!/[0-9]/.test(password)) return "Password must contain at least one number (0-9).";
+  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
+    return "Password must contain at least one special symbol (!@#$%^&* etc.).";
+  }
+  return null;
 };
 
 /**
@@ -292,10 +306,11 @@ router.post("/verify-otp", async (req, res) => {
         });
       }
 
-      if (password.length < 6) {
+      const passwordError = getPasswordRequirementsError(password);
+      if (passwordError) {
         return res.status(400).json({
           success: false,
-          message: "Password must be at least 6 characters",
+          message: passwordError,
         });
       }
 
@@ -365,31 +380,32 @@ router.post("/register", async (req, res) => {
   try {
     const { name, email, password, phone, address } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !String(name).trim() || String(name).trim().length < 2) {
       return res.status(400).json({
         success: false,
-        message: "Name, email and password are required",
+        message: "Please enter a valid full name (at least 2 characters).",
       });
     }
 
-    if (!isValidEmail(email)) {
+    if (!email || !isValidEmail(email)) {
       return res.status(400).json({
         success: false,
-        message: "Enter a valid email address.",
+        message: "Please enter a valid email address (e.g. name@example.com).",
       });
     }
 
     if (phone && !isValid10DigitPhone(phone)) {
       return res.status(400).json({
         success: false,
-        message: "Enter a valid 10-digit mobile number.",
+        message: "Please enter a valid 10-digit mobile number.",
       });
     }
 
-    if (password.length < 6) {
+    const passwordError = getPasswordRequirementsError(password);
+    if (passwordError) {
       return res.status(400).json({
         success: false,
-        message: "Password must be at least 6 characters",
+        message: passwordError,
       });
     }
 
@@ -398,7 +414,7 @@ router.post("/register", async (req, res) => {
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        message: "An account with this email already exists",
+        message: "An account with this email address already exists. Please log in or reset your password.",
       });
     }
 
@@ -441,7 +457,7 @@ router.post("/register", async (req, res) => {
     console.error("Registration error:", error);
     res.status(500).json({
       success: false,
-      message: "Server error during registration",
+      message: error.message || "Server error during registration",
     });
   }
 });
@@ -454,21 +470,34 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (!email || !String(email).trim()) {
       return res.status(400).json({
         success: false,
-        message: "Incorrect email or password",
+        message: "Please enter your email address.",
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid email address.",
+      });
+    }
+
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter your password.",
       });
     }
 
     const normalizedEmail = String(email).toLowerCase().trim();
     const user = await User.findOne({ email: normalizedEmail });
 
-    // Constant-time check / generic message to avoid email enumeration
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Incorrect email or password",
+        message: "Invalid email or password. Please check your credentials or create an account.",
       });
     }
 
@@ -476,7 +505,7 @@ router.post("/login", async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({
         success: false,
-        message: "Incorrect email or password",
+        message: "Invalid email or password. Please check your credentials or use Forgot Password.",
       });
     }
 
@@ -522,7 +551,7 @@ router.post("/forgot-password", async (req, res) => {
     if (!email || !isValidEmail(email)) {
       return res.status(400).json({
         success: false,
-        message: "Enter a valid email address.",
+        message: "Please enter a valid email address.",
       });
     }
 
@@ -530,10 +559,9 @@ router.post("/forgot-password", async (req, res) => {
     const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
-      // Do not reveal email absence, return standard success message
-      return res.status(200).json({
-        success: true,
-        message: "Password reset link sent to your email.",
+      return res.status(404).json({
+        success: false,
+        message: "No account found with this email address. Please check your spelling or sign up.",
       });
     }
 
@@ -549,23 +577,25 @@ router.post("/forgot-password", async (req, res) => {
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
     const resetUrl = `${frontendUrl}/#reset-password?token=${rawResetToken}&email=${encodeURIComponent(normalizedEmail)}`;
 
-    const emailResult = await sendPasswordResetEmail({
-      toEmail: normalizedEmail,
-      userName: user.name,
-      resetToken: rawResetToken,
-      resetUrl,
-    });
-
-    if (!emailResult.success) {
-      return res.status(503).json({
-        success: false,
-        message: emailResult.error || "Failed to deliver password reset email.",
+    let emailSent = false;
+    if (isEmailConfigured()) {
+      const emailResult = await sendPasswordResetEmail({
+        toEmail: normalizedEmail,
+        userName: user.name,
+        resetToken: rawResetToken,
+        resetUrl,
       });
+      emailSent = emailResult.success;
     }
 
     return res.status(200).json({
       success: true,
-      message: "Password reset link sent to your email.",
+      message: emailSent
+        ? "Password reset link sent to your email."
+        : "Password reset code generated successfully.",
+      resetToken: rawResetToken,
+      resetUrl,
+      emailConfigured: isEmailConfigured(),
     });
   } catch (error) {
     console.error("Forgot password error:", error);
@@ -584,17 +614,18 @@ router.post("/reset-password", async (req, res) => {
   try {
     const { token, password } = req.body;
 
-    if (!token || !password) {
+    if (!token || !String(token).trim()) {
       return res.status(400).json({
         success: false,
-        message: "Reset token and new password are required.",
+        message: "Reset token/code is required.",
       });
     }
 
-    if (password.length < 6) {
+    const passwordError = getPasswordRequirementsError(password);
+    if (passwordError) {
       return res.status(400).json({
         success: false,
-        message: "Password must be at least 6 characters",
+        message: passwordError,
       });
     }
 
@@ -609,7 +640,7 @@ router.post("/reset-password", async (req, res) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Reset link expired. Please request a new one.",
+        message: "Reset code has expired or is invalid. Please request a new password reset.",
       });
     }
 
@@ -621,7 +652,7 @@ router.post("/reset-password", async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Password changed successfully.",
+      message: "Password changed successfully! You can now sign in with your new password.",
     });
   } catch (error) {
     console.error("Reset password error:", error);

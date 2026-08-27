@@ -4,6 +4,8 @@ import {
   createOrder,
   registerUser,
   loginUser,
+  forgotPassword,
+  resetPassword,
   getAdminDashboardData,
   updateOrderStatus,
   deleteOrder,
@@ -43,6 +45,75 @@ import imgJalebi from "./assets/images/Crispy Golden Jalebi with Rabri.jpeg";
 import imgRasgulla from "./assets/images/Spongy Kolkata Rasgulla (3 Pcs).jpeg";
 import imgMangoLassi from "./assets/images/Royal Kulhad Mango Lassi.jpeg";
 import imgMasalaChai from "./assets/images/Royal Masala Chai with Ginger & Cardamom.jpeg";
+
+// Strict Real Email validation helper
+export const validateEmail = (email) => {
+  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(String(email || "").trim());
+};
+
+// 10-Digit Mobile validation helper
+export const validatePhone = (phone) => {
+  if (!phone || !String(phone).trim()) return true; // Optional field
+  const cleaned = String(phone).replace(/[\s\-+]/g, "");
+  return /^[6-9]\d{9}$/.test(cleaned) || /^\d{10}$/.test(cleaned);
+};
+
+// Real-Time Password Strength and Requirements Checker
+export const checkPasswordStrength = (password) => {
+  const pwd = String(password || "");
+  const hasLength = pwd.length >= 8;
+  const hasUpper = /[A-Z]/.test(pwd);
+  const hasLower = /[a-z]/.test(pwd);
+  const hasNumber = /[0-9]/.test(pwd);
+  const hasSpecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(pwd);
+
+  const criteria = [hasLength, hasUpper, hasLower, hasNumber, hasSpecial];
+  const passedCount = criteria.filter(Boolean).length;
+
+  let score = "weak";
+  let label = "Weak ❌";
+  let color = "#ef4444";
+  let percent = 20;
+
+  if (passedCount === 5) {
+    score = "strong";
+    label = "Strong 💪";
+    color = "#10b981";
+    percent = 100;
+  } else if (passedCount >= 4) {
+    score = "good";
+    label = "Good 👍";
+    color = "#3b82f6";
+    percent = 80;
+  } else if (passedCount >= 3) {
+    score = "fair";
+    label = "Fair ⚠️";
+    color = "#f59e0b";
+    percent = 60;
+  } else if (passedCount > 0) {
+    score = "weak";
+    label = "Weak ❌";
+    color = "#ef4444";
+    percent = 30;
+  } else {
+    percent = 0;
+    label = "";
+  }
+
+  return {
+    hasLength,
+    hasUpper,
+    hasLower,
+    hasNumber,
+    hasSpecial,
+    passedCount,
+    isComplete: passedCount === 5,
+    score,
+    label,
+    color,
+    percent,
+  };
+};
 
 export const CATEGORIES = [
   "All",
@@ -567,7 +638,7 @@ function App() {
     }
   });
 
-  const [authMode, setAuthMode] = useState("login");
+  const [authMode, setAuthMode] = useState("login"); // "login" | "register" | "forgot"
   const [authForm, setAuthForm] = useState({
     name: "",
     email: "",
@@ -578,6 +649,45 @@ function App() {
   });
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState("");
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] = useState(false);
+
+  // Forgot / Reset Password Flow State
+  const [forgotStep, setForgotStep] = useState(1); // 1: Enter email -> 2: Enter token & new password
+  const [forgotForm, setForgotForm] = useState({
+    email: "",
+    token: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotError, setForgotError] = useState("");
+  const [forgotMessage, setForgotMessage] = useState("");
+  const [showForgotNewPassword, setShowForgotNewPassword] = useState(false);
+  const [showForgotConfirmPassword, setShowForgotConfirmPassword] = useState(false);
+
+  // Check URL hash for direct password reset email links (#reset-password?token=...&email=...)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hash = window.location.hash || "";
+    if (hash.startsWith("#reset-password")) {
+      const queryPart = hash.includes("?") ? hash.split("?")[1] : "";
+      const params = new URLSearchParams(queryPart);
+      const token = params.get("token") || "";
+      const email = params.get("email") || "";
+
+      if (token || email) {
+        setAuthMode("forgot");
+        setForgotStep(2);
+        setForgotForm((prev) => ({
+          ...prev,
+          token: token || prev.token,
+          email: email ? decodeURIComponent(email) : prev.email,
+        }));
+      }
+    }
+  }, []);
 
   // Checkout State
   const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
@@ -784,76 +894,181 @@ function App() {
 
   const clearCart = () => setCart([]);
 
-  // Auth Handlers
+  // Auth Handlers (Real Validation & Verification)
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
     setAuthError("");
-    setAuthLoading(true);
 
-    try {
-      if (authMode === "register") {
-        if (authForm.password !== authForm.confirmPassword) {
-          throw new Error("Passwords do not match!");
-        }
-        if (authForm.password.length < 6) {
-          throw new Error("Password must be at least 6 characters.");
-        }
+    if (authMode === "register") {
+      // 1. Name validation
+      if (!authForm.name || !authForm.name.trim() || authForm.name.trim().length < 2) {
+        setAuthError("Please enter your full name (at least 2 characters).");
+        return;
+      }
 
-        let userObj;
-        try {
-          const data = await registerUser({
-            name: authForm.name,
-            email: authForm.email,
-            password: authForm.password,
-            phone: authForm.phone,
-            address: authForm.address,
-          });
-          userObj = data.user || {
-            name: authForm.name,
-            email: authForm.email,
-            phone: authForm.phone,
-            address: authForm.address,
-          };
-        } catch {
-          userObj = {
-            name: authForm.name,
-            email: authForm.email,
-            phone: authForm.phone || "+91 98765 43210",
-            address: authForm.address || "Bandra West, Mumbai",
-          };
-        }
+      // 2. Real email validation
+      if (!authForm.email || !validateEmail(authForm.email)) {
+        setAuthError("Please enter a valid email address (e.g. name@example.com).");
+        return;
+      }
 
+      // 3. Mobile validation
+      if (authForm.phone && !validatePhone(authForm.phone)) {
+        setAuthError("Please enter a valid 10-digit mobile number.");
+        return;
+      }
+
+      // 4. Strong Password validation
+      const pwdStrength = checkPasswordStrength(authForm.password);
+      if (!pwdStrength.isComplete) {
+        setAuthError("Password must be at least 8 characters and include uppercase, lowercase, a number, and a special symbol.");
+        return;
+      }
+
+      // 5. Password match validation
+      if (authForm.password !== authForm.confirmPassword) {
+        setAuthError("Passwords do not match! Please check both password fields.");
+        return;
+      }
+
+      setAuthLoading(true);
+      try {
+        const data = await registerUser({
+          name: authForm.name.trim(),
+          email: authForm.email.trim().toLowerCase(),
+          password: authForm.password,
+          phone: authForm.phone ? authForm.phone.trim() : "",
+          address: authForm.address ? authForm.address.trim() : "",
+        });
+
+        const userObj = data.user || {
+          name: authForm.name.trim(),
+          email: authForm.email.trim().toLowerCase(),
+          phone: authForm.phone,
+          address: authForm.address,
+        };
+
+        if (data.token) {
+          localStorage.setItem("foodfusion_token", data.token);
+        }
         setCurrentUser(userObj);
         localStorage.setItem("foodfusion_user", JSON.stringify(userObj));
         showToast(`🎉 Account created! Welcome, ${userObj.name}!`);
-      } else {
-        let userObj;
-        try {
-          const data = await loginUser({
-            email: authForm.email,
-            password: authForm.password,
-          });
-          userObj = data.user || {
-            name: data.name || authForm.email.split("@")[0],
-            email: authForm.email,
-          };
-        } catch {
-          userObj = {
-            name: authForm.email.split("@")[0] || "Food Lover",
-            email: authForm.email,
-            phone: "+91 98765 43210",
-            address: "404 Emerald Towers, Bandra West, Mumbai",
-          };
-        }
+      } catch (err) {
+        setAuthError(err.message || "Registration failed. Please check inputs.");
+      } finally {
+        setAuthLoading(false);
+      }
+    } else if (authMode === "login") {
+      // 1. Real email validation
+      if (!authForm.email || !validateEmail(authForm.email)) {
+        setAuthError("Please enter a valid email address (e.g. name@example.com).");
+        return;
+      }
 
+      // 2. Password validation
+      if (!authForm.password) {
+        setAuthError("Please enter your password.");
+        return;
+      }
+
+      setAuthLoading(true);
+      try {
+        const data = await loginUser({
+          email: authForm.email.trim().toLowerCase(),
+          password: authForm.password,
+        });
+
+        const userObj = data.user || {
+          name: data.name || authForm.email.split("@")[0],
+          email: authForm.email.trim().toLowerCase(),
+        };
+
+        if (data.token) {
+          localStorage.setItem("foodfusion_token", data.token);
+        }
         setCurrentUser(userObj);
         localStorage.setItem("foodfusion_user", JSON.stringify(userObj));
         showToast(`👋 Welcome back, ${userObj.name}!`);
+      } catch (err) {
+        setAuthError(err.message || "Invalid email or password. Please try again or reset your password.");
+      } finally {
+        setAuthLoading(false);
       }
+    }
+  };
+
+  // Forgot Password: Step 1 (Request Reset Code / Token)
+  const handleRequestPasswordReset = async (e) => {
+    e.preventDefault();
+    setForgotError("");
+    setForgotMessage("");
+
+    if (!forgotForm.email || !validateEmail(forgotForm.email)) {
+      setForgotError("Please enter a valid registered email address.");
+      return;
+    }
+
+    setForgotLoading(true);
+    try {
+      const res = await forgotPassword({ email: forgotForm.email.trim().toLowerCase() });
+      setForgotMessage(res.message || "Password reset code has been dispatched!");
+      if (res.resetToken) {
+        setForgotForm((prev) => ({ ...prev, token: res.resetToken }));
+      }
+      setForgotStep(2);
+      showToast("🔑 Reset code generated! Please enter your new password.");
     } catch (err) {
-      setAuthError(err.message || "Authentication failed. Please check inputs.");
+      setForgotError(err.message || "No registered account found with this email.");
     } finally {
-      setAuthLoading(false);
+      setForgotLoading(false);
+    }
+  };
+
+  // Forgot Password: Step 2 (Submit Token & New Strong Password)
+  const handleConfirmResetPassword = async (e) => {
+    e.preventDefault();
+    setForgotError("");
+    setForgotMessage("");
+
+    if (!forgotForm.token || !String(forgotForm.token).trim()) {
+      setForgotError("Please enter the reset token or verification code.");
+      return;
+    }
+
+    const pwdStrength = checkPasswordStrength(forgotForm.newPassword);
+    if (!pwdStrength.isComplete) {
+      setForgotError("New password must meet all security requirements (min 8 chars, uppercase, lowercase, number, special symbol).");
+      return;
+    }
+
+    if (forgotForm.newPassword !== forgotForm.confirmNewPassword) {
+      setForgotError("New passwords do not match!");
+      return;
+    }
+
+    setForgotLoading(true);
+    try {
+      const res = await resetPassword({
+        token: forgotForm.token.trim(),
+        password: forgotForm.newPassword,
+      });
+
+      showToast("🎉 Password updated successfully! Please sign in with your new password.");
+      setAuthForm((prev) => ({
+        ...prev,
+        email: forgotForm.email,
+        password: "",
+        confirmPassword: "",
+      }));
+      setAuthMode("login");
+      setForgotStep(1);
+      setForgotForm({ email: "", token: "", newPassword: "", confirmNewPassword: "" });
+      setForgotMessage("");
+    } catch (err) {
+      setForgotError(err.message || "Failed to update password. Reset code may have expired.");
+    } finally {
+      setForgotLoading(false);
     }
   };
 
@@ -1497,150 +1712,617 @@ function App() {
           </div>
 
           <div className="auth-switch-card">
+            {/* Top Navigation Tabs */}
             <div className="auth-switch-nav">
-              <div className={`auth-switch-slider ${authMode === "register" ? "slide-right" : "slide-left"}`} />
+              <div
+                className={`auth-switch-slider ${
+                  authMode === "register"
+                    ? "slide-right"
+                    : authMode === "forgot"
+                    ? "slide-forgot"
+                    : "slide-left"
+                }`}
+              />
               <button
                 type="button"
                 className={`auth-switch-tab ${authMode === "login" ? "active" : ""}`}
-                onClick={() => { setAuthMode("login"); setAuthError(""); }}
+                onClick={() => {
+                  setAuthMode("login");
+                  setAuthError("");
+                  setForgotError("");
+                  setForgotMessage("");
+                }}
               >
                 Sign In
               </button>
               <button
                 type="button"
                 className={`auth-switch-tab ${authMode === "register" ? "active" : ""}`}
-                onClick={() => { setAuthMode("register"); setAuthError(""); }}
+                onClick={() => {
+                  setAuthMode("register");
+                  setAuthError("");
+                  setForgotError("");
+                  setForgotMessage("");
+                }}
               >
                 Sign Up
               </button>
+              {authMode === "forgot" && (
+                <button
+                  type="button"
+                  className="auth-switch-tab active forgot-tab"
+                  onClick={() => {
+                    setAuthMode("forgot");
+                  }}
+                >
+                  🔑 Reset
+                </button>
+              )}
             </div>
 
             {authError && <div className="auth-error-box">⚠️ {authError}</div>}
+            {forgotError && <div className="auth-error-box">⚠️ {forgotError}</div>}
+            {forgotMessage && <div className="auth-success-box">✅ {forgotMessage}</div>}
 
-            <div className="auth-forms-slider-wrapper">
-              <div className={`auth-forms-track ${authMode === "register" ? "show-register" : "show-login"}`}>
-                
-                {/* Login Panel */}
-                <div className="auth-panel-form">
-                  <div className="auth-panel-heading">
-                    <h2>Welcome Back!</h2>
-                    <p>Enter your email &amp; password to explore authentic dishes</p>
-                  </div>
-
-                  <form onSubmit={handleAuthSubmit} className="auth-actual-form">
-                    <div className="form-group-item">
-                      <label>Email Address</label>
-                      <input
-                        type="email"
-                        required
-                        placeholder="e.g. rishi@foodfusion.com"
-                        value={authForm.email}
-                        onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
-                      />
-                    </div>
-
-                    <div className="form-group-item">
-                      <label>Password</label>
-                      <input
-                        type="password"
-                        required
-                        placeholder="••••••••"
-                        value={authForm.password}
-                        onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
-                      />
-                    </div>
-
-                    <button type="submit" className="auth-submit-btn" disabled={authLoading}>
-                      {authLoading ? "Authenticating..." : "Sign In to Website →"}
-                    </button>
-                  </form>
-
-                  <div className="switch-prompt">
-                    <span>Don't have an account yet? </span>
-                    <button type="button" className="switch-link" onClick={() => setAuthMode("register")}>
-                      Create Account (Sign Up)
-                    </button>
-                  </div>
+            {/* FORGOT PASSWORD VIEW */}
+            {authMode === "forgot" ? (
+              <div className="auth-panel-form auth-forgot-panel">
+                <div className="auth-panel-heading">
+                  <h2>Account Recovery</h2>
+                  <p>
+                    {forgotStep === 1
+                      ? "Enter your registered email to receive a password reset token"
+                      : "Enter your verification code and set a new secure password"}
+                  </p>
                 </div>
 
-                {/* Register Panel */}
-                <div className="auth-panel-form">
-                  <div className="auth-panel-heading">
-                    <h2>Create New Account</h2>
-                    <p>Join FoodFusion for 100% Pure Vegetarian Delicacies</p>
-                  </div>
-
-                  <form onSubmit={handleAuthSubmit} className="auth-actual-form">
+                {forgotStep === 1 ? (
+                  <form onSubmit={handleRequestPasswordReset} className="auth-actual-form">
                     <div className="form-group-item">
-                      <label>Full Name</label>
+                      <label>Registered Email Address</label>
+                      <div className="input-with-icon-wrap">
+                        <input
+                          type="email"
+                          required
+                          placeholder="e.g. rishi@foodfusion.com"
+                          value={forgotForm.email}
+                          onChange={(e) => setForgotForm({ ...forgotForm, email: e.target.value })}
+                        />
+                        {forgotForm.email && (
+                          <span
+                            className={`input-status-icon ${
+                              validateEmail(forgotForm.email) ? "valid" : "invalid"
+                            }`}
+                          >
+                            {validateEmail(forgotForm.email) ? "✓" : "!"}
+                          </span>
+                        )}
+                      </div>
+                      {forgotForm.email && !validateEmail(forgotForm.email) && (
+                        <small className="field-hint-error">
+                          Please enter a valid email format (e.g. name@domain.com)
+                        </small>
+                      )}
+                    </div>
+
+                    <button type="submit" className="auth-submit-btn" disabled={forgotLoading}>
+                      {forgotLoading ? "Sending Reset Code..." : "Send Password Reset Code →"}
+                    </button>
+
+                    <div className="forgot-direct-entry-prompt">
+                      <span>Already have a reset token/code? </span>
+                      <button
+                        type="button"
+                        className="switch-link"
+                        onClick={() => {
+                          setForgotStep(2);
+                          setForgotError("");
+                        }}
+                      >
+                        Enter code directly →
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <form onSubmit={handleConfirmResetPassword} className="auth-actual-form">
+                    <div className="form-group-item">
+                      <div className="label-row-between">
+                        <label>Reset Code / Token</label>
+                        <button
+                          type="button"
+                          className="subtle-text-btn"
+                          onClick={() => setForgotStep(1)}
+                        >
+                          ← Resend to Email
+                        </button>
+                      </div>
                       <input
                         type="text"
                         required
-                        placeholder="e.g. Rishi Dubey"
-                        value={authForm.name}
-                        onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })}
+                        placeholder="Enter 32-char token or 6-digit code"
+                        value={forgotForm.token}
+                        onChange={(e) => setForgotForm({ ...forgotForm, token: e.target.value })}
                       />
                     </div>
 
+                    {/* New Password */}
                     <div className="form-group-item">
-                      <label>Email Address</label>
-                      <input
-                        type="email"
-                        required
-                        placeholder="e.g. rishi@foodfusion.com"
-                        value={authForm.email}
-                        onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
-                      />
+                      <label>New Strong Password</label>
+                      <div className="password-input-wrapper">
+                        <input
+                          type={showForgotNewPassword ? "text" : "password"}
+                          required
+                          placeholder="Create strong password"
+                          value={forgotForm.newPassword}
+                          onChange={(e) =>
+                            setForgotForm({ ...forgotForm, newPassword: e.target.value })
+                          }
+                        />
+                        <button
+                          type="button"
+                          className="password-toggle-btn"
+                          onClick={() => setShowForgotNewPassword(!showForgotNewPassword)}
+                          tabIndex="-1"
+                        >
+                          {showForgotNewPassword ? "🙈" : "👁️"}
+                        </button>
+                      </div>
+
+                      {/* Real-time Password Strength Meter */}
+                      {forgotForm.newPassword && (
+                        <div className="pwd-strength-container">
+                          <div className="pwd-strength-bar-bg">
+                            <div
+                              className="pwd-strength-bar-fill"
+                              style={{
+                                width: `${checkPasswordStrength(forgotForm.newPassword).percent}%`,
+                                backgroundColor: checkPasswordStrength(forgotForm.newPassword).color,
+                              }}
+                            />
+                          </div>
+                          <span
+                            className="pwd-strength-label"
+                            style={{ color: checkPasswordStrength(forgotForm.newPassword).color }}
+                          >
+                            {checkPasswordStrength(forgotForm.newPassword).label}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Password Requirements Checklist */}
+                      <div className="pwd-requirements-list">
+                        <span
+                          className={`pwd-req-pill ${
+                            checkPasswordStrength(forgotForm.newPassword).hasLength ? "met" : ""
+                          }`}
+                        >
+                          {checkPasswordStrength(forgotForm.newPassword).hasLength ? "✓" : "○"} 8+ chars
+                        </span>
+                        <span
+                          className={`pwd-req-pill ${
+                            checkPasswordStrength(forgotForm.newPassword).hasUpper ? "met" : ""
+                          }`}
+                        >
+                          {checkPasswordStrength(forgotForm.newPassword).hasUpper ? "✓" : "○"} Uppercase (A-Z)
+                        </span>
+                        <span
+                          className={`pwd-req-pill ${
+                            checkPasswordStrength(forgotForm.newPassword).hasLower ? "met" : ""
+                          }`}
+                        >
+                          {checkPasswordStrength(forgotForm.newPassword).hasLower ? "✓" : "○"} Lowercase (a-z)
+                        </span>
+                        <span
+                          className={`pwd-req-pill ${
+                            checkPasswordStrength(forgotForm.newPassword).hasNumber ? "met" : ""
+                          }`}
+                        >
+                          {checkPasswordStrength(forgotForm.newPassword).hasNumber ? "✓" : "○"} Number (0-9)
+                        </span>
+                        <span
+                          className={`pwd-req-pill ${
+                            checkPasswordStrength(forgotForm.newPassword).hasSpecial ? "met" : ""
+                          }`}
+                        >
+                          {checkPasswordStrength(forgotForm.newPassword).hasSpecial ? "✓" : "○"} Special Symbol (!@#$)
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="form-group-row">
-                      <div className="form-group-item">
-                        <label>Password</label>
-                        <input
-                          type="password"
-                          required
-                          placeholder="Min 6 chars"
-                          value={authForm.password}
-                          onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
-                        />
-                      </div>
-                      <div className="form-group-item">
-                        <label>Confirm Password</label>
-                        <input
-                          type="password"
-                          required
-                          placeholder="Repeat password"
-                          value={authForm.confirmPassword}
-                          onChange={(e) => setAuthForm({ ...authForm, confirmPassword: e.target.value })}
-                        />
-                      </div>
-                    </div>
-
+                    {/* Confirm New Password */}
                     <div className="form-group-item">
-                      <label>Mobile Number</label>
-                      <input
-                        type="tel"
-                        placeholder="e.g. +91 91374 57865"
-                        value={authForm.phone}
-                        onChange={(e) => setAuthForm({ ...authForm, phone: e.target.value })}
-                      />
+                      <label>Confirm New Password</label>
+                      <div className="password-input-wrapper">
+                        <input
+                          type={showForgotConfirmPassword ? "text" : "password"}
+                          required
+                          placeholder="Repeat new password"
+                          value={forgotForm.confirmNewPassword}
+                          onChange={(e) =>
+                            setForgotForm({ ...forgotForm, confirmNewPassword: e.target.value })
+                          }
+                        />
+                        <button
+                          type="button"
+                          className="password-toggle-btn"
+                          onClick={() =>
+                            setShowForgotConfirmPassword(!showForgotConfirmPassword)
+                          }
+                          tabIndex="-1"
+                        >
+                          {showForgotConfirmPassword ? "🙈" : "👁️"}
+                        </button>
+                      </div>
+                      {forgotForm.confirmNewPassword && (
+                        <small
+                          className={
+                            forgotForm.newPassword === forgotForm.confirmNewPassword
+                              ? "field-match-success"
+                              : "field-match-error"
+                          }
+                        >
+                          {forgotForm.newPassword === forgotForm.confirmNewPassword
+                            ? "✓ Passwords match"
+                            : "✗ Passwords do not match"}
+                        </small>
+                      )}
                     </div>
 
-                    <button type="submit" className="auth-submit-btn" disabled={authLoading}>
-                      {authLoading ? "Creating Account..." : "Create Account & Enter 🚀"}
+                    <button type="submit" className="auth-submit-btn" disabled={forgotLoading}>
+                      {forgotLoading ? "Resetting Password..." : "Save New Password & Sign In 🔐"}
                     </button>
                   </form>
+                )}
 
-                  <div className="switch-prompt">
-                    <span>Already registered? </span>
-                    <button type="button" className="switch-link" onClick={() => setAuthMode("login")}>
-                      Back to Sign In
-                    </button>
+                <div className="switch-prompt">
+                  <span>Remembered your password? </span>
+                  <button
+                    type="button"
+                    className="switch-link"
+                    onClick={() => {
+                      setAuthMode("login");
+                      setAuthError("");
+                      setForgotError("");
+                    }}
+                  >
+                    Back to Sign In
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* LOGIN & SIGNUP VIEW */
+              <div className="auth-forms-slider-wrapper">
+                <div
+                  className={`auth-forms-track ${
+                    authMode === "register" ? "show-register" : "show-login"
+                  }`}
+                >
+                  {/* Login Panel */}
+                  <div className="auth-panel-form">
+                    <div className="auth-panel-heading">
+                      <h2>Welcome Back!</h2>
+                      <p>Enter your email &amp; password to explore authentic dishes</p>
+                    </div>
+
+                    <form onSubmit={handleAuthSubmit} className="auth-actual-form">
+                      <div className="form-group-item">
+                        <label>Email Address</label>
+                        <div className="input-with-icon-wrap">
+                          <input
+                            type="email"
+                            required
+                            placeholder="e.g. rishi@foodfusion.com"
+                            value={authForm.email}
+                            onChange={(e) =>
+                              setAuthForm({ ...authForm, email: e.target.value })
+                            }
+                          />
+                          {authForm.email && (
+                            <span
+                              className={`input-status-icon ${
+                                validateEmail(authForm.email) ? "valid" : "invalid"
+                              }`}
+                            >
+                              {validateEmail(authForm.email) ? "✓" : "!"}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="form-group-item">
+                        <div className="label-row-between">
+                          <label>Password</label>
+                          <button
+                            type="button"
+                            className="forgot-password-link"
+                            onClick={() => {
+                              setAuthMode("forgot");
+                              setForgotStep(1);
+                              setForgotForm((prev) => ({
+                                ...prev,
+                                email: authForm.email || prev.email,
+                              }));
+                              setAuthError("");
+                              setForgotError("");
+                              setForgotMessage("");
+                            }}
+                          >
+                            Forgot Password?
+                          </button>
+                        </div>
+                        <div className="password-input-wrapper">
+                          <input
+                            type={showLoginPassword ? "text" : "password"}
+                            required
+                            placeholder="••••••••"
+                            value={authForm.password}
+                            onChange={(e) =>
+                              setAuthForm({ ...authForm, password: e.target.value })
+                            }
+                          />
+                          <button
+                            type="button"
+                            className="password-toggle-btn"
+                            onClick={() => setShowLoginPassword(!showLoginPassword)}
+                            tabIndex="-1"
+                            title={showLoginPassword ? "Hide password" : "Show password"}
+                          >
+                            {showLoginPassword ? "🙈" : "👁️"}
+                          </button>
+                        </div>
+                      </div>
+
+                      <button type="submit" className="auth-submit-btn" disabled={authLoading}>
+                        {authLoading ? "Authenticating..." : "Sign In to Website →"}
+                      </button>
+                    </form>
+
+                    <div className="switch-prompt">
+                      <span>Don't have an account yet? </span>
+                      <button
+                        type="button"
+                        className="switch-link"
+                        onClick={() => {
+                          setAuthMode("register");
+                          setAuthError("");
+                        }}
+                      >
+                        Create Account (Sign Up)
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Register Panel */}
+                  <div className="auth-panel-form">
+                    <div className="auth-panel-heading">
+                      <h2>Create New Account</h2>
+                      <p>Join FoodFusion for 100% Pure Vegetarian Delicacies</p>
+                    </div>
+
+                    <form onSubmit={handleAuthSubmit} className="auth-actual-form">
+                      <div className="form-group-item">
+                        <label>Full Name</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Rishi Dubey"
+                          value={authForm.name}
+                          onChange={(e) =>
+                            setAuthForm({ ...authForm, name: e.target.value })
+                          }
+                        />
+                      </div>
+
+                      <div className="form-group-item">
+                        <label>Email Address</label>
+                        <div className="input-with-icon-wrap">
+                          <input
+                            type="email"
+                            required
+                            placeholder="e.g. rishi@foodfusion.com"
+                            value={authForm.email}
+                            onChange={(e) =>
+                              setAuthForm({ ...authForm, email: e.target.value })
+                            }
+                          />
+                          {authForm.email && (
+                            <span
+                              className={`input-status-icon ${
+                                validateEmail(authForm.email) ? "valid" : "invalid"
+                              }`}
+                            >
+                              {validateEmail(authForm.email) ? "✓" : "!"}
+                            </span>
+                          )}
+                        </div>
+                        {authForm.email && !validateEmail(authForm.email) && (
+                          <small className="field-hint-error">
+                            Please enter a valid email format (e.g. name@domain.com)
+                          </small>
+                        )}
+                      </div>
+
+                      {/* Password Field */}
+                      <div className="form-group-item">
+                        <label>Password</label>
+                        <div className="password-input-wrapper">
+                          <input
+                            type={showRegisterPassword ? "text" : "password"}
+                            required
+                            placeholder="Create strong password (min 8 chars)"
+                            value={authForm.password}
+                            onChange={(e) =>
+                              setAuthForm({ ...authForm, password: e.target.value })
+                            }
+                          />
+                          <button
+                            type="button"
+                            className="password-toggle-btn"
+                            onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                            tabIndex="-1"
+                            title={showRegisterPassword ? "Hide password" : "Show password"}
+                          >
+                            {showRegisterPassword ? "🙈" : "👁️"}
+                          </button>
+                        </div>
+
+                        {/* Real-time Password Strength Meter */}
+                        {authForm.password && (
+                          <div className="pwd-strength-container">
+                            <div className="pwd-strength-bar-bg">
+                              <div
+                                className="pwd-strength-bar-fill"
+                                style={{
+                                  width: `${checkPasswordStrength(authForm.password).percent}%`,
+                                  backgroundColor: checkPasswordStrength(authForm.password).color,
+                                }}
+                              />
+                            </div>
+                            <span
+                              className="pwd-strength-label"
+                              style={{ color: checkPasswordStrength(authForm.password).color }}
+                            >
+                              {checkPasswordStrength(authForm.password).label}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Real-time Password Requirements Checklist */}
+                        <div className="pwd-requirements-list">
+                          <span
+                            className={`pwd-req-pill ${
+                              checkPasswordStrength(authForm.password).hasLength ? "met" : ""
+                            }`}
+                          >
+                            {checkPasswordStrength(authForm.password).hasLength ? "✓" : "○"} 8+ chars
+                          </span>
+                          <span
+                            className={`pwd-req-pill ${
+                              checkPasswordStrength(authForm.password).hasUpper ? "met" : ""
+                            }`}
+                          >
+                            {checkPasswordStrength(authForm.password).hasUpper ? "✓" : "○"} Uppercase (A-Z)
+                          </span>
+                          <span
+                            className={`pwd-req-pill ${
+                              checkPasswordStrength(authForm.password).hasLower ? "met" : ""
+                            }`}
+                          >
+                            {checkPasswordStrength(authForm.password).hasLower ? "✓" : "○"} Lowercase (a-z)
+                          </span>
+                          <span
+                            className={`pwd-req-pill ${
+                              checkPasswordStrength(authForm.password).hasNumber ? "met" : ""
+                            }`}
+                          >
+                            {checkPasswordStrength(authForm.password).hasNumber ? "✓" : "○"} Number (0-9)
+                          </span>
+                          <span
+                            className={`pwd-req-pill ${
+                              checkPasswordStrength(authForm.password).hasSpecial ? "met" : ""
+                            }`}
+                          >
+                            {checkPasswordStrength(authForm.password).hasSpecial ? "✓" : "○"} Special Symbol (!@#$)
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Confirm Password Field */}
+                      <div className="form-group-item">
+                        <label>Confirm Password</label>
+                        <div className="password-input-wrapper">
+                          <input
+                            type={showRegisterConfirmPassword ? "text" : "password"}
+                            required
+                            placeholder="Repeat password"
+                            value={authForm.confirmPassword}
+                            onChange={(e) =>
+                              setAuthForm({ ...authForm, confirmPassword: e.target.value })
+                            }
+                          />
+                          <button
+                            type="button"
+                            className="password-toggle-btn"
+                            onClick={() =>
+                              setShowRegisterConfirmPassword(!showRegisterConfirmPassword)
+                            }
+                            tabIndex="-1"
+                            title={showRegisterConfirmPassword ? "Hide password" : "Show password"}
+                          >
+                            {showRegisterConfirmPassword ? "🙈" : "👁️"}
+                          </button>
+                        </div>
+                        {authForm.confirmPassword && (
+                          <small
+                            className={
+                              authForm.password === authForm.confirmPassword
+                                ? "field-match-success"
+                                : "field-match-error"
+                            }
+                          >
+                            {authForm.password === authForm.confirmPassword
+                              ? "✓ Passwords match"
+                              : "✗ Passwords do not match"}
+                          </small>
+                        )}
+                      </div>
+
+                      <div className="form-group-item">
+                        <label>Mobile Number</label>
+                        <input
+                          type="tel"
+                          placeholder="e.g. +91 91374 57865"
+                          value={authForm.phone}
+                          onChange={(e) =>
+                            setAuthForm({ ...authForm, phone: e.target.value })
+                          }
+                        />
+                      </div>
+
+                      <button type="submit" className="auth-submit-btn" disabled={authLoading}>
+                        {authLoading ? "Creating Account..." : "Create Account & Enter 🚀"}
+                      </button>
+                    </form>
+
+                    {/* Forgot Password option on signup */}
+                    <div className="signup-forgot-row">
+                      <span>Forgot existing account password? </span>
+                      <button
+                        type="button"
+                        className="forgot-password-link"
+                        onClick={() => {
+                          setAuthMode("forgot");
+                          setForgotStep(1);
+                          setForgotForm((prev) => ({
+                            ...prev,
+                            email: authForm.email || prev.email,
+                          }));
+                          setAuthError("");
+                          setForgotError("");
+                          setForgotMessage("");
+                        }}
+                      >
+                        Reset here →
+                      </button>
+                    </div>
+
+                    <div className="switch-prompt">
+                      <span>Already registered? </span>
+                      <button
+                        type="button"
+                        className="switch-link"
+                        onClick={() => {
+                          setAuthMode("login");
+                          setAuthError("");
+                        }}
+                      >
+                        Back to Sign In
+                      </button>
+                    </div>
                   </div>
                 </div>
-
               </div>
-            </div>
+            )}
 
             {/* 1-Click Demo Login */}
             <div className="auth-professor-demo-box">
