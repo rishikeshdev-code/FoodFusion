@@ -13,6 +13,8 @@ try {
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const passport = require("./config/passport");
 
 const foodRoutes = require("./routes/foodRoutes");
 const authRoutes = require("./routes/authRoutes");
@@ -23,17 +25,59 @@ const adminRoutes = require("./routes/adminRoutes");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// cors and body parser
+// Trust reverse proxy (Render / Netlify SSL termination)
+app.set("trust proxy", 1);
+
+// Allowed Origins for CORS
+const allowedOrigins = [
+  "https://momsfood-fusion.netlify.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://localhost:5000",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+// CORS configuration with credentials support
 app.use(
   cors({
-    origin: "*",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+    credentials: true,
   })
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Production / Render environment detection
+const isProduction =
+  process.env.NODE_ENV === "production" ||
+  Boolean(process.env.FRONTEND_URL && process.env.FRONTEND_URL.includes("netlify.app"));
+
+// Express Session Middleware with secure cross-origin cookie support
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "FoodFusion_Session_Secret_2026",
+    resave: false,
+    saveUninitialized: false,
+    proxy: true,
+    cookie: {
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    },
+  })
+);
+
+// Initialize Passport & Session
+app.use(passport.initialize());
+app.use(passport.session());
 
 // health check
 app.get("/", (req, res) => {
@@ -44,9 +88,10 @@ app.get("/", (req, res) => {
   });
 });
 
-// api routes
-app.use("/api/foods", foodRoutes);
+// api routes (supporting both /api/auth and direct /auth for OAuth callbacks)
+app.use("/auth", authRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/foods", foodRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);

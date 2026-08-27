@@ -3019,6 +3019,59 @@ h1, h2, h3, h4, .chunky-title {
   color: #d97706;
 }
 
+/* OAuth Separator & Google Sign-In Button */
+.auth-oauth-separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 14px 0 10px;
+}
+
+.auth-oauth-separator::before,
+.auth-oauth-separator::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1.5px solid var(--cream-border);
+}
+
+.auth-oauth-separator span {
+  padding: 0 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.google-oauth-button {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--cream-border);
+  background: #ffffff;
+  color: var(--text-dark);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.google-oauth-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.google-svg-icon {
+  flex-shrink: 0;
+}
+
 /* ⚡ Demo Login Box */
 .auth-professor-demo-box {
   margin-top: 20px;

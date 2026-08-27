@@ -3,11 +3,22 @@ const isLocalhost =
   (window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1");
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL ||
+const BACKEND_ROOT_URL =
+  import.meta.env.VITE_BACKEND_URL ||
   (isLocalhost
-    ? "http://localhost:5000/api"
-    : "https://foodfusion-backend-c20i.onrender.com/api");
+    ? "http://localhost:5000"
+    : "https://foodfusion-backend-c20i.onrender.com");
+
+export const API_BASE_URL =
+  import.meta.env.VITE_API_URL || `${BACKEND_ROOT_URL}/api`;
+
+export const getGoogleAuthUrl = () => {
+  const currentOrigin =
+    typeof window !== "undefined" ? window.location.origin : "";
+  return `${BACKEND_ROOT_URL}/auth/google${
+    currentOrigin ? `?returnTo=${encodeURIComponent(currentOrigin)}` : ""
+  }`;
+};
 
 const safeFetch = async (url, options = {}) => {
   try {

@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const passport = require("passport");
 const User = require("../models/User");
 const OtpVerification = require("../models/OtpVerification");
 const { isEmailConfigured, sendOtpEmail, sendPasswordResetEmail } = require("../utils/mailer");
@@ -414,7 +415,7 @@ router.post("/register", async (req, res) => {
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        message: "An account with this email address already exists. Please log in or reset your password.",
+        message: "An account with this email already exists",
       });
     }
 
@@ -438,6 +439,15 @@ router.post("/register", async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    if (req.session) {
+      req.session.user = {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      };
+    }
+
     res.status(201).json({
       success: true,
       message: "Account created successfully",
@@ -447,6 +457,8 @@ router.post("/register", async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        avatar: user.avatar || "",
+        googleId: user.googleId || null,
         phone: user.phone,
         address: user.address,
         isEmailVerified: user.isEmailVerified,
@@ -494,27 +506,47 @@ router.post("/login", async (req, res) => {
     const normalizedEmail = String(email).toLowerCase().trim();
     const user = await User.findOne({ email: normalizedEmail });
 
+    // 1. If email doesn't exist -> return "Incorrect email or password"
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Invalid email or password. Please check your credentials or create an account.",
+        message: "Incorrect email or password",
       });
     }
 
+    // If user signed up via Google with no password set yet
+    if (!user.password) {
+      return res.status(401).json({
+        success: false,
+        message: "This account was created via Google. Please click 'Forgot Password' to sign in with Google.",
+      });
+    }
+
+    // 2. If password doesn't match -> return "Incorrect password"
     const passwordMatch = await bcrypt.compare(String(password), user.password);
     if (!passwordMatch) {
       return res.status(401).json({
         success: false,
-        message: "Invalid email or password. Please check your credentials or use Forgot Password.",
+        message: "Incorrect password",
       });
     }
 
+    // 3. If correct -> create JWT & session and log the user in
     const jwtSecret = process.env.JWT_SECRET || "FoodFusion_Super_Secret_Key_2026";
     const token = jwt.sign(
       { id: user._id.toString(), role: user.role },
       jwtSecret,
       { expiresIn: "7d" }
     );
+
+    if (req.session) {
+      req.session.user = {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      };
+    }
 
     res.status(200).json({
       success: true,
@@ -525,6 +557,8 @@ router.post("/login", async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        avatar: user.avatar || "",
+        googleId: user.googleId || null,
         phone: user.phone,
         address: user.address,
         isEmailVerified: user.isEmailVerified,
@@ -539,6 +573,125 @@ router.post("/login", async (req, res) => {
     });
   }
 });
+
+/**
+ * GET /api/auth/google
+ * Initiates Google OAuth Login (used for Forgot Password & Google Sign-In)
+ */
+router.get("/google", (req, res, next) => {
+  const returnTo =
+    req.query.returnTo ||
+    req.headers.referer ||
+    process.env.FRONTEND_URL ||
+    "https://momsfood-fusion.netlify.app";
+
+  if (req.session) {
+    req.session.returnTo = String(returnTo).replace(/\/$/, "");
+  }
+
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    const frontendUrl =
+      (req.session && req.session.returnTo) ||
+      process.env.FRONTEND_URL ||
+      "https://momsfood-fusion.netlify.app";
+    return res.redirect(
+      `${frontendUrl}/#auth-error?message=${encodeURIComponent(
+        "Google OAuth credentials (GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET) are missing from backend/.env. Please configure them to enable Google Sign-In."
+      )}`
+    );
+  }
+
+  // Pass returnTo via state parameter if session cookies are cross-site
+  const state = req.query.returnTo ? Buffer.from(req.query.returnTo).toString("base64") : "";
+
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    prompt: "select_account",
+    state: state || undefined,
+  })(req, res, next);
+});
+
+/**
+ * GET /api/auth/google/callback
+ * Handles Google OAuth Callback, links account if email exists, creates JWT & session, and redirects to dashboard
+ */
+router.get(
+  "/google/callback",
+  (req, res, next) => {
+    let returnTo = (req.session && req.session.returnTo) || process.env.FRONTEND_URL || "https://momsfood-fusion.netlify.app";
+    if (req.query.state) {
+      try {
+        const decoded = Buffer.from(req.query.state, "base64").toString("ascii");
+        if (decoded.startsWith("http")) returnTo = decoded;
+      } catch (e) {}
+    }
+    passport.authenticate("google", {
+      failureRedirect: `${returnTo}/#auth-error?message=Google%20Authentication%20Failed`,
+    })(req, res, next);
+  },
+  async (req, res) => {
+    try {
+      let frontendUrl = (req.session && req.session.returnTo) || process.env.FRONTEND_URL || "https://momsfood-fusion.netlify.app";
+      if (req.query.state) {
+        try {
+          const decoded = Buffer.from(req.query.state, "base64").toString("ascii");
+          if (decoded.startsWith("http")) frontendUrl = decoded;
+        } catch (e) {}
+      }
+
+      const user = req.user;
+      if (!user) {
+        return res.redirect(`${frontendUrl}/#auth-error?message=User%20not%20found`);
+      }
+
+      // Generate JWT
+      const jwtSecret = process.env.JWT_SECRET || "FoodFusion_Super_Secret_Key_2026";
+      const token = jwt.sign(
+        { id: user._id.toString(), role: user.role },
+        jwtSecret,
+        { expiresIn: "7d" }
+      );
+
+      // Set session user
+      if (req.session) {
+        req.session.user = {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        };
+      }
+
+      const userPayload = {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar || "",
+        googleId: user.googleId || null,
+        phone: user.phone || "",
+        address: user.address || "",
+        isEmailVerified: user.isEmailVerified,
+      };
+
+      res.redirect(
+        `${frontendUrl}/#google-auth-success?token=${token}&user=${encodeURIComponent(
+          JSON.stringify(userPayload)
+        )}`
+      );
+    } catch (err) {
+      console.error("Google callback handling error:", err);
+      let frontendUrl = (req.session && req.session.returnTo) || process.env.FRONTEND_URL || "https://momsfood-fusion.netlify.app";
+      if (req.query.state) {
+        try {
+          const decoded = Buffer.from(req.query.state, "base64").toString("ascii");
+          if (decoded.startsWith("http")) frontendUrl = decoded;
+        } catch (e) {}
+      }
+      res.redirect(`${frontendUrl}/#auth-error?message=Server%20error%20during%20Google%20login`);
+    }
+  }
+);
 
 /**
  * POST /api/auth/forgot-password
@@ -574,7 +727,7 @@ router.post("/forgot-password", async (req, res) => {
     user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
     await user.save();
 
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const frontendUrl = process.env.FRONTEND_URL || "https://momsfood-fusion.netlify.app";
     const resetUrl = `${frontendUrl}/#reset-password?token=${rawResetToken}&email=${encodeURIComponent(normalizedEmail)}`;
 
     let emailSent = false;

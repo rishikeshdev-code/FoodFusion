@@ -6,6 +6,7 @@ import {
   loginUser,
   forgotPassword,
   resetPassword,
+  getGoogleAuthUrl,
   getAdminDashboardData,
   updateOrderStatus,
   deleteOrder,
@@ -667,11 +668,41 @@ function App() {
   const [showForgotNewPassword, setShowForgotNewPassword] = useState(false);
   const [showForgotConfirmPassword, setShowForgotConfirmPassword] = useState(false);
 
-  // Check URL hash for direct password reset email links (#reset-password?token=...&email=...)
+  // Google OAuth Login Trigger
+  const handleGoogleLogin = () => {
+    window.location.href = getGoogleAuthUrl();
+  };
+
+  // Check URL hash for Google OAuth callback, direct password reset, or auth errors
   useEffect(() => {
     if (typeof window === "undefined") return;
     const hash = window.location.hash || "";
-    if (hash.startsWith("#reset-password")) {
+
+    if (hash.startsWith("#google-auth-success")) {
+      const queryPart = hash.includes("?") ? hash.split("?")[1] : "";
+      const params = new URLSearchParams(queryPart);
+      const token = params.get("token") || "";
+      const userStr = params.get("user") || "";
+
+      if (token && userStr) {
+        try {
+          const userObj = JSON.parse(decodeURIComponent(userStr));
+          localStorage.setItem("foodfusion_token", token);
+          localStorage.setItem("foodfusion_user", JSON.stringify(userObj));
+          setCurrentUser(userObj);
+          window.location.hash = "";
+          showToast(`🎉 Signed in with Google! Welcome, ${userObj.name}!`);
+        } catch (e) {
+          console.error("Google user parse error:", e);
+        }
+      }
+    } else if (hash.startsWith("#auth-error")) {
+      const queryPart = hash.includes("?") ? hash.split("?")[1] : "";
+      const params = new URLSearchParams(queryPart);
+      const msg = params.get("message") || "Authentication failed.";
+      setAuthError(decodeURIComponent(msg));
+      window.location.hash = "";
+    } else if (hash.startsWith("#reset-password")) {
       const queryPart = hash.includes("?") ? hash.split("?")[1] : "";
       const params = new URLSearchParams(queryPart);
       const token = params.get("token") || "";
@@ -1716,11 +1747,7 @@ function App() {
             <div className="auth-switch-nav">
               <div
                 className={`auth-switch-slider ${
-                  authMode === "register"
-                    ? "slide-right"
-                    : authMode === "forgot"
-                    ? "slide-forgot"
-                    : "slide-left"
+                  authMode === "register" ? "slide-right" : "slide-left"
                 }`}
               />
               <button
@@ -1729,8 +1756,6 @@ function App() {
                 onClick={() => {
                   setAuthMode("login");
                   setAuthError("");
-                  setForgotError("");
-                  setForgotMessage("");
                 }}
               >
                 Sign In
@@ -1741,588 +1766,367 @@ function App() {
                 onClick={() => {
                   setAuthMode("register");
                   setAuthError("");
-                  setForgotError("");
-                  setForgotMessage("");
                 }}
               >
                 Sign Up
               </button>
-              {authMode === "forgot" && (
-                <button
-                  type="button"
-                  className="auth-switch-tab active forgot-tab"
-                  onClick={() => {
-                    setAuthMode("forgot");
-                  }}
-                >
-                  🔑 Reset
-                </button>
-              )}
             </div>
 
             {authError && <div className="auth-error-box">⚠️ {authError}</div>}
-            {forgotError && <div className="auth-error-box">⚠️ {forgotError}</div>}
-            {forgotMessage && <div className="auth-success-box">✅ {forgotMessage}</div>}
 
-            {/* FORGOT PASSWORD VIEW */}
-            {authMode === "forgot" ? (
-              <div className="auth-panel-form auth-forgot-panel">
-                <div className="auth-panel-heading">
-                  <h2>Account Recovery</h2>
-                  <p>
-                    {forgotStep === 1
-                      ? "Enter your registered email to receive a password reset token"
-                      : "Enter your verification code and set a new secure password"}
-                  </p>
-                </div>
+            {/* LOGIN & SIGNUP VIEW */}
+            <div className="auth-forms-slider-wrapper">
+              <div
+                className={`auth-forms-track ${
+                  authMode === "register" ? "show-register" : "show-login"
+                }`}
+              >
+                {/* Login Panel */}
+                <div className="auth-panel-form">
+                  <div className="auth-panel-heading">
+                    <h2>Welcome Back!</h2>
+                    <p>Enter your email &amp; password to explore authentic dishes</p>
+                  </div>
 
-                {forgotStep === 1 ? (
-                  <form onSubmit={handleRequestPasswordReset} className="auth-actual-form">
+                  <form onSubmit={handleAuthSubmit} className="auth-actual-form">
                     <div className="form-group-item">
-                      <label>Registered Email Address</label>
+                      <label>Email Address</label>
                       <div className="input-with-icon-wrap">
                         <input
                           type="email"
                           required
                           placeholder="e.g. rishi@foodfusion.com"
-                          value={forgotForm.email}
-                          onChange={(e) => setForgotForm({ ...forgotForm, email: e.target.value })}
+                          value={authForm.email}
+                          onChange={(e) =>
+                            setAuthForm({ ...authForm, email: e.target.value })
+                          }
                         />
-                        {forgotForm.email && (
+                        {authForm.email && (
                           <span
                             className={`input-status-icon ${
-                              validateEmail(forgotForm.email) ? "valid" : "invalid"
+                              validateEmail(authForm.email) ? "valid" : "invalid"
                             }`}
                           >
-                            {validateEmail(forgotForm.email) ? "✓" : "!"}
+                            {validateEmail(authForm.email) ? "✓" : "!"}
                           </span>
                         )}
                       </div>
-                      {forgotForm.email && !validateEmail(forgotForm.email) && (
+                    </div>
+
+                    <div className="form-group-item">
+                      <div className="label-row-between">
+                        <label>Password</label>
+                        <button
+                          type="button"
+                          className="forgot-password-link"
+                          onClick={handleGoogleLogin}
+                          title="Forgot password? Sign in with Google to access your account"
+                        >
+                          Forgot Password?
+                        </button>
+                      </div>
+                      <div className="password-input-wrapper">
+                        <input
+                          type={showLoginPassword ? "text" : "password"}
+                          required
+                          placeholder="••••••••"
+                          value={authForm.password}
+                          onChange={(e) =>
+                            setAuthForm({ ...authForm, password: e.target.value })
+                          }
+                        />
+                        <button
+                          type="button"
+                          className="password-toggle-btn"
+                          onClick={() => setShowLoginPassword(!showLoginPassword)}
+                          tabIndex="-1"
+                          title={showLoginPassword ? "Hide password" : "Show password"}
+                        >
+                          {showLoginPassword ? "🙈" : "👁️"}
+                        </button>
+                      </div>
+                    </div>
+
+                    <button type="submit" className="auth-submit-btn" disabled={authLoading}>
+                      {authLoading ? "Authenticating..." : "Sign In to Website →"}
+                    </button>
+                  </form>
+
+                  {/* Google OAuth Login / Forgot Password */}
+                  <div className="auth-oauth-separator">
+                    <span>OR</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="google-oauth-button"
+                    onClick={handleGoogleLogin}
+                    title="Sign in with your Google account"
+                  >
+                    <svg className="google-svg-icon" viewBox="0 0 48 48" width="20" height="20">
+                      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                    </svg>
+                    <span>Sign in with Google</span>
+                  </button>
+
+                  <div className="switch-prompt">
+                    <span>Don't have an account yet? </span>
+                    <button
+                      type="button"
+                      className="switch-link"
+                      onClick={() => {
+                        setAuthMode("register");
+                        setAuthError("");
+                      }}
+                    >
+                      Create Account (Sign Up)
+                    </button>
+                  </div>
+                </div>
+
+                {/* Register Panel */}
+                <div className="auth-panel-form">
+                  <div className="auth-panel-heading">
+                    <h2>Create New Account</h2>
+                    <p>Join FoodFusion for 100% Pure Vegetarian Delicacies</p>
+                  </div>
+
+                  <form onSubmit={handleAuthSubmit} className="auth-actual-form">
+                    <div className="form-group-item">
+                      <label>Full Name</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Rishi Dubey"
+                        value={authForm.name}
+                        onChange={(e) =>
+                          setAuthForm({ ...authForm, name: e.target.value })
+                        }
+                      />
+                    </div>
+
+                    <div className="form-group-item">
+                      <label>Email Address</label>
+                      <div className="input-with-icon-wrap">
+                        <input
+                          type="email"
+                          required
+                          placeholder="e.g. rishi@foodfusion.com"
+                          value={authForm.email}
+                          onChange={(e) =>
+                            setAuthForm({ ...authForm, email: e.target.value })
+                          }
+                        />
+                        {authForm.email && (
+                          <span
+                            className={`input-status-icon ${
+                              validateEmail(authForm.email) ? "valid" : "invalid"
+                            }`}
+                          >
+                            {validateEmail(authForm.email) ? "✓" : "!"}
+                          </span>
+                        )}
+                      </div>
+                      {authForm.email && !validateEmail(authForm.email) && (
                         <small className="field-hint-error">
                           Please enter a valid email format (e.g. name@domain.com)
                         </small>
                       )}
                     </div>
 
-                    <button type="submit" className="auth-submit-btn" disabled={forgotLoading}>
-                      {forgotLoading ? "Sending Reset Code..." : "Send Password Reset Code →"}
-                    </button>
-
-                    <div className="forgot-direct-entry-prompt">
-                      <span>Already have a reset token/code? </span>
-                      <button
-                        type="button"
-                        className="switch-link"
-                        onClick={() => {
-                          setForgotStep(2);
-                          setForgotError("");
-                        }}
-                      >
-                        Enter code directly →
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <form onSubmit={handleConfirmResetPassword} className="auth-actual-form">
+                    {/* Password Field */}
                     <div className="form-group-item">
-                      <div className="label-row-between">
-                        <label>Reset Code / Token</label>
-                        <button
-                          type="button"
-                          className="subtle-text-btn"
-                          onClick={() => setForgotStep(1)}
-                        >
-                          ← Resend to Email
-                        </button>
-                      </div>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Enter 32-char token or 6-digit code"
-                        value={forgotForm.token}
-                        onChange={(e) => setForgotForm({ ...forgotForm, token: e.target.value })}
-                      />
-                    </div>
-
-                    {/* New Password */}
-                    <div className="form-group-item">
-                      <label>New Strong Password</label>
+                      <label>Password</label>
                       <div className="password-input-wrapper">
                         <input
-                          type={showForgotNewPassword ? "text" : "password"}
+                          type={showRegisterPassword ? "text" : "password"}
                           required
-                          placeholder="Create strong password"
-                          value={forgotForm.newPassword}
+                          placeholder="Create strong password (min 8 chars)"
+                          value={authForm.password}
                           onChange={(e) =>
-                            setForgotForm({ ...forgotForm, newPassword: e.target.value })
+                            setAuthForm({ ...authForm, password: e.target.value })
                           }
                         />
                         <button
                           type="button"
                           className="password-toggle-btn"
-                          onClick={() => setShowForgotNewPassword(!showForgotNewPassword)}
+                          onClick={() => setShowRegisterPassword(!showRegisterPassword)}
                           tabIndex="-1"
+                          title={showRegisterPassword ? "Hide password" : "Show password"}
                         >
-                          {showForgotNewPassword ? "🙈" : "👁️"}
+                          {showRegisterPassword ? "🙈" : "👁️"}
                         </button>
                       </div>
 
                       {/* Real-time Password Strength Meter */}
-                      {forgotForm.newPassword && (
+                      {authForm.password && (
                         <div className="pwd-strength-container">
                           <div className="pwd-strength-bar-bg">
                             <div
                               className="pwd-strength-bar-fill"
                               style={{
-                                width: `${checkPasswordStrength(forgotForm.newPassword).percent}%`,
-                                backgroundColor: checkPasswordStrength(forgotForm.newPassword).color,
+                                width: `${checkPasswordStrength(authForm.password).percent}%`,
+                                backgroundColor: checkPasswordStrength(authForm.password).color,
                               }}
                             />
                           </div>
                           <span
                             className="pwd-strength-label"
-                            style={{ color: checkPasswordStrength(forgotForm.newPassword).color }}
+                            style={{ color: checkPasswordStrength(authForm.password).color }}
                           >
-                            {checkPasswordStrength(forgotForm.newPassword).label}
+                            {checkPasswordStrength(authForm.password).label}
                           </span>
                         </div>
                       )}
 
-                      {/* Password Requirements Checklist */}
+                      {/* Real-time Password Requirements Checklist */}
                       <div className="pwd-requirements-list">
                         <span
                           className={`pwd-req-pill ${
-                            checkPasswordStrength(forgotForm.newPassword).hasLength ? "met" : ""
+                            checkPasswordStrength(authForm.password).hasLength ? "met" : ""
                           }`}
                         >
-                          {checkPasswordStrength(forgotForm.newPassword).hasLength ? "✓" : "○"} 8+ chars
+                          {checkPasswordStrength(authForm.password).hasLength ? "✓" : "○"} 8+ chars
                         </span>
                         <span
                           className={`pwd-req-pill ${
-                            checkPasswordStrength(forgotForm.newPassword).hasUpper ? "met" : ""
+                            checkPasswordStrength(authForm.password).hasUpper ? "met" : ""
                           }`}
                         >
-                          {checkPasswordStrength(forgotForm.newPassword).hasUpper ? "✓" : "○"} Uppercase (A-Z)
+                          {checkPasswordStrength(authForm.password).hasUpper ? "✓" : "○"} Uppercase (A-Z)
                         </span>
                         <span
                           className={`pwd-req-pill ${
-                            checkPasswordStrength(forgotForm.newPassword).hasLower ? "met" : ""
+                            checkPasswordStrength(authForm.password).hasLower ? "met" : ""
                           }`}
                         >
-                          {checkPasswordStrength(forgotForm.newPassword).hasLower ? "✓" : "○"} Lowercase (a-z)
+                          {checkPasswordStrength(authForm.password).hasLower ? "✓" : "○"} Lowercase (a-z)
                         </span>
                         <span
                           className={`pwd-req-pill ${
-                            checkPasswordStrength(forgotForm.newPassword).hasNumber ? "met" : ""
+                            checkPasswordStrength(authForm.password).hasNumber ? "met" : ""
                           }`}
                         >
-                          {checkPasswordStrength(forgotForm.newPassword).hasNumber ? "✓" : "○"} Number (0-9)
+                          {checkPasswordStrength(authForm.password).hasNumber ? "✓" : "○"} Number (0-9)
                         </span>
                         <span
                           className={`pwd-req-pill ${
-                            checkPasswordStrength(forgotForm.newPassword).hasSpecial ? "met" : ""
+                            checkPasswordStrength(authForm.password).hasSpecial ? "met" : ""
                           }`}
                         >
-                          {checkPasswordStrength(forgotForm.newPassword).hasSpecial ? "✓" : "○"} Special Symbol (!@#$)
+                          {checkPasswordStrength(authForm.password).hasSpecial ? "✓" : "○"} Special Symbol (!@#$)
                         </span>
                       </div>
                     </div>
 
-                    {/* Confirm New Password */}
+                    {/* Confirm Password Field */}
                     <div className="form-group-item">
-                      <label>Confirm New Password</label>
+                      <label>Confirm Password</label>
                       <div className="password-input-wrapper">
                         <input
-                          type={showForgotConfirmPassword ? "text" : "password"}
+                          type={showRegisterConfirmPassword ? "text" : "password"}
                           required
-                          placeholder="Repeat new password"
-                          value={forgotForm.confirmNewPassword}
+                          placeholder="Repeat password"
+                          value={authForm.confirmPassword}
                           onChange={(e) =>
-                            setForgotForm({ ...forgotForm, confirmNewPassword: e.target.value })
+                            setAuthForm({ ...authForm, confirmPassword: e.target.value })
                           }
                         />
                         <button
                           type="button"
                           className="password-toggle-btn"
                           onClick={() =>
-                            setShowForgotConfirmPassword(!showForgotConfirmPassword)
+                            setShowRegisterConfirmPassword(!showRegisterConfirmPassword)
                           }
                           tabIndex="-1"
+                          title={showRegisterConfirmPassword ? "Hide password" : "Show password"}
                         >
-                          {showForgotConfirmPassword ? "🙈" : "👁️"}
+                          {showRegisterConfirmPassword ? "🙈" : "👁️"}
                         </button>
                       </div>
-                      {forgotForm.confirmNewPassword && (
+                      {authForm.confirmPassword && (
                         <small
                           className={
-                            forgotForm.newPassword === forgotForm.confirmNewPassword
+                            authForm.password === authForm.confirmPassword
                               ? "field-match-success"
                               : "field-match-error"
                           }
                         >
-                          {forgotForm.newPassword === forgotForm.confirmNewPassword
+                          {authForm.password === authForm.confirmPassword
                             ? "✓ Passwords match"
                             : "✗ Passwords do not match"}
                         </small>
                       )}
                     </div>
 
-                    <button type="submit" className="auth-submit-btn" disabled={forgotLoading}>
-                      {forgotLoading ? "Resetting Password..." : "Save New Password & Sign In 🔐"}
+                    <div className="form-group-item">
+                      <label>Mobile Number</label>
+                      <input
+                        type="tel"
+                        placeholder="e.g. +91 91374 57865"
+                        value={authForm.phone}
+                        onChange={(e) =>
+                          setAuthForm({ ...authForm, phone: e.target.value })
+                        }
+                      />
+                    </div>
+
+                    <button type="submit" className="auth-submit-btn" disabled={authLoading}>
+                      {authLoading ? "Creating Account..." : "Create Account & Enter 🚀"}
                     </button>
                   </form>
-                )}
 
-                <div className="switch-prompt">
-                  <span>Remembered your password? </span>
+                  {/* Google OAuth & Forgot Password Option on Signup */}
+                  <div className="signup-forgot-row">
+                    <span>Forgot existing password? </span>
+                    <button
+                      type="button"
+                      className="forgot-password-link"
+                      onClick={handleGoogleLogin}
+                      title="Sign in with Google to recover your account"
+                    >
+                      Sign in with Google →
+                    </button>
+                  </div>
+
+                  <div className="auth-oauth-separator">
+                    <span>OR</span>
+                  </div>
+
                   <button
                     type="button"
-                    className="switch-link"
-                    onClick={() => {
-                      setAuthMode("login");
-                      setAuthError("");
-                      setForgotError("");
-                    }}
+                    className="google-oauth-button"
+                    onClick={handleGoogleLogin}
+                    title="Sign up with your Google account"
                   >
-                    Back to Sign In
+                    <svg className="google-svg-icon" viewBox="0 0 48 48" width="20" height="20">
+                      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                    </svg>
+                    <span>Sign up with Google</span>
                   </button>
-                </div>
-              </div>
-            ) : (
-              /* LOGIN & SIGNUP VIEW */
-              <div className="auth-forms-slider-wrapper">
-                <div
-                  className={`auth-forms-track ${
-                    authMode === "register" ? "show-register" : "show-login"
-                  }`}
-                >
-                  {/* Login Panel */}
-                  <div className="auth-panel-form">
-                    <div className="auth-panel-heading">
-                      <h2>Welcome Back!</h2>
-                      <p>Enter your email &amp; password to explore authentic dishes</p>
-                    </div>
 
-                    <form onSubmit={handleAuthSubmit} className="auth-actual-form">
-                      <div className="form-group-item">
-                        <label>Email Address</label>
-                        <div className="input-with-icon-wrap">
-                          <input
-                            type="email"
-                            required
-                            placeholder="e.g. rishi@foodfusion.com"
-                            value={authForm.email}
-                            onChange={(e) =>
-                              setAuthForm({ ...authForm, email: e.target.value })
-                            }
-                          />
-                          {authForm.email && (
-                            <span
-                              className={`input-status-icon ${
-                                validateEmail(authForm.email) ? "valid" : "invalid"
-                              }`}
-                            >
-                              {validateEmail(authForm.email) ? "✓" : "!"}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="form-group-item">
-                        <div className="label-row-between">
-                          <label>Password</label>
-                          <button
-                            type="button"
-                            className="forgot-password-link"
-                            onClick={() => {
-                              setAuthMode("forgot");
-                              setForgotStep(1);
-                              setForgotForm((prev) => ({
-                                ...prev,
-                                email: authForm.email || prev.email,
-                              }));
-                              setAuthError("");
-                              setForgotError("");
-                              setForgotMessage("");
-                            }}
-                          >
-                            Forgot Password?
-                          </button>
-                        </div>
-                        <div className="password-input-wrapper">
-                          <input
-                            type={showLoginPassword ? "text" : "password"}
-                            required
-                            placeholder="••••••••"
-                            value={authForm.password}
-                            onChange={(e) =>
-                              setAuthForm({ ...authForm, password: e.target.value })
-                            }
-                          />
-                          <button
-                            type="button"
-                            className="password-toggle-btn"
-                            onClick={() => setShowLoginPassword(!showLoginPassword)}
-                            tabIndex="-1"
-                            title={showLoginPassword ? "Hide password" : "Show password"}
-                          >
-                            {showLoginPassword ? "🙈" : "👁️"}
-                          </button>
-                        </div>
-                      </div>
-
-                      <button type="submit" className="auth-submit-btn" disabled={authLoading}>
-                        {authLoading ? "Authenticating..." : "Sign In to Website →"}
-                      </button>
-                    </form>
-
-                    <div className="switch-prompt">
-                      <span>Don't have an account yet? </span>
-                      <button
-                        type="button"
-                        className="switch-link"
-                        onClick={() => {
-                          setAuthMode("register");
-                          setAuthError("");
-                        }}
-                      >
-                        Create Account (Sign Up)
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Register Panel */}
-                  <div className="auth-panel-form">
-                    <div className="auth-panel-heading">
-                      <h2>Create New Account</h2>
-                      <p>Join FoodFusion for 100% Pure Vegetarian Delicacies</p>
-                    </div>
-
-                    <form onSubmit={handleAuthSubmit} className="auth-actual-form">
-                      <div className="form-group-item">
-                        <label>Full Name</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. Rishi Dubey"
-                          value={authForm.name}
-                          onChange={(e) =>
-                            setAuthForm({ ...authForm, name: e.target.value })
-                          }
-                        />
-                      </div>
-
-                      <div className="form-group-item">
-                        <label>Email Address</label>
-                        <div className="input-with-icon-wrap">
-                          <input
-                            type="email"
-                            required
-                            placeholder="e.g. rishi@foodfusion.com"
-                            value={authForm.email}
-                            onChange={(e) =>
-                              setAuthForm({ ...authForm, email: e.target.value })
-                            }
-                          />
-                          {authForm.email && (
-                            <span
-                              className={`input-status-icon ${
-                                validateEmail(authForm.email) ? "valid" : "invalid"
-                              }`}
-                            >
-                              {validateEmail(authForm.email) ? "✓" : "!"}
-                            </span>
-                          )}
-                        </div>
-                        {authForm.email && !validateEmail(authForm.email) && (
-                          <small className="field-hint-error">
-                            Please enter a valid email format (e.g. name@domain.com)
-                          </small>
-                        )}
-                      </div>
-
-                      {/* Password Field */}
-                      <div className="form-group-item">
-                        <label>Password</label>
-                        <div className="password-input-wrapper">
-                          <input
-                            type={showRegisterPassword ? "text" : "password"}
-                            required
-                            placeholder="Create strong password (min 8 chars)"
-                            value={authForm.password}
-                            onChange={(e) =>
-                              setAuthForm({ ...authForm, password: e.target.value })
-                            }
-                          />
-                          <button
-                            type="button"
-                            className="password-toggle-btn"
-                            onClick={() => setShowRegisterPassword(!showRegisterPassword)}
-                            tabIndex="-1"
-                            title={showRegisterPassword ? "Hide password" : "Show password"}
-                          >
-                            {showRegisterPassword ? "🙈" : "👁️"}
-                          </button>
-                        </div>
-
-                        {/* Real-time Password Strength Meter */}
-                        {authForm.password && (
-                          <div className="pwd-strength-container">
-                            <div className="pwd-strength-bar-bg">
-                              <div
-                                className="pwd-strength-bar-fill"
-                                style={{
-                                  width: `${checkPasswordStrength(authForm.password).percent}%`,
-                                  backgroundColor: checkPasswordStrength(authForm.password).color,
-                                }}
-                              />
-                            </div>
-                            <span
-                              className="pwd-strength-label"
-                              style={{ color: checkPasswordStrength(authForm.password).color }}
-                            >
-                              {checkPasswordStrength(authForm.password).label}
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Real-time Password Requirements Checklist */}
-                        <div className="pwd-requirements-list">
-                          <span
-                            className={`pwd-req-pill ${
-                              checkPasswordStrength(authForm.password).hasLength ? "met" : ""
-                            }`}
-                          >
-                            {checkPasswordStrength(authForm.password).hasLength ? "✓" : "○"} 8+ chars
-                          </span>
-                          <span
-                            className={`pwd-req-pill ${
-                              checkPasswordStrength(authForm.password).hasUpper ? "met" : ""
-                            }`}
-                          >
-                            {checkPasswordStrength(authForm.password).hasUpper ? "✓" : "○"} Uppercase (A-Z)
-                          </span>
-                          <span
-                            className={`pwd-req-pill ${
-                              checkPasswordStrength(authForm.password).hasLower ? "met" : ""
-                            }`}
-                          >
-                            {checkPasswordStrength(authForm.password).hasLower ? "✓" : "○"} Lowercase (a-z)
-                          </span>
-                          <span
-                            className={`pwd-req-pill ${
-                              checkPasswordStrength(authForm.password).hasNumber ? "met" : ""
-                            }`}
-                          >
-                            {checkPasswordStrength(authForm.password).hasNumber ? "✓" : "○"} Number (0-9)
-                          </span>
-                          <span
-                            className={`pwd-req-pill ${
-                              checkPasswordStrength(authForm.password).hasSpecial ? "met" : ""
-                            }`}
-                          >
-                            {checkPasswordStrength(authForm.password).hasSpecial ? "✓" : "○"} Special Symbol (!@#$)
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Confirm Password Field */}
-                      <div className="form-group-item">
-                        <label>Confirm Password</label>
-                        <div className="password-input-wrapper">
-                          <input
-                            type={showRegisterConfirmPassword ? "text" : "password"}
-                            required
-                            placeholder="Repeat password"
-                            value={authForm.confirmPassword}
-                            onChange={(e) =>
-                              setAuthForm({ ...authForm, confirmPassword: e.target.value })
-                            }
-                          />
-                          <button
-                            type="button"
-                            className="password-toggle-btn"
-                            onClick={() =>
-                              setShowRegisterConfirmPassword(!showRegisterConfirmPassword)
-                            }
-                            tabIndex="-1"
-                            title={showRegisterConfirmPassword ? "Hide password" : "Show password"}
-                          >
-                            {showRegisterConfirmPassword ? "🙈" : "👁️"}
-                          </button>
-                        </div>
-                        {authForm.confirmPassword && (
-                          <small
-                            className={
-                              authForm.password === authForm.confirmPassword
-                                ? "field-match-success"
-                                : "field-match-error"
-                            }
-                          >
-                            {authForm.password === authForm.confirmPassword
-                              ? "✓ Passwords match"
-                              : "✗ Passwords do not match"}
-                          </small>
-                        )}
-                      </div>
-
-                      <div className="form-group-item">
-                        <label>Mobile Number</label>
-                        <input
-                          type="tel"
-                          placeholder="e.g. +91 91374 57865"
-                          value={authForm.phone}
-                          onChange={(e) =>
-                            setAuthForm({ ...authForm, phone: e.target.value })
-                          }
-                        />
-                      </div>
-
-                      <button type="submit" className="auth-submit-btn" disabled={authLoading}>
-                        {authLoading ? "Creating Account..." : "Create Account & Enter 🚀"}
-                      </button>
-                    </form>
-
-                    {/* Forgot Password option on signup */}
-                    <div className="signup-forgot-row">
-                      <span>Forgot existing account password? </span>
-                      <button
-                        type="button"
-                        className="forgot-password-link"
-                        onClick={() => {
-                          setAuthMode("forgot");
-                          setForgotStep(1);
-                          setForgotForm((prev) => ({
-                            ...prev,
-                            email: authForm.email || prev.email,
-                          }));
-                          setAuthError("");
-                          setForgotError("");
-                          setForgotMessage("");
-                        }}
-                      >
-                        Reset here →
-                      </button>
-                    </div>
-
-                    <div className="switch-prompt">
-                      <span>Already registered? </span>
-                      <button
-                        type="button"
-                        className="switch-link"
-                        onClick={() => {
-                          setAuthMode("login");
-                          setAuthError("");
-                        }}
-                      >
-                        Back to Sign In
-                      </button>
-                    </div>
+                  <div className="switch-prompt">
+                    <span>Already registered? </span>
+                    <button
+                      type="button"
+                      className="switch-link"
+                      onClick={() => {
+                        setAuthMode("login");
+                        setAuthError("");
+                      }}
+                    >
+                      Back to Sign In
+                    </button>
                   </div>
                 </div>
               </div>
-            )}
+            </div>
 
             {/* 1-Click Demo Login */}
             <div className="auth-professor-demo-box">
