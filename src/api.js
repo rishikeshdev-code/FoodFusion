@@ -12,12 +12,25 @@ const BACKEND_ROOT_URL =
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || `${BACKEND_ROOT_URL}/api`;
 
+export const GOOGLE_CLIENT_ID =
+  import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+  "111062772570-4ob54snkrp49k53kandgdhbid325nips.apps.googleusercontent.com";
+
 export const getGoogleAuthUrl = () => {
   const currentOrigin =
     typeof window !== "undefined" ? window.location.origin : "";
   return `${BACKEND_ROOT_URL}/auth/google${
     currentOrigin ? `?returnTo=${encodeURIComponent(currentOrigin)}` : ""
   }`;
+};
+
+export const loginWithGoogleCredential = async (credential) => {
+  const result = await safeFetch(`${API_BASE_URL}/auth/google`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ credential }),
+  });
+  return result;
 };
 
 const safeFetch = async (url, options = {}) => {

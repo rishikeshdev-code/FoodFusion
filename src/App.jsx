@@ -7,6 +7,8 @@ import {
   forgotPassword,
   resetPassword,
   getGoogleAuthUrl,
+  loginWithGoogleCredential,
+  GOOGLE_CLIENT_ID,
   getAdminDashboardData,
   updateOrderStatus,
   deleteOrder,
@@ -670,12 +672,97 @@ function App() {
 
   // Google OAuth Login Trigger
   const handleGoogleLogin = () => {
-    window.location.href = getGoogleAuthUrl();
+    setAuthError("");
+
+    // 1. Try Google Identity Services Client popup / One-Tap
+    if (typeof window !== "undefined" && window.google?.accounts?.id) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: async (response) => {
+            if (response.credential) {
+              setAuthLoading(true);
+              try {
+                const res = await loginWithGoogleCredential(response.credential);
+                if (res.ok && res.data?.success) {
+                  localStorage.setItem("foodfusion_token", res.data.token);
+                  localStorage.setItem("foodfusion_user", JSON.stringify(res.data.user));
+                  setCurrentUser(res.data.user);
+                  showToast(`🎉 Signed in with Google! Welcome, ${res.data.user.name}!`);
+                } else {
+                  setAuthError(res.data?.message || "Google authentication failed.");
+                }
+              } catch (err) {
+                console.error("Google token error:", err);
+                setAuthError("Google authentication failed. Please try again.");
+              } finally {
+                setAuthLoading(false);
+              }
+            }
+          },
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+
+        window.google.accounts.id.prompt((notification) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            openOAuthPopup();
+          }
+        });
+        return;
+      } catch (err) {
+        console.warn("GSI prompt failed, falling back to popup:", err);
+      }
+    }
+
+    // 2. Open centered popup with OAuth bridge
+    openOAuthPopup();
   };
 
-  // Check URL hash for Google OAuth callback, direct password reset, or auth errors
+  const openOAuthPopup = () => {
+    const width = 500;
+    const height = 650;
+    const left = window.screenX + Math.max(0, (window.outerWidth - width) / 2);
+    const top = window.screenY + Math.max(0, (window.outerHeight - height) / 2);
+    const authUrl = getGoogleAuthUrl();
+
+    try {
+      const popup = window.open(
+        authUrl,
+        "FoodFusionGoogleAuth",
+        `width=${width},height=${height},left=${left},top=${top},status=no,toolbar=no,menubar=no`
+      );
+      if (!popup || popup.closed || typeof popup.closed === "undefined") {
+        window.location.href = authUrl;
+      }
+    } catch {
+      window.location.href = authUrl;
+    }
+  };
+
+  // Check postMessage and URL hash for Google OAuth callback, direct password reset, or auth errors
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // Listen for postMessage from Google OAuth popup bridge
+    const handleAuthMessage = (event) => {
+      if (event.data && event.data.type === "GOOGLE_AUTH_SUCCESS") {
+        const { token, user } = event.data;
+        if (token && user) {
+          try {
+            const userObj = typeof user === "string" ? JSON.parse(user) : user;
+            localStorage.setItem("foodfusion_token", token);
+            localStorage.setItem("foodfusion_user", JSON.stringify(userObj));
+            setCurrentUser(userObj);
+            showToast(`🎉 Signed in with Google! Welcome, ${userObj.name}!`);
+          } catch (e) {
+            console.error("PostMessage user parse error:", e);
+          }
+        }
+      }
+    };
+    window.addEventListener("message", handleAuthMessage);
+
     const hash = window.location.hash || "";
 
     if (hash.startsWith("#google-auth-success")) {
@@ -718,6 +805,10 @@ function App() {
         }));
       }
     }
+
+    return () => {
+      window.removeEventListener("message", handleAuthMessage);
+    };
   }, []);
 
   // Checkout State

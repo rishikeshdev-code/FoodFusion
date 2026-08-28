@@ -578,6 +578,140 @@ router.post("/login", async (req, res) => {
  * GET /api/auth/google
  * Initiates Google OAuth Login (used for Forgot Password & Google Sign-In)
  */
+/**
+ * POST /api/auth/google
+ * Verifies Google Identity Services ID token (Credential Response from popup/One-Tap)
+ */
+router.post("/google", async (req, res) => {
+  try {
+    const { credential, idToken } = req.body;
+    const tokenToVerify = credential || idToken;
+
+    if (!tokenToVerify) {
+      return res.status(400).json({
+        success: false,
+        message: "Google credential / ID token is required",
+      });
+    }
+
+    // Verify token with Google API
+    const googleVerifyUrl = `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(
+      tokenToVerify
+    )}`;
+
+    const googleRes = await fetch(googleVerifyUrl);
+    if (!googleRes.ok) {
+      const errData = await googleRes.json().catch(() => ({}));
+      return res.status(401).json({
+        success: false,
+        message: errData.error_description || "Invalid Google ID token",
+      });
+    }
+
+    const payload = await googleRes.json();
+    const email = payload.email ? payload.email.toLowerCase().trim() : null;
+    const googleId = payload.sub;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Google account does not have a verified email address",
+      });
+    }
+
+    // Optional client ID check if configured
+    if (
+      process.env.GOOGLE_CLIENT_ID &&
+      payload.aud &&
+      payload.aud !== process.env.GOOGLE_CLIENT_ID
+    ) {
+      console.warn("Google token audience mismatch:", payload.aud, process.env.GOOGLE_CLIENT_ID);
+    }
+
+    let user = await User.findOne({ email });
+
+    if (user) {
+      let modified = false;
+      if (!user.googleId) {
+        user.googleId = googleId;
+        modified = true;
+      }
+      if (!user.isEmailVerified) {
+        user.isEmailVerified = true;
+        modified = true;
+      }
+      if (payload.picture && !user.avatar) {
+        user.avatar = payload.picture;
+        modified = true;
+      }
+      if (modified) {
+        await user.save();
+      }
+    } else {
+      const displayName =
+        payload.name ||
+        (payload.given_name
+          ? `${payload.given_name} ${payload.family_name || ""}`.trim()
+          : "Google User");
+
+      user = await User.create({
+        name: displayName,
+        email: email,
+        googleId: googleId,
+        avatar: payload.picture || "",
+        isEmailVerified: true,
+        isPhoneVerified: false,
+      });
+    }
+
+    // Generate JWT
+    const jwtSecret = process.env.JWT_SECRET || "FoodFusion_Super_Secret_Key_2026";
+    const token = jwt.sign(
+      { id: user._id.toString(), role: user.role },
+      jwtSecret,
+      { expiresIn: "7d" }
+    );
+
+    if (req.session) {
+      req.session.user = {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      };
+    }
+
+    const userPayload = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar || "",
+      googleId: user.googleId || null,
+      phone: user.phone || "",
+      address: user.address || "",
+      isEmailVerified: user.isEmailVerified,
+    };
+
+    return res.status(200).json({
+      success: true,
+      message: `Welcome, ${user.name}!`,
+      token,
+      user: userPayload,
+    });
+  } catch (err) {
+    console.error("Google token verification error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error during Google authentication",
+    });
+  }
+});
+
+/**
+ * GET /api/auth/google
+ * Initiates Google OAuth Login (used for Forgot Password & Google Sign-In redirect/popup fallback)
+ */
 router.get("/google", (req, res, next) => {
   const returnTo =
     req.query.returnTo ||
@@ -602,7 +736,7 @@ router.get("/google", (req, res, next) => {
   }
 
   // Pass returnTo via state parameter if session cookies are cross-site
-  const state = req.query.returnTo ? Buffer.from(req.query.returnTo).toString("base64") : "";
+  const state = req.query.returnTo ? Buffer.from(String(req.query.returnTo)).toString("base64") : "";
 
   passport.authenticate("google", {
     scope: ["profile", "email"],
@@ -613,7 +747,7 @@ router.get("/google", (req, res, next) => {
 
 /**
  * GET /api/auth/google/callback
- * Handles Google OAuth Callback, links account if email exists, creates JWT & session, and redirects to dashboard
+ * Handles Google OAuth Callback, links account if email exists, creates JWT & session, and redirects/bridges to frontend
  */
 router.get(
   "/google/callback",
@@ -621,8 +755,8 @@ router.get(
     let returnTo = (req.session && req.session.returnTo) || process.env.FRONTEND_URL || "https://momsfood-fusion.netlify.app";
     if (req.query.state) {
       try {
-        const decoded = Buffer.from(req.query.state, "base64").toString("ascii");
-        if (decoded.startsWith("http")) returnTo = decoded;
+        const decoded = Buffer.from(req.query.state, "base64").toString("utf8");
+        if (decoded.startsWith("http")) returnTo = decoded.replace(/\/$/, "");
       } catch (e) {}
     }
     passport.authenticate("google", {
@@ -630,15 +764,15 @@ router.get(
     })(req, res, next);
   },
   async (req, res) => {
-    try {
-      let frontendUrl = (req.session && req.session.returnTo) || process.env.FRONTEND_URL || "https://momsfood-fusion.netlify.app";
-      if (req.query.state) {
-        try {
-          const decoded = Buffer.from(req.query.state, "base64").toString("ascii");
-          if (decoded.startsWith("http")) frontendUrl = decoded;
-        } catch (e) {}
-      }
+    let frontendUrl = (req.session && req.session.returnTo) || process.env.FRONTEND_URL || "https://momsfood-fusion.netlify.app";
+    if (req.query.state) {
+      try {
+        const decoded = Buffer.from(req.query.state, "base64").toString("utf8");
+        if (decoded.startsWith("http")) frontendUrl = decoded.replace(/\/$/, "");
+      } catch (e) {}
+    }
 
+    try {
       const user = req.user;
       if (!user) {
         return res.redirect(`${frontendUrl}/#auth-error?message=User%20not%20found`);
@@ -674,21 +808,53 @@ router.get(
         isEmailVerified: user.isEmailVerified,
       };
 
-      res.redirect(
-        `${frontendUrl}/#google-auth-success?token=${token}&user=${encodeURIComponent(
-          JSON.stringify(userPayload)
-        )}`
-      );
+      const redirectTarget = `${frontendUrl}/#google-auth-success?token=${token}&user=${encodeURIComponent(
+        JSON.stringify(userPayload)
+      )}`;
+
+      // Return a robust HTML bridge that communicates with window.opener if opened in popup, or redirects
+      return res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodFusion — Authenticating with Google...</title>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: #0c0d12; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
+    .loader { width: 48px; height: 48px; border: 4px solid rgba(255,107,0,0.2); border-top-color: #ff6b00; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    h2 { margin: 0 0 10px; font-size: 1.4rem; font-weight: 700; color: #ff6b00; }
+    p { color: #a1a1aa; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <div class="loader"></div>
+  <h2>Signed In Successfully!</h2>
+  <p>Connecting your Google account to FoodFusion...</p>
+  <script>
+    (function() {
+      var authData = {
+        type: 'GOOGLE_AUTH_SUCCESS',
+        token: ${JSON.stringify(token)},
+        user: ${JSON.stringify(userPayload)}
+      };
+      if (window.opener && !window.opener.closed) {
+        try {
+          window.opener.postMessage(authData, '*');
+          setTimeout(function() { window.close(); }, 400);
+          return;
+        } catch(e) {
+          console.error("Popup postMessage error:", e);
+        }
+      }
+      window.location.href = ${JSON.stringify(redirectTarget)};
+    })();
+  </script>
+</body>
+</html>`);
     } catch (err) {
       console.error("Google callback handling error:", err);
-      let frontendUrl = (req.session && req.session.returnTo) || process.env.FRONTEND_URL || "https://momsfood-fusion.netlify.app";
-      if (req.query.state) {
-        try {
-          const decoded = Buffer.from(req.query.state, "base64").toString("ascii");
-          if (decoded.startsWith("http")) frontendUrl = decoded;
-        } catch (e) {}
-      }
-      res.redirect(`${frontendUrl}/#auth-error?message=Server%20error%20during%20Google%20login`);
+      return res.redirect(`${frontendUrl}/#auth-error?message=Server%20error%20during%20Google%20login`);
     }
   }
 );
