@@ -482,8 +482,9 @@ h1, h2, h3, h4, .chunky-title {
 
 .hero-glow-ring {
   position: absolute;
-  width: 440px;
-  height: 440px;
+  width: min(100%, 440px);
+  height: min(100%, 440px);
+  aspect-ratio: 1/1;
   background: radial-gradient(circle, rgba(255, 200, 44, 0.25) 0%, rgba(255, 120, 40, 0.1) 60%, transparent 80%);
   border-radius: 50%;
   filter: blur(30px);
@@ -496,7 +497,8 @@ h1, h2, h3, h4, .chunky-title {
   z-index: 2;
   width: 100%;
   max-width: 440px;
-  height: 440px;
+  height: auto;
+  aspect-ratio: 1/1;
   border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
@@ -519,14 +521,15 @@ h1, h2, h3, h4, .chunky-title {
 .hero-floating-badge {
   position: absolute;
   z-index: 3;
-  font-size: 2.4rem;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
   animation: floatBadge 4s ease-in-out infinite alternate;
+  pointer-events: none;
 }
 
-.float-butter { top: 8%; left: -2%; animation-delay: 0.2s; }
+.float-butter { top: 8%; left: 0%; animation-delay: 0.2s; }
 .float-basil { bottom: 12%; left: 4%; animation-delay: 1.2s; }
-.float-chili { top: 12%; right: -2%; animation-delay: 0.8s; }
+.float-chili { top: 12%; right: 2%; animation-delay: 0.8s; }
 .float-wheat { bottom: 8%; right: 8%; animation-delay: 2.2s; }
 .float-tomato { bottom: 5%; right: 10%; animation-delay: 2.4s; }
 
@@ -537,16 +540,17 @@ h1, h2, h3, h4, .chunky-title {
 
 .hero-discount-tag {
   position: absolute;
-  top: 15%;
-  right: 0%;
+  top: 12%;
+  right: 2%;
   z-index: 3;
   background: var(--cocoa-card);
   border: 2px dashed var(--yellow-primary);
-  padding: 12px 18px;
+  padding: 10px 16px;
   border-radius: 18px;
   text-align: center;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
   transform: rotate(6deg);
+  max-width: 140px;
 }
 
 .hero-discount-tag span {
@@ -1047,8 +1051,9 @@ h1, h2, h3, h4, .chunky-title {
 
 .chef-glow-sunburst {
   position: absolute;
-  width: 320px;
-  height: 320px;
+  width: min(100%, 320px);
+  height: min(100%, 320px);
+  aspect-ratio: 1/1;
   background: radial-gradient(circle, rgba(255, 200, 44, 0.3) 0%, transparent 70%);
   border-radius: 50%;
   filter: blur(20px);
@@ -1059,7 +1064,8 @@ h1, h2, h3, h4, .chunky-title {
   z-index: 2;
   width: 100%;
   max-width: 380px;
-  height: 380px;
+  height: auto;
+  aspect-ratio: 1/1;
   border-radius: 30px;
   object-fit: cover;
   box-shadow: var(--shadow-md);
@@ -3106,24 +3112,640 @@ h1, h2, h3, h4, .chunky-title {
 }
 
 /* ==========================================================================
-   15. RESPONSIVE DESIGN (TABLET & MOBILE)
+   15. COMPREHENSIVE RESPONSIVE DESIGN & BROWSER ZOOM RESILIENCE
+   Covers: 1200px (Laptops), 992px (Tablets Landscape), 768px (Tablets Portrait),
+   576px (Mobiles), 480px (Compact Mobiles), 360px (Ultra-compact & High Zoom)
 ========================================================================== */
-@media (max-width: 1024px) {
-  .hero-content-wrapper { grid-template-columns: 1fr; text-align: center; }
-  .hero-description { margin: 0 auto 30px; }
-  .hero-cta-group { justify-content: center; }
-  .hero-trust-row { justify-content: center; }
-  .stories-container { grid-template-columns: 1fr; }
-  .dineout-card { grid-template-columns: 1fr; text-align: center; }
-  .footer-container { grid-template-columns: 1fr 1fr; }
+
+/* Universal Grid & Flex Blowout Safeguard */
+.hero-content-wrapper > *,
+.stories-container > *,
+.popular-cards-grid > *,
+.categories-card-grid > *,
+.why-cards-grid > *,
+.testi-cards-grid > *,
+.menu-food-grid > *,
+.admin-stats-grid > *,
+.footer-container > *,
+.form-group-row > * {
+  min-width: 0;
 }
 
+/* 1. LAPTOPS & COMPACT DESKTOPS (<= 1200px) */
+@media (max-width: 1200px) {
+  .ff-nav-container,
+  .hero-content-wrapper,
+  .stories-container,
+  .popular-cards-grid,
+  .categories-card-grid,
+  .menu-food-grid,
+  .why-cards-grid,
+  .testi-cards-grid,
+  .footer-container,
+  .admin-portal-content,
+  .menu-controls-container,
+  .category-pills-bar {
+    max-width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .hero-main-title {
+    font-size: clamp(2.8rem, 5vw, 3.8rem);
+  }
+
+  .stories-container {
+    grid-template-columns: 1fr 1.4fr 0.9fr;
+    gap: 24px;
+  }
+
+  .footer-container {
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 28px;
+  }
+}
+
+/* 2. TABLET LANDSCAPE & MEDIUM SCREENS (<= 992px) */
+@media (max-width: 992px) {
+  .hero-content-wrapper {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .hero-description {
+    margin: 0 auto 28px;
+  }
+
+  .hero-cta-group {
+    justify-content: center;
+  }
+
+  .hero-trust-row {
+    justify-content: center;
+  }
+
+  .stories-container {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .stories-heading-col {
+    text-align: center;
+  }
+
+  .stories-title {
+    font-size: clamp(2.4rem, 5vw, 3.2rem);
+  }
+
+  .dineout-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: clamp(28px, 4vw, 44px);
+    gap: 32px;
+  }
+
+  .dineout-cta-btn {
+    margin: 0 auto;
+  }
+
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .admin-portal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .admin-header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* 3. TABLET PORTRAIT & LARGE MOBILES (<= 768px) */
 @media (max-width: 768px) {
-  .ff-nav-links, .nav-order-cta, .admin-lock-btn { display: none; }
-  .hamburger-btn { display: block; }
-  .hero-main-title { font-size: 3rem; }
-  .stories-title { font-size: 2.6rem; }
-  .popular-title, .categories-main-title, .dineout-title, .why-header h2, .testi-header h2 { font-size: 2.2rem; }
-  .footer-container { grid-template-columns: 1fr; }
-  .bottom-bar-container { flex-direction: column; gap: 14px; text-align: center; }
+  .ff-navbar {
+    padding: 12px 18px;
+  }
+
+  .ff-nav-links,
+  .nav-order-cta,
+  .admin-lock-btn {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+  }
+
+  .ff-hero-section {
+    padding: 40px 18px 70px;
+  }
+
+  .hero-main-title {
+    font-size: clamp(2.2rem, 7vw, 3.2rem);
+  }
+
+  .hero-image-stage {
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .hero-hero-roti-img,
+  .hero-hero-burger-img {
+    max-width: 340px;
+  }
+
+  .hero-glow-ring {
+    max-width: 340px;
+  }
+
+  .hero-floating-badge {
+    font-size: 1.9rem;
+  }
+
+  .popular-title,
+  .categories-main-title,
+  .dineout-title,
+  .why-header h2,
+  .testi-header h2,
+  .cta-box h2 {
+    font-size: clamp(1.9rem, 5vw, 2.5rem);
+  }
+
+  .popular-subtitle,
+  .categories-subtext,
+  .why-header p,
+  .testi-header p,
+  .cta-box p {
+    font-size: 0.98rem;
+  }
+
+  /* Menu Controls */
+  .menu-controls-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .menu-search-wrapper,
+  .menu-sort-wrapper {
+    width: 100%;
+  }
+
+  .menu-sort-wrapper {
+    justify-content: space-between;
+  }
+
+  .category-pills-bar {
+    padding: 0 4px 10px;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .cat-pill {
+    padding: 8px 16px;
+    font-size: 0.88rem;
+  }
+
+  /* Grids */
+  .popular-cards-grid,
+  .menu-food-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: 20px;
+  }
+
+  .categories-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 18px;
+  }
+
+  .testi-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  /* Modals */
+  .ff-modal-card {
+    padding: 28px 20px;
+    border-radius: 24px;
+    max-width: 95vw;
+    max-height: 90vh;
+    max-height: 90dvh;
+  }
+
+  .modal-close-btn {
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    font-size: 1rem;
+  }
+
+  .form-group-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .order-success-card {
+    padding: 28px 18px;
+    border-radius: 24px;
+  }
+
+  .big-tick-wrapper {
+    width: 90px;
+    height: 90px;
+    margin: 6px auto 16px;
+  }
+
+  .big-tick-circle {
+    width: 80px;
+    height: 80px;
+  }
+
+  .big-tick-pulse {
+    width: 96px;
+    height: 96px;
+  }
+
+  .big-tick-svg {
+    width: 44px;
+    height: 44px;
+  }
+
+  .order-success-title {
+    font-size: 1.8rem;
+  }
+
+  /* Cart Drawer */
+  .ff-cart-drawer {
+    max-width: 100vw;
+    width: 100%;
+    padding: 24px 18px;
+  }
+
+  /* Footer */
+  .footer-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 28px;
+  }
+
+  .footer-col button {
+    text-align: center;
+    margin: 0 auto 10px;
+  }
+
+  .bottom-bar-container {
+    flex-direction: column;
+    gap: 14px;
+    text-align: center;
+  }
+
+  /* Auth Gate */
+  .foodfusion-auth-gate-page {
+    padding: 30px 16px;
+  }
+
+  .auth-gate-container {
+    max-width: 100%;
+  }
+
+  .auth-switch-card {
+    padding: 26px 20px;
+    border-radius: 24px;
+  }
+
+  .gate-brand-name {
+    font-size: 2.2rem;
+  }
+
+  .gate-brand-icon {
+    font-size: 2.6rem;
+  }
+}
+
+/* 4. STANDARD MOBILE PHONES (<= 576px) */
+@media (max-width: 576px) {
+  .ff-navbar {
+    padding: 10px 14px;
+  }
+
+  .ff-logo-icon {
+    font-size: 1.5rem;
+    padding: 4px;
+    border-radius: 10px;
+  }
+
+  .brand-name {
+    font-size: 1.15rem;
+  }
+
+  .brand-tag {
+    display: none;
+  }
+
+  .cart-trigger-btn {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .login-nav-btn,
+  .user-profile-btn {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+
+  /* Hero Section Mobile Polish */
+  .ff-hero-section {
+    padding: 32px 14px 60px;
+  }
+
+  .hero-discount-pill {
+    font-size: 0.8rem;
+    padding: 4px 12px;
+    margin-bottom: 16px;
+  }
+
+  .hero-main-title {
+    font-size: clamp(2rem, 8vw, 2.6rem);
+    margin-bottom: 14px;
+  }
+
+  .hero-description {
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .hero-btn-primary,
+  .hero-btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+    font-size: 1.05rem;
+  }
+
+  .hero-image-stage {
+    max-width: 280px;
+  }
+
+  .hero-hero-roti-img,
+  .hero-hero-burger-img,
+  .hero-glow-ring {
+    max-width: 280px;
+  }
+
+  .float-butter { top: 2%; left: -2%; }
+  .float-chili { top: 4%; right: -2%; }
+  .float-basil { bottom: 4%; left: 0%; }
+  .float-tomato { bottom: 2%; right: 2%; }
+
+  .hero-discount-tag {
+    top: 6%;
+    right: -2%;
+    padding: 6px 10px;
+    font-size: 0.65rem;
+    max-width: 110px;
+  }
+
+  .hero-discount-tag strong {
+    font-size: 1.1rem;
+  }
+
+  .hero-trust-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Stories Mobile */
+  .ff-about-stories-section {
+    padding: 50px 14px;
+  }
+
+  .stories-content-col {
+    flex-direction: column;
+    padding: 18px 14px;
+    gap: 12px;
+  }
+
+  .stories-cocoa-icon {
+    display: none;
+  }
+
+  .stories-reviews-badge {
+    padding: 18px 14px;
+  }
+
+  .reviews-stat-number {
+    font-size: 2.2rem;
+  }
+
+  /* Product Cards Mobile */
+  .ff-popular-products-section,
+  .ff-shop-categories-section,
+  .ff-dineout-deals-section,
+  .ff-testimonials-section,
+  .ff-why-section,
+  .ff-menu-page {
+    padding: 50px 14px;
+  }
+
+  .popular-cards-grid,
+  .menu-food-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .food-item-name {
+    font-size: 1.25rem;
+  }
+
+  .price-num,
+  .price-tag .amount {
+    font-size: 1.45rem;
+  }
+
+  .card-price-action-row {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .action-buttons-group {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .btn-quick-buy,
+  .btn-add-cart {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    padding: 9px 10px;
+  }
+
+  /* Dine Out Mobile */
+  .dineout-card {
+    padding: 24px 14px;
+    border-radius: 24px;
+  }
+
+  .chef-photo {
+    max-width: 260px;
+    border-radius: 20px;
+  }
+
+  .chef-glow-sunburst {
+    max-width: 250px;
+  }
+
+  .dineout-cta-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 1.05rem;
+    padding: 14px 20px;
+  }
+
+  /* CTA Box */
+  .cta-box {
+    padding: 36px 18px;
+    border-radius: 24px;
+  }
+
+  .final-cta-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 1.05rem;
+    padding: 14px 20px;
+  }
+
+  /* Admin Portal */
+  .admin-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .admin-portal-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .admin-tabs-row {
+    width: 100%;
+  }
+
+  .admin-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+  }
+
+  .admin-table-wrapper {
+    padding: 16px 12px;
+    border-radius: 18px;
+  }
+
+  /* Auth Card */
+  .auth-switch-card {
+    padding: 20px 14px;
+    border-radius: 20px;
+  }
+
+  .auth-switch-tab {
+    font-size: 0.95rem;
+    padding: 8px 8px;
+  }
+
+  .auth-panel-heading h2 {
+    font-size: 1.35rem;
+  }
+
+  .auth-submit-btn,
+  .demo-one-click-btn,
+  .google-oauth-button {
+    font-size: 0.95rem;
+    padding: 12px 14px;
+  }
+
+  .pwd-requirements-list {
+    gap: 4px;
+  }
+
+  .pwd-req-pill {
+    font-size: 0.68rem;
+    padding: 2px 6px;
+  }
+
+  .gate-badges-row span {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+  }
+
+  /* Toast Notification */
+  .ff-toast-banner {
+    left: 12px;
+    right: 12px;
+    bottom: 16px;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    padding: 10px 16px;
+    border-radius: 16px;
+  }
+}
+
+/* 5. ULTRA-COMPACT SCREENS & HIGH BROWSER ZOOM (<= 360px) */
+@media (max-width: 360px) {
+  .hero-main-title {
+    font-size: 1.85rem;
+  }
+
+  .stories-title,
+  .popular-title,
+  .categories-main-title,
+  .dineout-title {
+    font-size: 1.65rem;
+  }
+
+  .gate-brand-name {
+    font-size: 1.75rem;
+  }
+
+  .auth-switch-card {
+    padding: 16px 10px;
+  }
+
+  .cart-item-card {
+    padding: 10px 8px;
+    gap: 8px;
+  }
+
+  .cart-item-card img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .price-and-action-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .circle-add-btn {
+    align-self: flex-end;
+  }
 }
