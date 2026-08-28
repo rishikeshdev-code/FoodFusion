@@ -3229,7 +3229,16 @@ h1, h2, h3, h4, .chunky-title {
 /* 3. TABLET PORTRAIT & LARGE MOBILES (<= 768px) */
 @media (max-width: 768px) {
   .ff-navbar {
-    padding: 12px 18px;
+    padding: 10px 14px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .ff-nav-container {
+    width: 100%;
+    max-width: 100%;
+    gap: 6px;
   }
 
   .ff-nav-links,
@@ -3238,16 +3247,28 @@ h1, h2, h3, h4, .chunky-title {
     display: none;
   }
 
+  .user-name-short {
+    display: none;
+  }
+
+  .user-profile-btn {
+    padding: 6px 10px;
+    gap: 0;
+  }
+
   .hamburger-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
   }
 
   .ff-hero-section {
-    padding: 40px 18px 70px;
+    padding: 40px 14px 70px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .hero-main-title {
@@ -3255,21 +3276,39 @@ h1, h2, h3, h4, .chunky-title {
   }
 
   .hero-image-stage {
-    max-width: 340px;
+    max-width: 320px;
     margin: 0 auto;
+    width: 100%;
   }
 
   .hero-hero-roti-img,
   .hero-hero-burger-img {
-    max-width: 340px;
+    max-width: 320px;
   }
 
   .hero-glow-ring {
-    max-width: 340px;
+    max-width: 320px;
   }
 
   .hero-floating-badge {
-    font-size: 1.9rem;
+    font-size: 1.8rem;
+  }
+
+  .float-butter { top: 4%; left: 2%; }
+  .float-chili { top: 6%; right: 2%; }
+  .float-basil { bottom: 6%; left: 4%; }
+  .float-tomato { bottom: 4%; right: 4%; }
+
+  .hero-discount-tag {
+    top: 8%;
+    right: 2%;
+    padding: 8px 12px;
+    font-size: 0.7rem;
+    max-width: 120px;
+  }
+
+  .hero-discount-tag strong {
+    font-size: 1.15rem;
   }
 
   .popular-title,
@@ -3294,6 +3333,7 @@ h1, h2, h3, h4, .chunky-title {
     flex-direction: column;
     align-items: stretch;
     gap: 14px;
+    width: 100%;
   }
 
   .menu-search-wrapper,
@@ -3308,6 +3348,7 @@ h1, h2, h3, h4, .chunky-title {
   .category-pills-bar {
     padding: 0 4px 10px;
     gap: 8px;
+    width: 100%;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
   }
@@ -3322,16 +3363,19 @@ h1, h2, h3, h4, .chunky-title {
   .menu-food-grid {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
     gap: 20px;
+    width: 100%;
   }
 
   .categories-card-grid {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
     gap: 18px;
+    width: 100%;
   }
 
   .testi-cards-grid {
     grid-template-columns: 1fr;
     gap: 18px;
+    width: 100%;
   }
 
   /* Modals */
@@ -3398,6 +3442,7 @@ h1, h2, h3, h4, .chunky-title {
     grid-template-columns: 1fr;
     text-align: center;
     gap: 28px;
+    width: 100%;
   }
 
   .footer-col button {
@@ -3409,20 +3454,24 @@ h1, h2, h3, h4, .chunky-title {
     flex-direction: column;
     gap: 14px;
     text-align: center;
+    width: 100%;
   }
 
   /* Auth Gate */
   .foodfusion-auth-gate-page {
     padding: 30px 16px;
+    width: 100%;
   }
 
   .auth-gate-container {
     max-width: 100%;
+    width: 100%;
   }
 
   .auth-switch-card {
     padding: 26px 20px;
     border-radius: 24px;
+    width: 100%;
   }
 
   .gate-brand-name {
@@ -3437,37 +3486,66 @@ h1, h2, h3, h4, .chunky-title {
 /* 4. STANDARD MOBILE PHONES (<= 576px) */
 @media (max-width: 576px) {
   .ff-navbar {
-    padding: 10px 14px;
+    padding: 10px 12px;
+    width: 100%;
+  }
+
+  .ff-logo {
+    gap: 6px;
+    min-width: 0;
   }
 
   .ff-logo-icon {
-    font-size: 1.5rem;
-    padding: 4px;
-    border-radius: 10px;
+    font-size: 1.3rem;
+    padding: 3px;
+    border-radius: 8px;
   }
 
   .brand-name {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
   }
 
   .brand-tag {
     display: none;
   }
 
+  .ff-nav-actions {
+    gap: 6px;
+  }
+
+  .icon-btn.search-trigger {
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
+  }
+
   .cart-trigger-btn {
-    padding: 6px 12px;
-    font-size: 0.85rem;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    gap: 4px;
+  }
+
+  .cart-badge {
+    font-size: 0.7rem;
+    padding: 1px 5px;
   }
 
   .login-nav-btn,
   .user-profile-btn {
-    padding: 6px 10px;
-    font-size: 0.85rem;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+
+  .user-name-short {
+    display: none;
   }
 
   /* Hero Section Mobile Polish */
   .ff-hero-section {
     padding: 32px 14px 60px;
+    width: 100%;
+    overflow: hidden;
   }
 
   .hero-discount-pill {
@@ -3477,7 +3555,7 @@ h1, h2, h3, h4, .chunky-title {
   }
 
   .hero-main-title {
-    font-size: clamp(2rem, 8vw, 2.6rem);
+    font-size: clamp(1.9rem, 7.5vw, 2.5rem);
     margin-bottom: 14px;
   }
 
@@ -3501,30 +3579,31 @@ h1, h2, h3, h4, .chunky-title {
   }
 
   .hero-image-stage {
-    max-width: 280px;
+    max-width: 270px;
+    width: 100%;
   }
 
   .hero-hero-roti-img,
   .hero-hero-burger-img,
   .hero-glow-ring {
-    max-width: 280px;
+    max-width: 270px;
   }
 
-  .float-butter { top: 2%; left: -2%; }
-  .float-chili { top: 4%; right: -2%; }
-  .float-basil { bottom: 4%; left: 0%; }
+  .float-butter { top: 2%; left: 2%; }
+  .float-chili { top: 4%; right: 2%; }
+  .float-basil { bottom: 4%; left: 2%; }
   .float-tomato { bottom: 2%; right: 2%; }
 
   .hero-discount-tag {
     top: 6%;
-    right: -2%;
+    right: 2%;
     padding: 6px 10px;
     font-size: 0.65rem;
     max-width: 110px;
   }
 
   .hero-discount-tag strong {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
   }
 
   .hero-trust-row {
@@ -3536,6 +3615,36 @@ h1, h2, h3, h4, .chunky-title {
   /* Stories Mobile */
   .ff-about-stories-section {
     padding: 50px 14px;
+    width: 100%;
+  }
+
+  .stories-content-col {
+    flex-direction: column;
+    padding: 18px 14px;
+    gap: 12px;
+  }
+
+  .stories-cocoa-icon {
+    display: none;
+  }
+
+  .stories-reviews-badge {
+    padding: 18px 14px;
+  }
+
+  .reviews-stat-number {
+    font-size: 2.2rem;
+  }
+
+  /* Product Cards Mobile */
+  .ff-popular-products-section,
+  .ff-shop-categories-section,
+  .ff-dineout-deals-section,
+  .ff-testimonials-section,
+  .ff-why-section,
+  .ff-menu-page {
+    padding: 50px 14px;
+    width: 100%;
   }
 
   .stories-content-col {
