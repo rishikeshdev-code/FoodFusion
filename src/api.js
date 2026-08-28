@@ -14,7 +14,7 @@ export const API_BASE_URL =
 
 export const GOOGLE_CLIENT_ID =
   import.meta.env.VITE_GOOGLE_CLIENT_ID ||
-  "111062772570-4ob54snkrp49k53kandgdhbid325nips.apps.googleusercontent.com";
+  "111062772570-ucjed0po8foasc3j9p246jgem8g8jecf.apps.googleusercontent.com";
 
 export const getGoogleAuthUrl = () => {
   const currentOrigin =
