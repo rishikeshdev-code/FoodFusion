@@ -58,17 +58,54 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    subtotal: {
+      type: Number,
+      default: 0,
+    },
+    deliveryFee: {
+      type: Number,
+      default: 0,
+    },
+    taxAmount: {
+      type: Number,
+      default: 0,
+    },
+    discountAmount: {
+      type: Number,
+      default: 0,
+    },
+    couponCode: {
+      type: String,
+      default: "",
+    },
     paymentMethod: {
       type: String,
-      default: "card",
+      default: "Razorpay Online",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "processing", "paid", "failed", "cancelled"],
+      default: "pending",
+    },
+    razorpayOrderId: {
+      type: String,
+      default: "",
+    },
+    razorpayPaymentId: {
+      type: String,
+      default: "",
+    },
+    razorpaySignature: {
+      type: String,
+      default: "",
     },
     cardHolderName: {
       type: String,
-      default: "Card Holder",
+      default: "Valued Customer",
     },
     cardLast4: {
       type: String,
-      default: "4242",
+      default: "",
     },
     status: {
       type: String,

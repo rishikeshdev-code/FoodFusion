@@ -2,6 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import {
   getFoods,
   createOrder,
+  createRazorpayOrder,
+  verifyRazorpayPayment,
+  cancelRazorpayPayment,
   registerUser,
   loginUser,
   forgotPassword,
@@ -829,6 +832,7 @@ function App() {
   });
   const [checkoutSubmitting, setCheckoutSubmitting] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("dummy"); // "dummy" | "cod" | "razorpay"
 
   // Order Tracking & Confirmation State
   const [trackedOrder, setTrackedOrder] = useState(null);
@@ -1237,9 +1241,11 @@ function App() {
     showToast("Logged out successfully.");
   };
 
-  // Order Placement
+  // Order Placement & Razorpay Payment Integration
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
+    if (checkoutSubmitting) return;
+
     setCheckoutError("");
     setCheckoutSubmitting(true);
 
@@ -1254,77 +1260,265 @@ function App() {
           },
         ]
       : cart.map((item) => ({
-          foodId: String(item.id),
+          foodId: String(item.id || item._id),
           name: item.name,
           price: item.price,
           quantity: item.quantity,
           emoji: item.emoji,
         }));
 
-    const totalToPay = checkoutDirectItem
-      ? checkoutDirectItem.food.price * checkoutDirectItem.quantity +
-        40 +
-        Math.round(checkoutDirectItem.food.price * checkoutDirectItem.quantity * 0.05)
-      : finalCartTotal;
-
     if (!itemsToOrder || itemsToOrder.length === 0) {
-      setCheckoutError("Please add items to cart before ordering.");
+      setCheckoutError("Please add items to your cart before ordering.");
+      setCheckoutSubmitting(false);
+      return;
+    }
+
+    const customerName = (checkoutForm.customerName || currentUser?.name || "").trim();
+    const customerPhone = (checkoutForm.customerPhone || currentUser?.phone || "").trim();
+    const deliveryAddress = (checkoutForm.deliveryAddress || currentUser?.address || "").trim();
+
+    if (!customerName || !customerPhone || !deliveryAddress) {
+      setCheckoutError("Full Name, Phone Number, and Delivery Address are required.");
       setCheckoutSubmitting(false);
       return;
     }
 
     try {
+      const totalAmt = checkoutDirectItem
+        ? checkoutDirectItem.food.price * checkoutDirectItem.quantity +
+          40 +
+          Math.round(checkoutDirectItem.food.price * checkoutDirectItem.quantity * 0.05)
+        : finalCartTotal;
+
       const orderPayload = {
         userId: currentUser?._id || null,
-        customerName: checkoutForm.customerName || currentUser?.name || "Valued Customer",
-        customerEmail: checkoutForm.customerEmail || currentUser?.email || "",
-        customerPhone: checkoutForm.customerPhone || "9876543210",
-        deliveryAddress: checkoutForm.deliveryAddress || "404 Emerald Towers, Bandra West",
+        customerName,
+        customerEmail: (checkoutForm.customerEmail || currentUser?.email || "").trim(),
+        customerPhone,
+        deliveryAddress,
         city: checkoutForm.city || "Mumbai",
         pincode: checkoutForm.pincode || "400001",
         instructions: checkoutForm.instructions || "",
         items: itemsToOrder,
-        totalAmount: totalToPay,
-        paymentMethod: "card",
-        cardHolderName: checkoutForm.cardHolder || checkoutForm.customerName || "Cardholder",
-        cardLast4: checkoutForm.cardNumber.slice(-4) || "4242",
+        totalAmount: totalAmt,
+        paymentMethod:
+          selectedPaymentMethod === "cod"
+            ? "Cash on Delivery"
+            : selectedPaymentMethod === "razorpay"
+            ? "Razorpay Online"
+            : "Dummy Online Payment",
+        couponCode: discountApplied ? "FOODFUSION50" : "",
       };
 
-      let placedOrder;
-      try {
-        const response = await createOrder(orderPayload);
-        placedOrder = response.order;
-      } catch {
-        const generatedId = `#FF-${Math.floor(10000 + Math.random() * 90000)}`;
-        placedOrder = {
-          ...orderPayload,
-          orderId: generatedId,
-          status: "Preparing",
-          createdAt: new Date().toISOString(),
-        };
+      // 1. Direct Order Placement for Dummy Payment (Instant) or Cash on Delivery (COD)
+      if (selectedPaymentMethod === "dummy" || selectedPaymentMethod === "cod") {
+        let createdOrder;
+        try {
+          const res = await createOrder(orderPayload);
+          if (res && res.success && res.order) {
+            createdOrder = res.order;
+          }
+        } catch (apiErr) {
+          console.warn("Backend order save notice, fallback to local:", apiErr.message);
+        }
+
+        if (!createdOrder) {
+          const orderCount = userOrders.length + 1;
+          const orderId = `#FF-${Math.floor(10000 + Math.random() * 90000)}-${orderCount}`;
+          createdOrder = {
+            _id: `ord_${Date.now()}`,
+            orderId,
+            customerName,
+            customerEmail: orderPayload.customerEmail,
+            customerPhone,
+            deliveryAddress,
+            city: checkoutForm.city || "Mumbai",
+            pincode: checkoutForm.pincode || "400001",
+            instructions: checkoutForm.instructions || "",
+            items: itemsToOrder,
+            totalAmount: totalAmt,
+            paymentMethod:
+              selectedPaymentMethod === "cod" ? "Cash on Delivery" : "Dummy Online Payment",
+            paymentStatus: selectedPaymentMethod === "cod" ? "pending" : "paid",
+            status: "Preparing",
+            createdAt: new Date().toISOString(),
+          };
+        }
+
+        const updatedOrders = [
+          createdOrder,
+          ...userOrders.filter((o) => o.orderId !== createdOrder.orderId),
+        ];
+        setUserOrders(updatedOrders);
+        try {
+          localStorage.setItem("foodfusion_orders", JSON.stringify(updatedOrders));
+        } catch (e) {
+          console.error("Order save error:", e);
+        }
+
+        if (!checkoutDirectItem) {
+          clearCart();
+        }
+
+        setCheckoutModalOpen(false);
+        setCheckoutDirectItem(null);
+        setCartDrawerOpen(false);
+        setConfirmedOrder(createdOrder);
+        setOrderSuccessModalOpen(true);
+        showToast(
+          selectedPaymentMethod === "cod"
+            ? `🎉 Order Placed (Cash on Delivery)! Order ID: ${createdOrder.orderId}`
+            : `🎉 Payment Confirmed (Dummy Pay)! Order ID: ${createdOrder.orderId}`
+        );
+        setCheckoutSubmitting(false);
+        return;
       }
 
-      const updatedOrders = [placedOrder, ...userOrders];
-      setUserOrders(updatedOrders);
-      try {
-        localStorage.setItem("foodfusion_orders", JSON.stringify(updatedOrders));
-      } catch (err) {
-        console.error(err);
+      // 2. Initialize Razorpay Order on Backend (for Razorpay selection)
+      const razorpayRes = await createRazorpayOrder(orderPayload);
+
+      if (!razorpayRes || !razorpayRes.success) {
+        throw new Error(razorpayRes?.message || "Failed to initialize payment gateway.");
       }
 
-      if (!checkoutDirectItem) {
-        clearCart();
-      }
+      // 2. Configure Razorpay Options
+      const keyId = razorpayRes.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_FoodFusion2026";
 
-      setCheckoutModalOpen(false);
-      setCheckoutDirectItem(null);
-      setCartDrawerOpen(false);
-      setConfirmedOrder(placedOrder);
-      setOrderSuccessModalOpen(true);
-      showToast(`🎉 Order Placed! ID: ${placedOrder.orderId}`);
+      const options = {
+        key: keyId,
+        amount: razorpayRes.amount,
+        currency: razorpayRes.currency || "INR",
+        name: "FoodFusion Gourmet",
+        description: `Order Reference: ${razorpayRes.orderId}`,
+        order_id: razorpayRes.razorpayOrderId.startsWith("order_test_") ? undefined : razorpayRes.razorpayOrderId,
+        prefill: {
+          name: customerName,
+          email: orderPayload.customerEmail,
+          contact: customerPhone,
+        },
+        theme: {
+          color: "#8B263E",
+        },
+        handler: async (response) => {
+          try {
+            // 3. Verify Payment Signature on Backend
+            const verificationRes = await verifyRazorpayPayment({
+              razorpay_order_id: response.razorpay_order_id || razorpayRes.razorpayOrderId,
+              razorpay_payment_id: response.razorpay_payment_id || `pay_${Date.now()}_mock`,
+              razorpay_signature: response.razorpay_signature || "mock_test_signature",
+              orderId: razorpayRes.orderId,
+              dbOrderId: razorpayRes.dbOrderId,
+            });
+
+            if (verificationRes && verificationRes.success && verificationRes.order) {
+              const paidOrder = verificationRes.order;
+
+              // Save order in state and local storage
+              const updatedOrders = [paidOrder, ...userOrders.filter((o) => o.orderId !== paidOrder.orderId)];
+              setUserOrders(updatedOrders);
+              try {
+                localStorage.setItem("foodfusion_orders", JSON.stringify(updatedOrders));
+              } catch (err) {
+                console.error("Order save error:", err);
+              }
+
+              if (!checkoutDirectItem) {
+                clearCart();
+              }
+
+              setCheckoutModalOpen(false);
+              setCheckoutDirectItem(null);
+              setCartDrawerOpen(false);
+              setConfirmedOrder(paidOrder);
+              setOrderSuccessModalOpen(true);
+              showToast(`🎉 Payment Confirmed! Order ID: ${paidOrder.orderId}`);
+            } else {
+              setCheckoutError("Payment signature verification failed. Order not placed.");
+            }
+          } catch (verifyErr) {
+            console.error("Verification error:", verifyErr);
+            setCheckoutError(verifyErr.message || "Payment verification failed. Please try again.");
+          } finally {
+            setCheckoutSubmitting(false);
+          }
+        },
+        modal: {
+          ondismiss: async () => {
+            setCheckoutSubmitting(false);
+            setCheckoutError("Payment was cancelled. Your cart items are safe; you can retry anytime.");
+            try {
+              await cancelRazorpayPayment({
+                razorpay_order_id: razorpayRes.razorpayOrderId,
+                orderId: razorpayRes.orderId,
+                dbOrderId: razorpayRes.dbOrderId,
+                reason: "cancelled",
+              });
+            } catch {
+              // Ignore cancellation error
+            }
+          },
+        },
+      };
+
+      // 4. Launch Razorpay Checkout Modal
+      if (typeof window.Razorpay !== "undefined") {
+        const rzp = new window.Razorpay(options);
+        rzp.on("payment.failed", async (response) => {
+          setCheckoutSubmitting(false);
+          setCheckoutError(`Payment failed: ${response.error?.description || "Transaction declined"}`);
+          try {
+            await cancelRazorpayPayment({
+              razorpay_order_id: razorpayRes.razorpayOrderId,
+              orderId: razorpayRes.orderId,
+              dbOrderId: razorpayRes.dbOrderId,
+              reason: "failed",
+            });
+          } catch {}
+        });
+        rzp.open();
+      } else {
+        // Safe test mode fallback if Razorpay script is blocked or offline
+        setTimeout(async () => {
+          try {
+            const verificationRes = await verifyRazorpayPayment({
+              razorpay_order_id: razorpayRes.razorpayOrderId,
+              razorpay_payment_id: `pay_test_${Date.now()}`,
+              razorpay_signature: "mock_test_signature",
+              orderId: razorpayRes.orderId,
+              dbOrderId: razorpayRes.dbOrderId,
+            });
+
+            if (verificationRes && verificationRes.success && verificationRes.order) {
+              const paidOrder = verificationRes.order;
+              const updatedOrders = [paidOrder, ...userOrders.filter((o) => o.orderId !== paidOrder.orderId)];
+              setUserOrders(updatedOrders);
+              try {
+                localStorage.setItem("foodfusion_orders", JSON.stringify(updatedOrders));
+              } catch (err) {
+                console.error("Order save error:", err);
+              }
+
+              if (!checkoutDirectItem) {
+                clearCart();
+              }
+
+              setCheckoutModalOpen(false);
+              setCheckoutDirectItem(null);
+              setCartDrawerOpen(false);
+              setConfirmedOrder(paidOrder);
+              setOrderSuccessModalOpen(true);
+              showToast(`🎉 Payment Confirmed (Test Mode)! Order ID: ${paidOrder.orderId}`);
+            }
+          } catch (err) {
+            setCheckoutError(err.message || "Payment verification failed.");
+          } finally {
+            setCheckoutSubmitting(false);
+          }
+        }, 1000);
+      }
     } catch (err) {
-      setCheckoutError(err.message || "Failed to place order. Try again.");
-    } finally {
+      console.error("Checkout submission error:", err);
+      setCheckoutError(err.message || "Failed to initialize checkout. Please check server connectivity.");
       setCheckoutSubmitting(false);
     }
   };
@@ -3243,6 +3437,64 @@ function App() {
                 />
               </div>
 
+              <div>
+                <label style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-muted)", marginBottom: "6px", display: "block" }}>
+                  SELECT PAYMENT METHOD *
+                </label>
+                <div className="payment-methods-grid">
+                  <div
+                    className={`payment-option-card ${selectedPaymentMethod === "dummy" ? "active" : ""}`}
+                    onClick={() => setSelectedPaymentMethod("dummy")}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      checked={selectedPaymentMethod === "dummy"}
+                      onChange={() => setSelectedPaymentMethod("dummy")}
+                    />
+                    <span className="payment-option-icon">💳</span>
+                    <div className="payment-option-details">
+                      <span className="payment-option-title">Dummy Payment (Instant Test Pay)</span>
+                      <span className="payment-option-desc">Simulated instant payment confirmation (Recommended)</span>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`payment-option-card ${selectedPaymentMethod === "cod" ? "active" : ""}`}
+                    onClick={() => setSelectedPaymentMethod("cod")}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      checked={selectedPaymentMethod === "cod"}
+                      onChange={() => setSelectedPaymentMethod("cod")}
+                    />
+                    <span className="payment-option-icon">💵</span>
+                    <div className="payment-option-details">
+                      <span className="payment-option-title">Cash on Delivery (COD)</span>
+                      <span className="payment-option-desc">Pay cash or UPI upon food delivery</span>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`payment-option-card ${selectedPaymentMethod === "razorpay" ? "active" : ""}`}
+                    onClick={() => setSelectedPaymentMethod("razorpay")}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      checked={selectedPaymentMethod === "razorpay"}
+                      onChange={() => setSelectedPaymentMethod("razorpay")}
+                    />
+                    <span className="payment-option-icon">🔒</span>
+                    <div className="payment-option-details">
+                      <span className="payment-option-title">Razorpay Online Gateway</span>
+                      <span className="payment-option-desc">Pay via Cards, NetBanking, or UPI gateway</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div style={{ background: "var(--cream-soft)", padding: "16px", borderRadius: "14px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
                   <span>Total Amount to Pay:</span>
@@ -3254,7 +3506,13 @@ function App() {
                       : finalCartTotal}
                   </strong>
                 </div>
-                <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>💳 Simulated Card Payment: **** **** **** 4242</span>
+                <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                  {selectedPaymentMethod === "dummy"
+                    ? "✨ Dummy Instant Payment selected — zero-delay instant order!"
+                    : selectedPaymentMethod === "cod"
+                    ? "🛵 Pay on delivery via Cash or UPI"
+                    : "🔒 Secure 256-Bit Razorpay Gateway"}
+                </span>
               </div>
 
               <button
@@ -3262,7 +3520,13 @@ function App() {
                 className="btn-proceed-checkout"
                 disabled={checkoutSubmitting}
               >
-                {checkoutSubmitting ? "Placing Order..." : "Confirm & Place Order 🚀"}
+                {checkoutSubmitting
+                  ? "Processing Order..."
+                  : selectedPaymentMethod === "dummy"
+                  ? "Pay Now (Dummy Instant) ⚡"
+                  : selectedPaymentMethod === "cod"
+                  ? "Place COD Order 🚀"
+                  : "Proceed to Razorpay 🔒"}
               </button>
             </form>
           </div>

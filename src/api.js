@@ -174,6 +174,43 @@ export const checkAuthStatus = async () => {
 };
 
 // order api
+export const createRazorpayOrder = async (orderData) => {
+  const result = await safeFetch(`${API_BASE_URL}/orders/create-razorpay-order`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(orderData),
+  });
+
+  if (!result.ok || !result.data?.success) {
+    throw new Error(result.data?.message || result.error || "Failed to initialize payment gateway.");
+  }
+
+  return result.data;
+};
+
+export const verifyRazorpayPayment = async (paymentData) => {
+  const result = await safeFetch(`${API_BASE_URL}/orders/verify-payment`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(paymentData),
+  });
+
+  if (!result.ok || !result.data?.success) {
+    throw new Error(result.data?.message || result.error || "Payment signature verification failed.");
+  }
+
+  return result.data;
+};
+
+export const cancelRazorpayPayment = async (cancelData) => {
+  const result = await safeFetch(`${API_BASE_URL}/orders/cancel-payment`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(cancelData),
+  });
+  return result.data;
+};
+
 export const createOrder = async (orderData) => {
   const result = await safeFetch(`${API_BASE_URL}/orders`, {
     method: "POST",
