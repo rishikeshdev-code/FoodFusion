@@ -82,11 +82,11 @@ router.post("/create-razorpay-order", async (req, res) => {
       });
     }
 
-    const deliveryFee = subtotal > 499 || subtotal === 0 ? 0 : 40;
-    const taxAmount = Math.round(subtotal * 0.05);
+    const deliveryFee = 0;
+    const taxAmount = 0;
     const isDiscount = couponCode === "FOODFUSION50";
     const discountAmount = isDiscount ? Math.round(subtotal * 0.5) : 0;
-    const totalAmount = Math.max(0, subtotal + deliveryFee + taxAmount - discountAmount);
+    const totalAmount = Math.max(0, subtotal - discountAmount);
 
     const amountInPaise = Math.round(totalAmount * 100);
 

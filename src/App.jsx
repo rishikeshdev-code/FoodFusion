@@ -966,10 +966,10 @@ function App() {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }, [cart]);
 
-  const deliveryFee = cartSubtotal > 499 || cartSubtotal === 0 ? 0 : 40;
-  const taxAmount = Math.round(cartSubtotal * 0.05);
+  const deliveryFee = 0;
+  const taxAmount = 0;
   const discountAmount = discountApplied ? Math.round(cartSubtotal * 0.5) : 0;
-  const finalCartTotal = Math.max(0, cartSubtotal + deliveryFee + taxAmount - discountAmount);
+  const finalCartTotal = Math.max(0, cartSubtotal - discountAmount);
   const cartTotalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   // Cart Handlers
@@ -1284,11 +1284,9 @@ function App() {
     }
 
     try {
-      const totalAmt = checkoutDirectItem
-        ? checkoutDirectItem.food.price * checkoutDirectItem.quantity +
-          40 +
-          Math.round(checkoutDirectItem.food.price * checkoutDirectItem.quantity * 0.05)
-        : finalCartTotal;
+      const directItemPrice = checkoutDirectItem ? checkoutDirectItem.food.price * checkoutDirectItem.quantity : 0;
+      const directDiscount = discountApplied ? Math.round(directItemPrice * 0.5) : 0;
+      const totalAmt = checkoutDirectItem ? Math.max(0, directItemPrice - directDiscount) : finalCartTotal;
 
       const orderPayload = {
         userId: currentUser?._id || null,
@@ -3327,11 +3325,11 @@ function App() {
                   </div>
                   <div className="bill-row">
                     <span>Delivery Fee:</span>
-                    <strong>{deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}</strong>
+                    <strong style={{ color: "#10b981" }}>FREE 🎉</strong>
                   </div>
                   <div className="bill-row">
-                    <span>GST (5%):</span>
-                    <strong>₹{taxAmount}</strong>
+                    <span>GST / Taxes:</span>
+                    <span style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: 700 }}>Included</span>
                   </div>
                   {discountApplied && (
                     <div className="bill-row" style={{ color: "#155724" }}>
@@ -3500,9 +3498,11 @@ function App() {
                   <span>Total Amount to Pay:</span>
                   <strong style={{ fontSize: "1.3rem", color: "var(--cocoa-dark)" }}>
                     ₹{checkoutDirectItem
-                      ? checkoutDirectItem.food.price * checkoutDirectItem.quantity +
-                        40 +
-                        Math.round(checkoutDirectItem.food.price * checkoutDirectItem.quantity * 0.05)
+                      ? Math.max(
+                          0,
+                          checkoutDirectItem.food.price * checkoutDirectItem.quantity -
+                            (discountApplied ? Math.round(checkoutDirectItem.food.price * checkoutDirectItem.quantity * 0.5) : 0)
+                        )
                       : finalCartTotal}
                   </strong>
                 </div>
